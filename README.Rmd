@@ -24,6 +24,9 @@ This package contains a set of standard graphing and summary table functions to 
 Funding for the development and maintenance of `razviz` was provided by the US Army 
 Corps of Engineers (USACE). <!--add program names here -->
 
+## Latest Updates
+Check out the [NEWS](NEWS.md) for details on the latest updates. 
+
 ## Author
 * Michael Dougherty, Geographer, U.S. Army Corps of Engineers
 
