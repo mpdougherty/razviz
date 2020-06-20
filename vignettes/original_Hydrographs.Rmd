@@ -1,0 +1,432 @@
+---
+title: "UMR-FRM Hydro Model Hydroraphs"
+author: "Michael Dougherty"
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    fig_width: 7.5
+    fig_height: 10.5
+    fig_crop: false
+classoption: portrait
+geometry: ansiapaper, margin=0.25in
+---
+
+# Purpose
+The purpose of this project is to develop a method to streamline the production of hydrographs for each RAS cross section for calibration runs of [HEC-RAS](http://www.hec.usace.army.mil/software/hec-ras/) hydrologic models. 
+
+# Import functions
+This section defines several import functions used to import DSSVue output into R. 
+
+```{r import_functions}
+library(tidyverse)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+
+# A function for parsing a character date field into a POSIXct date time
+add_date_field <- function(df) {
+    # Concatenate Date and Time fields into a single character field
+    df$date_string <- paste(df$Date, df$Time)
+    # Search and replace date times with time = 24:00 hour (invalid) to time = 23:59 hour
+    df$date_string <- str_replace(df$date_string, pattern = ".(24:00)$", replacement = " 23:59")
+    # Create date field and parse date time character string of the form "30 April 2008 06:00"
+    df$date <- parse_datetime(x = df$date_string, format = "%d %B %Y %H:%M")
+    return(df)
+}
+# A function for combining all of the .csv files in a directory
+combine_files <- function(path, col_types) { 
+  files <- dir(path, pattern = '\\.csv', full.names = TRUE)
+  tables <- lapply(X = files, FUN = read_csv, col_types = col_types)
+  df <- bind_rows(tables)
+  return(df)
+}
+
+# Create a column type specification for data import
+## Manual export from RAS
+RAS_col_types = cols(
+                "River"     = col_character(),
+                "Reach"     = col_character(),
+                "River Sta" = col_character(),
+                "Profile"   = col_character(),
+                "Q Total"   = col_double(),
+                "Min Ch El" = col_double(),
+                "W.S. Elev" = col_double(),
+                "Obs WS"    = col_double())
+## From DSSVue script
+DSSVue_script_col_types = cols(
+                "ModelCrossSection" = col_character(),
+                "ModelRiver"        = col_character(),
+                "ModelReach"        = col_character(),
+                "Date"              = col_character(),
+                "Time"              = col_character(),
+                "W.S. Elev"         = col_double(),
+                "Obs WS"            = col_double(),
+                "Modeled Q"         = col_double(),
+                "Obs Q"             = col_double())
+```
+
+# Fix rouge input files
+```{r fix_rouge_input_files}
+# Run these once to fix and then comment out. Do not re-run each time. 
+# Fix incorrect date format for 2013_calibration_3 RM 93.97
+#problem_child_1 <- read_csv(file = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report #Documentation/calibration/data/DSS_script/2013_calibration_3/RM93.97_MISSISSIPPI_KASKY_BIGMUDDY.csv",
+#                    col_types = DSSVue_script_col_types)
+#problem_child_1$Date <- format(as.Date(problem_child_1$Date, "%d-%b-%y"), "%e %B %Y")
+#write_csv(problem_child_1, 
+#          path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report #Documentation/calibration/data/DSS_script/2013_calibration_3/RM93.97_MISSISSIPPI_KASKY_BIGMUDDY.csv")
+#rm(problem_child_1)
+```
+
+# Import DSSVue output
+This section imports DSSVue output from several RAS model calibration runs. 
+
+* Working directory: `\\mvr-netapp2\mvrdata\ED\ec-h\projects\Mississippi_Basin\CWMS Project\UMR Report Documentation\calibration\data`
+
+## Import 2008 Event
+```{r import_2008}
+library(stringr)
+
+# Import 2008 calibration #1
+cal.2008_1 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2008_calibration_1",
+                            col_types = DSSVue_script_col_types)
+cal.2008_1 <- add_date_field(cal.2008_1)
+cal.2008_1 <- add_column(cal.2008_1, Event = "2008", .after = 11)
+cal.2008_1 <- add_column(cal.2008_1, Run_type = "Calibration", .after = 12)
+cal.2008_1 <- add_column(cal.2008_1, Run_num = 1, .after = 13)
+# Import 2008 calibration #2
+cal.2008_2 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2008_calibration_2",
+                            col_types = DSSVue_script_col_types)
+cal.2008_2 <- add_date_field(cal.2008_2)
+cal.2008_2 <- add_column(cal.2008_2, Event = "2008", .after = 11)
+cal.2008_2 <- add_column(cal.2008_2, Run_type = "Calibration", .after = 12)
+cal.2008_2 <- add_column(cal.2008_2, Run_num = 2, .after = 13)
+# Import 2008 calibration #3
+```
+
+## Import 2013 Event
+```{r import_2013}
+# Import 2013 calibration #1
+cal.2013_1 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2013_calibration_1",
+                            col_types = DSSVue_script_col_types)
+cal.2013_1 <- add_date_field(cal.2013_1)
+cal.2013_1 <- add_column(cal.2013_1, Event = "2013", .after = 11)
+cal.2013_1 <- add_column(cal.2013_1, Run_type = "Calibration", .after = 12)
+cal.2013_1 <- add_column(cal.2013_1, Run_num = 1, .after = 13)
+# Import 2013 calibration #3
+cal.2013_3 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2013_calibration_3",
+                            col_types = DSSVue_script_col_types)
+cal.2013_3 <- add_date_field(cal.2013_3)
+cal.2013_3 <- add_column(cal.2013_3, Event = "2013", .after = 11)
+cal.2013_3 <- add_column(cal.2013_3, Run_type = "Calibration", .after = 12)
+cal.2013_3 <- add_column(cal.2013_3, Run_num = 3, .after = 13)
+```
+
+## Import 2014 Event
+```{r import_2014}
+# Import 2014 calibration #1
+cal.2014_1 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2014_calibration_1",
+                            col_types = DSSVue_script_col_types)
+cal.2014_1 <- add_date_field(cal.2014_1)
+cal.2014_1 <- add_column(cal.2014_1, Event = "2014", .after = 11)
+cal.2014_1 <- add_column(cal.2014_1, Run_type = "Calibration", .after = 12)
+cal.2014_1 <- add_column(cal.2014_1, Run_num = 1, .after = 13)
+```
+
+## Import 2017 Event
+```{r import_2017}
+# Import 2017 calibration #1
+cal.2017_1 <- combine_files(path = "//mvr-netapp2/mvrdata/ED/ec-h/projects/Mississippi_Basin/CWMS Project/UMR Report Documentation/calibration/data/DSS_script/2017_calibration_1",
+                            col_types = DSSVue_script_col_types)
+cal.2017_1 <- add_date_field(cal.2017_1)
+cal.2017_1 <- add_column(cal.2017_1, Event = "2017", .after = 11)
+cal.2017_1 <- add_column(cal.2017_1, Run_type = "Calibration", .after = 12)
+cal.2017_1 <- add_column(cal.2017_1, Run_num = 1, .after = 13)
+```
+
+
+## Combine all runs and events and recode
+```{r combine_events}
+# Append all runs and events
+cal <- bind_rows(cal.2008_1, cal.2013_1, cal.2014_1, cal.2017_1, cal.2008_2, cal.2013_3)
+# Fix column names
+cal <- rename(cal, River_Sta   = `ModelCrossSection`, 
+                   River       = `ModelRiver`,
+                   Reach       = `ModelReach`,
+                   Model_Q     = `Modeled Q`, 
+                   Obs_Q       = `Obs Q`, 
+                   WS_Elev     = `W.S. Elev`, 
+                   Obs_WS      = `Obs WS`)
+# Assign factors
+cal$River     <- factor(cal$River)
+cal$Reach     <- factor(cal$Reach)
+cal$River_Sta <- as.numeric(cal$River_Sta)
+cal$River_Sta <- factor(cal$River_Sta)
+cal$Event     <- factor(cal$Event)
+cal$Run_type  <- factor(cal$Run_type)
+cal$Run_num   <- factor(cal$Run_num)
+# Recode variables
+cal$River <- recode_factor(cal$River, "MISSISSIPPI" = "Mississippi")
+cal$Reach <- recode_factor(cal$Reach, 
+                           "BIG MUDDY_OHIO"     = "Big Muddy to Ohio", 
+                           "FOXTOBEAR"          = "Fox to Bear",
+                           "ILLINOIS_MIZZOU"    = "Illinois to Mizzou",
+                           "IOWATODESM"         = "Iowa to Des Moines",
+                           "KASKY_BIGMUDDY"     = "Kaskaskia to Big Muddy",
+                           "MERAMEC_KASKY"      = "Meramec to Kaskaskia",
+                           "MISSOURI_MERAMEC"   = "Missouri to Meramec",
+                           "NORTHTOSALT"        = "North to Salt",
+                           "SALT_CUIVRE"        = "Salt to Cuivre",
+                           "WYACONDATOFABIUS"   = "Wyaconda to Fabius",
+                           "CUIVRE_ILLINOIS"    = "Cuivre to Illinois",
+                           "LD 22_SALT"         = "Lock & Dam 22 to Salt")
+# Gather modeled and observed water surface elevations and discharge into a new field
+cal_gath <- gather(data = cal, WS_Elev, Obs_WS, Model_Q, Obs_Q, key = "Type", value = "Value")
+# Assign factors
+cal_gath$Type <- factor(cal_gath$Type)
+```
+
+## Cleanup
+```{r cleanup}
+# Remove intermediate data frames
+rm(cal.2008_1, cal.2013_1, cal.2014_1, cal.2017_1, cal.2008_2, cal.2013_3)
+```
+
+# Create Hydrograph Plot Pages
+```{r create_plot_pages}
+# Create a table with a unique set of records for "Run_type", "Run_num", "River_Sta", "Event"
+cal_plots <- unique(cal[,c("Run_type", "Run_num", "River_Sta")])
+# Sort the cal_plots table
+cal_plots <- arrange(cal_plots, Run_type, Run_num, desc(River_Sta))
+# Create a column to represent plot numbers
+cal_plots <- add_column(cal_plots, plot = 1:length(cal_plots$Run_type), .before = 1)
+```
+
+# Calculate Goodness-of-fit Statistics
+```{r calculate_goodness_of_fit}
+# Create a table with a unique set of records for "Run_type", "Run_num", "River_Sta", "Event"
+cal_stats <- unique(cal[,c("Run_type", "Run_num", "River_Sta", "Event")])
+# Sort the table by "Run_type", "Run_num", "Event", "River_Sta"
+cal_stats <- arrange(cal_stats, Run_type, Run_num, Event, desc(River_Sta))
+# Create a column to represent river mile events
+cal_stats <- add_column(cal_stats, rm_event = 1:length(cal_stats$Run_type), .before = 1)
+# Add goodness-of-fit fields to cal_stats
+cal_stats <- add_column(cal_stats, WS_R2   = as.numeric(rep(NA, times = length(cal_stats$rm_event))))
+cal_stats <- add_column(cal_stats, WS_RMSE = as.numeric(rep(NA, times = length(cal_stats$rm_event))))
+cal_stats <- add_column(cal_stats, WS_MAE  = as.numeric(rep(NA, times = length(cal_stats$rm_event))))
+# A function to calculate modeled versus observed statistics
+rm_event_stats <- function(rm_event, cal_stats) {
+    # Get values from the cal_stats table for the current rm_event
+    run_type  <- cal_stats[cal_stats$rm_event == rm_event,]$Run_type
+    run_num   <- cal_stats[cal_stats$rm_event == rm_event,]$Run_num
+    river_sta <- cal_stats[cal_stats$rm_event == rm_event,]$River_Sta
+    event     <- cal_stats[cal_stats$rm_event == rm_event,]$Event
+    # Subset the cal data frame for the rm_event
+    c <- cal[cal$Run_type == run_type & cal$Run_num == run_num & cal$River_Sta == river_sta & cal$Event == event,]
+    # Test if modeled or observed water surface elevations are all NA
+    if (!all(is.na(c$WS_Elev)) | !all(is.na(c$Obs_WS))) {
+        # Create linear model of modeled water surface elevation
+        rm_event_lm <- lm(c$WS_Elev ~ c$Obs_WS, data = c)
+        # Set R Squared for modeled water surface elevaton
+        cal_stats[cal_stats$rm_event == rm_event,]$WS_R2 <- summary(rm_event_lm)$r.squared
+        # Set RMSE for modeled water surface elevaton
+        cal_stats[cal_stats$rm_event == rm_event,]$WS_RMSE <- sqrt(mean((c$WS_Elev - c$Obs_WS)^2))
+        # Set Mean Average Error (MAE) for modeled water surface elevation
+        cal_stats[cal_stats$rm_event == rm_event,]$WS_MAE <- mean(abs(c$WS_Elev - c$Obs_WS))
+    }
+    #print(paste("rm_event:", as.character(rm_event), 
+    #            "WS_RSME:", as.character(sqrt(mean((c$WS_Elev - c$Obs_WS)^2))),
+    #            "WS_MAE:", as.character(mean(abs(c$WS_Elev - c$Obs_WS)))
+    #            ))
+    return(cal_stats)
+}
+# Iterate through cal_stats table and calculate stats
+for (j in cal_stats$rm_event) {
+    # Set the current rm_event
+    rm_event <- cal_stats[cal_stats$rm_event == j,]$rm_event
+    # Call the goodness-of-fit stats function
+    cal_stats <- rm_event_stats(rm_event, cal_stats)
+}
+```
+
+# Create GOF pages
+```{r GOF_pages}
+# Create a table with a unique set of records for "Run_type", "Run_num", "River_Sta", "Event"
+cal_gof <- unique(cal[,c("Run_type", "Run_num")])
+```
+
+# Create Goodness-of-fit Tables
+```{r create_goodness_of_fit_tables,  results='asis', warning=FALSE}
+# Calibration #1 Create summary statistics table for each calibration run event
+c_1_2008 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "1" & cal_stats$Event == "2008", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_1_2013 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "1" & cal_stats$Event == "2013", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_1_2014 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "1" & cal_stats$Event == "2014", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_1_2017 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "1" & cal_stats$Event == "2017", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+# Join the events for calibration run #1
+c_1.1 <- full_join(c_1_2008, c_1_2013, by = "River_Sta", suffix = c("_2008", "_2013"))
+c_1.2 <- full_join(c_1_2014, c_1_2017, by = "River_Sta", suffix = c("_2014", "_2017"))
+c_1   <- full_join(c_1.1, c_1.2,       by = "River_Sta")
+c_1 <- arrange(c_1, desc(River_Sta))
+# Remove intermediate data frames
+rm(c_1_2008, c_1_2013, c_1_2014, c_1_2017, c_1.1, c_1.2)
+# Calibration #2 Create summary statistics table for each calibration run event
+c_2_2008 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "2" & cal_stats$Event == "2008", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_2_2013 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "2" & cal_stats$Event == "2013", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_2_2014 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "2" & cal_stats$Event == "2014", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_2_2017 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "2" & cal_stats$Event == "2017", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+# Join the events for calibration run #1
+c_2.1 <- full_join(c_2_2008, c_2_2013, by = "River_Sta", suffix = c("_2008", "_2013"))
+c_2.2 <- full_join(c_2_2014, c_2_2017, by = "River_Sta", suffix = c("_2014", "_2017"))
+c_2   <- full_join(c_2.1, c_2.2,       by = "River_Sta")
+c_2 <- arrange(c_2, desc(River_Sta))
+# Remove intermediate data frames
+rm(c_2_2008, c_2_2013, c_2_2014, c_2_2017, c_2.1, c_2.2)
+# Calibration #3 Create summary statistics table for each calibration run event
+c_3_2008 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "3" & cal_stats$Event == "2008", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_3_2013 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "3" & cal_stats$Event == "2013", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_3_2014 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "3" & cal_stats$Event == "2014", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+c_3_2017 <- cal_stats[cal_stats$Run_type == "Calibration" & cal_stats$Run_num == "3" & cal_stats$Event == "2017", 
+                      c("River_Sta", "WS_R2", "WS_RMSE", "WS_MAE")]
+# Join the events for calibration run #1
+c_3.1 <- full_join(c_3_2008, c_3_2013, by = "River_Sta", suffix = c("_2008", "_2013"))
+c_3.2 <- full_join(c_3_2014, c_3_2017, by = "River_Sta", suffix = c("_2014", "_2017"))
+c_3   <- full_join(c_3.1, c_3.2,       by = "River_Sta")
+c_3 <- arrange(c_3, desc(River_Sta))
+# Create a list of gof data frames
+c_list <- list(c_1, c_2, c_3)
+# Remove intermediate data frames
+rm(c_3_2008, c_3_2013, c_3_2014, c_3_2017, c_3.1, c_3.2)
+```
+
+
+# Hydrograph Plot Function
+```{r hydrograph_plots_function}
+hydrograph_plots <- function(plot_number) {
+    # Get values from the cal_plots table for the current plot
+    plot      <- cal_plots[cal_plots$plot == plot_number,]$plot
+    run_type  <- cal_plots[cal_plots$plot == plot_number,]$Run_type
+    run_num   <- cal_plots[cal_plots$plot == plot_number,]$Run_num
+    river_sta <- cal_plots[cal_plots$plot == plot_number,]$River_Sta
+    # Subset data frames for water surfaces
+    df1 <- cal_gath[cal_gath$Run_type == run_type & cal_gath$Run_num == run_num & cal_gath$River_Sta == river_sta & 
+                   (cal_gath$Type == "Obs_WS" | cal_gath$Type == "WS_Elev"),]
+    # Subset data frames for discharges
+    df2 <- cal_gath[cal_gath$Run_type == run_type & cal_gath$Run_num == run_num & cal_gath$River_Sta == river_sta & 
+                   (cal_gath$Type == "Model_Q" | cal_gath$Type == "Obs_Q"),]
+    # Define colors. Inspired by palettes from https://wesandersonpalettes.tumblr.com/ using names from colors(). 
+    WS_cols          <- c("WS_Elev" = "darkslategray4", "Obs_WS" = "coral3")
+    Discharge_cols   <- c("Model_Q" = "darkslategray4", "Obs_Q"  = "coral3")
+    # Define labels
+    WS_labels        <- c("WS_Elev" = "Modeled", "Obs_WS" = "Observed")
+    Discharge_labels <- c("Model_Q" = "Modeled", "Obs_Q"  = "Observed")
+    # water surface elevation hydrograph
+    p1 <- ggplot(data = df1, aes(x = date, y = Value, color = Type), na.rm = TRUE) +
+                 geom_line(size = 1) +
+                 facet_grid(. ~ Event, scales = "free") + 
+                 theme_bw() + 
+                 scale_color_manual(values = WS_cols, labels = WS_labels) +
+                 theme(legend.position = "none", 
+                       legend.title = element_blank(),
+                       axis.title.x = element_blank(),
+                       axis.text.x  = element_text(angle=50, hjust=1)) + 
+                 scale_x_datetime(date_labels = "%e %b", 
+                                  date_breaks = "7 days", 
+                                  date_minor_breaks = "1 day") + 
+                 labs(y = "Elevation (NAVD88 feet)")
+    # discharge hydrograph
+    p2 <- ggplot(data = df2, aes(x = date, y = Value/1000, color = Type), na.rm = TRUE) +
+                 geom_line(size = 1) +
+                 facet_grid(. ~ Event, scales = "free") + 
+                 theme_bw() + 
+                 scale_color_manual(values = Discharge_cols, labels = Discharge_labels) +
+                 theme(legend.position = "bottom", 
+                       legend.title = element_blank(),
+                       axis.title.x = element_blank(),
+                       axis.text.x  = element_text(angle=50, hjust=1)) + 
+                 scale_x_datetime(date_labels = "%e %b", 
+                                  date_breaks = "7 days", 
+                                  date_minor_breaks = "1 day") + 
+                 labs(y = "Discharge (1000 cubic feet per second)")
+    # Create title for plot group
+    title <- textGrob(label = paste(df1$River, " River, ", df1$Reach, " Reach, River Mile ",
+                                    df1$River_Sta, "\n", df1$Run_type, " #", df1$Run_num, sep = ""),
+                      x = unit(0, "lines"), y = unit(0, "lines"),
+                      hjust = 0, vjust = 0,
+                      gp = gpar(fontsize=12))
+    # Create a grid to arrange the plots
+    p <- grid.arrange(p1, p2, 
+                      nrow = 2, ncol = 1, 
+                      widths = unit(7, "in"), heights = unit(c(5,5), "in"),
+                      top = title, clip=FALSE)
+    return(p)
+}
+#grid.draw(hydrograph_plots(25))
+```
+
+```{r gof_table_function}
+gof_table <- function(df, run_num) {
+    # Get values from the cal_gof table for the current table
+    run_type <- cal_gof[cal_gof$Run_num == run_num,]$Run_type
+    gof_tab <- kable(df,
+                     digits = c(2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3),
+                     align = c("l", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"),
+                     col.names = (c("River Mile", "R2", "RMSE", "MAE", "R2", "RMSE", "MAE", "R2", "RMSE", "MAE", "R2", "RMSE", "MAE")),
+                     caption = paste(run_type, run_num),
+                     row.names = FALSE,
+                     format = "latex") %>%
+                     kable_styling(full_width = F, position = "left", font_size = 10) %>%
+                     add_header_above(c(" " = 1, "2008" = 3, "2013" = 3, "2014" = 3, "2017" = 3))
+    return(gof_tab)
+}
+```
+
+
+# Create Hydrograph Plots
+```{r create_hydrograph_plots, results='asis', warning=FALSE}
+# Iterate through plots table to draw hydrograph plots
+for (i in cal_plots$plot) {
+#    # insert vertical white space so that the next figure is on a new page
+    cat('\\newpage')
+#    # Set the current plot number
+    plot_number <- cal_plots[cal_plots$plot == i,]$plot
+#    # Create the longitudinal profile plots
+    grid.draw(hydrograph_plots(plot_number))
+}
+```
+
+
+# Draw GOF Tables
+```{r draw_gof_table, results='asis', warning=FALSE, echo=FALSE}
+cat('\\newpage')
+gof_table(c_1, 1)
+cat('\\newpage')
+gof_table(c_2, 2)
+cat('\\newpage')
+gof_table(c_3, 3)
+# Iterate through plots table to draw hydrograph plots
+#for (i in cal_gof$Run_num) {
+#    # insert vertical white space so that the next figure is on a new page
+#    cat('\\newpage')
+#    # Set the current plot number
+#    run_num <- cal_gof[cal_gof$Run_num == i,]$Run_num
+#    df      <- c_list[[i]]
+#    # Create the longitudinal profile plots
+#    gof_table(df, run_num)
+#}
+
+```
+
+
+
