@@ -1,7 +1,7 @@
 #' @tile Create Gage Labels
 #'
 #' @description Create a data frame of gage labels used by the longitudinal
-#' profile plot.
+#' profile plot to symbolize stage elevations.
 #'
 #' @param gage_locations       data frame; A data frame of gage locations.
 #' @param stage_interval_label numeric; The number of feet between gage stage
@@ -9,7 +9,7 @@
 #'                             labels.
 #'
 #' @return A data frame of gage labels used by the `razviz` longitudinal profile
-#' plot.
+#' plot to label gage boxes.
 #'
 gage_labels <- function(gage_locations, stage_interval_label) {
   # Create the data frame to hold gage stage labels.
