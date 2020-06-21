@@ -1,22 +1,17 @@
 ---
-title: "longitudinal_profile"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{longitudinal_profile}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Longitudinal Profile Graphs"
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    fig_height: 10.5
+    fig_width: 16.5
+    fig_crop: false
+classoption: landscape
+geometry: ansibpaper, margin=0.25in
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-```{r setup}
+```{r}
 library(tidyverse)
-library(razviz)
 ```
 
 # Import gage locations
