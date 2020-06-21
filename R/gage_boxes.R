@@ -3,6 +3,9 @@
 #' @description Create a data frame of gage boxes used by the longitudinal
 #' profile plot to symbolize the location of gages and the stage elevations.
 #'
+#' @export
+#' @param gage_locations       data frame; A data frame of gage locations. See
+#'                             package dataset for example.
 #' @param stage_interval_boxes numeric; The interval used for drawing tick
 #'                             marks on gage boxes (units: feet).
 #' @param box_width            numeric; The width of the gage box (units:
