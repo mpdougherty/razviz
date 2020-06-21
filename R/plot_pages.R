@@ -15,6 +15,8 @@
 #'
 #' @return A data frame of plot dimensions for a given set of RAS model results.
 #'
+#' @importFrom tibble tibble
+#'
 plot_pages <- function(hydro_model, high_water, miles_per_plot) {
   # Min and Max functions to return zero if vector contains all NAs
   max0 <- function (x) ifelse(!all(is.na(x)), max(x, na.rm = TRUE), 0)
@@ -26,16 +28,16 @@ plot_pages <- function(hydro_model, high_water, miles_per_plot) {
                        miles_per_plot)
 
   # Create an empty plot_pages data frame to define page characteristics
-  plot_pages <- tibble(plot       = 1:num_plots,
-                       start_mile = as.numeric(rep(NA, num_plots)),
-                       end_mile   = as.numeric(rep(NA, num_plots)),
-                       max_y      = rep(0, num_plots),
-                       mid_y      = rep(0, num_plots),
-                       min_y      = rep(0, num_plots),
-                       y_range    = rep(0, num_plots),
-                       plot_max_y = rep(0, num_plots),
-                       plot_min_y = rep(0, num_plots),
-                       plot_dif_y = rep(0, num_plots))
+  plot_pages <- tibble::tibble(plot       = 1:num_plots,
+                               start_mile = as.numeric(rep(NA, num_plots)),
+                               end_mile   = as.numeric(rep(NA, num_plots)),
+                               max_y      = rep(0, num_plots),
+                               mid_y      = rep(0, num_plots),
+                               min_y      = rep(0, num_plots),
+                               y_range    = rep(0, num_plots),
+                               plot_max_y = rep(0, num_plots),
+                               plot_min_y = rep(0, num_plots),
+                               plot_dif_y = rep(0, num_plots))
 
   # Initialize beginning and ending river miles of the first plot
   plot_pages[1, ]$start_mile <- max(hydro_model$River_Sta)

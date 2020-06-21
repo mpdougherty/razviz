@@ -1,6 +1,5 @@
 context("plot pages")
 library(razviz)
-library(readr)
 
 path <- system.file("extdata", package = "razviz")
 pattern <- "Freq"
