@@ -13,6 +13,9 @@
 #' @return A data frame containing all of the input RAS model results appended
 #' together.
 #'
+#' @importFrom readr read_csv
+#' @importFrom dplyr bind_rows
+#'
 combine_files <- function(path, pattern = NULL, col_types = NULL) {
   files <- dir(path, pattern = pattern, full.names = TRUE)
   tables <- lapply(X = files,
