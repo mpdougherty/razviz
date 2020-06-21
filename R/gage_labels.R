@@ -1,8 +1,9 @@
-#' @tile Create Gage Labels
+#' @title Create Gage Labels
 #'
 #' @description Create a data frame of gage labels used by the longitudinal
 #' profile plot to symbolize stage elevations.
 #'
+#' @export
 #' @param gage_locations       data frame; A data frame of gage locations.
 #' @param stage_interval_label numeric; The number of feet between gage stage
 #'                             labels. Used to identify the location of gage
