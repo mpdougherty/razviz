@@ -4,13 +4,13 @@
 \alias{gage_boxes}
 \title{Create Gage Boxes}
 \usage{
-gage_boxes(gage_locations, stage_interval_boxes, box_width)
+gage_boxes(gage_locations, stage_interval_box, box_width)
 }
 \arguments{
 \item{gage_locations}{data frame; A data frame of gage locations. See
 package dataset for example.}
 
-\item{stage_interval_boxes}{numeric; The interval used for drawing tick
+\item{stage_interval_box}{numeric; The interval used for drawing tick
 marks on gage boxes (units: feet).}
 
 \item{box_width}{numeric; The width of the gage box (units:
