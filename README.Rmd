@@ -17,8 +17,8 @@ An R package to produce visualizations for evaluating the performance of [HEC-RA
 This package contains a set of standard graphing and summary table functions to help streamline the review and evaluation of HEC-RAS model results during calibration. The package currently contains functions for producing reports containing the following visualizations:
 
 * **Hydrographs** - Compare modeled versus observed values for both water surface elevation and discharge by cross section and model scenario.
-* **Longitudinal Profile Graph** - Compare water surface elevation by river mile for multiple model scenarios. Graphs can also contain additional annotations (i.e., gage locations, levee elevations, bridge elevations, river features, and high water marks) helpful for evaluating model results. 
-* **Goodness of Fit Statistics Tables** - A table of goodness of fit statistics (i.e., $R^2$, RMSE, MAE) between modeled versus observed values by cross section and model scenario. 
+* **Longitudinal Profile Graph** - Compare water surface elevation by river mile for multiple model scenarios. Graphs can also contain additional annotations (i.e., river gage locations, levee elevations, bridge elevations, river features, and high water marks) helpful for evaluating model results. 
+* **Goodness of Fit Statistics Tables** - A table of goodness of fit statistics (i.e., R^2, RMSE, MAE) between modeled versus observed values by cross section and model scenario. 
 
 ## Funding
 Funding for the development and maintenance of `razviz` was provided by the US Army 

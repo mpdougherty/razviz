@@ -14,7 +14,7 @@ An R package to produce visualizations for evaluating the performance of
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![packageversion](https://img.shields.io/badge/Package%20version-0.0.1-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--20-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--23-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
@@ -29,12 +29,12 @@ producing reports containing the following visualizations:
     scenario.
   - **Longitudinal Profile Graph** - Compare water surface elevation by
     river mile for multiple model scenarios. Graphs can also contain
-    additional annotations (i.e., gage locations, levee elevations,
-    bridge elevations, river features, and high water marks) helpful for
-    evaluating model results.
+    additional annotations (i.e., river gage locations, levee
+    elevations, bridge elevations, river features, and high water marks)
+    helpful for evaluating model results.
   - **Goodness of Fit Statistics Tables** - A table of goodness of fit
-    statistics (i.e., \(R^2\), RMSE, MAE) between modeled versus
-    observed values by cross section and model scenario.
+    statistics (i.e., R^2, RMSE, MAE) between modeled versus observed
+    values by cross section and model scenario.
 
 ## Funding
 
