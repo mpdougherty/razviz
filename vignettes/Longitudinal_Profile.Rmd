@@ -6,32 +6,89 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
-)
+  comment = "#>")
 ```
 
+# Introduction
+The purpose of this vignette is to demonstrate how to use the `razviz` package to produce a `pdf` report of longitudinal profile graphs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal position (aka "river miles") on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The `razviz::longitudinal_profile_plot` is tailored for evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers evaluate model results during calibration and floodplain managers to evaluate the impacts of model results on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:
+
+* Gages - Gage locations are symbolized at their river position by their name and stage (units: feet). 
+* High Water Marks - High water marks are symbolized with circles at the river position and elevation where they were recorded. 
+* Levees - Raw surveyed levee top elevations are symbolized with a thin line and a thicker line symbolizes the elevation moving average to indicate the trend of the levee top. Left bank and right bank levees are symbolized using different colors. Levee names are included in filled boxes. 
+* River features - Along the bottom of the graph the names of river features (e.g., tributary confluences, cities, bridges, dams, etc.) are drawn at their river position. 
+* Bridges - Bridge structure elevations are symbolized at their river position with their upper and lower elevations as "error bars". 
+
+Symbolization of these ancillary require a dataset for each. The `razviz` user is required to develop these datasets following the structure of the package datasets provided. 
+
+HEC-RAS models are often used to model long river reaches. Effective longitudinal profile graphs must have sufficient x and y-axis resolution to see the differences between model scenarios and relationship to ancillary data (i.e., gage stage, high water marks, levees, bridges). This requires that long model reaches must be graphed using multiple graphs. However, each graph should not be too "zoomed-in" or medium and large scale trends are obscured. The purpose of the `razviz:long_plot_pages` is to define the graph dimensions for multiple page longitudinal profile graph reports. Users will need to adjust the `miles_per_plot` parameter to find the right "scale". 
+
+## Install
+Begin by loading the needed packages. 
 ```{r setup}
 library(tidyverse)
+library(devtools)
+```
+
+Next, we'll install the `razviz` package. 
+```{r install}
+devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 library(razviz)
 ```
 
-# Import Hydro Model
-```{r}
+## Hydraulic Model Output
+In this step we'll prepare the hydro model results. 
+* Import the example RAS model results in `.csv` format included in the package. 
+* Create the `Event` field to specify the model scenarios that will be plotted as different series in the longitudinal profile graph. 
+* Filter the model scenarios down to only the ones we want to visualize. 
 
+```{r hydro_model}
+path <- system.file("extdata", package = "razviz")
+pattern <- "Freq"
+hydro_model <- razviz::combine_files(path = path, pattern = pattern)
+## Create `Event` field for labeling
+hydro_model$Event <- hydro_model$Freq
+## Filter the Events
+model_events <- c("2 Year", "100 Year", "500 Year", "100000 Year")
+hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
+## Set Event as an ordered factor
+hydro_model_1$Event <- factor(hydro_model_1$Event,
+                              levels = model_events,
+                              labels = model_events)
 ```
 
-# Import High Water Marks
-```{r}
+## High Water Marks
+In this step we'll prepare the high water marks dataset. 
+* Import the high water marks table in `.csv` format included in the package. 
+* Define the high water events to be symbolized in the longitudinal profile graphs. 
 
+```{r high_water}
+high_water_csv <- system.file("extdata", "high_water_marks.csv",
+                              package = "razviz")
+high_water <- readr::read_csv(high_water_csv)
+## Define high water events
+high_water_years <- c("2008", "2013", "2014")
+high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 ```
 
-# Import gage locations
-Import a data frame of gage locations. 
-```{r import_gage_data}
+## Longitudinal Plot Pages
+In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. 
+
+```{r long_plot_pages}
+miles_per_plot <- 60
+long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
+                                              high_water_events_df,
+                                              miles_per_plot)
+```
+
+## Gage locations
+In this step we'll prepare the gage dataset. 
+* Import the gage locations table in `.csv` format included in the package. 
+* Remove the double backslashes introduced by R during the import. 
+
+```{r gages}
 gage_csv <- system.file("extdata", "gage_locations.csv", package = "razviz")
 gages <- readr::read_csv(gage_csv)
 
@@ -39,8 +96,111 @@ gages <- readr::read_csv(gage_csv)
 gages$name <- gsub("\\n", "\n", gages$name, fixed=TRUE)
 ```
 
+## Gage Labels
+In this step we'll define the stage text labels that appear next to the gage boxes. These labels represent the stage in units feet for each gage.
 
-```{r }
-gage_labels <- gage_labels(gages, 5)
+```{r gage_labels}
+stage_interval_label <- 5
+gage_labels_df <- razviz::gage_labels(gages, stage_interval_label)
+```
+
+## Gage Boxes
+In this step we'll define the dimensions of the boxes used to draw the gage stage levels for all gages. 
+
+```{r gage_boxes}
+stage_interval_boxes <- 1
+box_width <- 0.1
+gage_boxes_df <- razviz::gage_boxes(gages, stage_interval_boxes, box_width)
+```
+
+## Levees
+In this step we'll prepare the levee dataset. 
+* Import the levees table in `.csv` format included in the package. 
+
+```{r levees}
+levees_csv <- system.file("extdata", "levees_authorized_existing.csv",
+                          package = "razviz")
+levees <- readr::read_csv(levees_csv)
+```
+
+## Features
+In this step we'll prepare the river features dataset. 
+* Import the river features table in `.csv` format included in the package. 
+
+```{r features}
+features_csv <- system.file("extdata", "river_features.csv",
+                            package = "razviz")
+features <- readr::read_csv(features_csv)
+```
+
+## Bridges
+In this step we'll prepare the bridges dataset. 
+* Import the bridge table in `.csv` format included in the package. 
+
+```{r bridges}
+bridges_csv <- system.file("extdata", "bridge_elevations.csv",
+                           package = "razviz")
+bridges <- readr::read_csv(bridges_csv)
+```
+
+## Graph Colors
+In this step we'll assign the colors to each of the series in the graph. 
+* Assignment of colors in `razviz` to particular data series depends on the use of R's "named vector". 
+* For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from `grDevices::colors()). 
+
+```{r colors}
+cols <- c("2 Year"      = "darkslategray4",
+          "100 Year"    = "cadetblue3",
+          "500 Year"    = "coral3",
+          "100000 Year" = "burlywood3",
+          "2008"        = "red",
+          "2013"        = "red",
+          "2014"        = "red",
+          "LEFT"        = "palevioletred2",
+          "RIGHT"       = "palevioletred4")
+```
+
+## Legend Labels
+In this step we'll assign the legend labels. 
+
+```{r legend_labels}
+legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
+                   "2008", "2013", "2014",
+                   "Left Bank", "Right Bank")
+```
+
+## Plot Labels
+In this step we'll assign the plot labels. 
+
+```{r plot_labels}
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B",
+                    "x_axis" = "Miles Above the Ohio River",
+                    "y_axis" = "Elevation (NAVD88 feet)")
+```
+
+## Output Folder
+In this step we'll define the output folder. 
+
+```{r}
+temp_dir <- "D:/Workspace/ECHH_Tools"
+```
+
+## Longitudinal Profile Report
+In this step we'll call the longitudinal profile graph report. 
+
+```{r}
+longitudinal_profile_report(hydro_model = hydro_model_1,
+                            long_plot_pgs = long_plot_pages_df,
+                            gages = gages,
+                            gage_labels_df = gage_labels_df,
+                            gage_boxes_df = gage_boxes_df,
+                            high_water = high_water_events_df,
+                            levees = levees,
+                            features = features,
+                            bridges = bridges,
+                            graph_colors = cols,
+                            legend_labels = legend_labels,
+                            plot_labels = plot_labels,
+                            output_dir = temp_dir)
 ```
 
