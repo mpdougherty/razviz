@@ -19,16 +19,28 @@ library(tidyverse)
 library(razviz)
 ```
 
+# Import Hydro Model
+```{r}
+
+```
+
+# Import High Water Marks
+```{r}
+
+```
+
 # Import gage locations
 Import a data frame of gage locations. 
 ```{r import_gage_data}
 gage_csv <- system.file("extdata", "gage_locations.csv", package = "razviz")
 gages <- readr::read_csv(gage_csv)
-# Remove double backslashes introduced by R import
+
+## Remove double backslashes introduced by R import
 gages$name <- gsub("\\n", "\n", gages$name, fixed=TRUE)
 ```
 
-```{r}
+
+```{r }
 gage_labels <- gage_labels(gages, 5)
 ```
 
