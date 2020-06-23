@@ -79,7 +79,7 @@ legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
                    "2008", "2013", "2014",
                    "Left Bank", "Right Bank")
 
-# title
+# plot_labels
 plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B",
                     "x_axis" = "Miles Above the Ohio River",
                     "y_axis" = "Elevation (NAVD88 feet)")
