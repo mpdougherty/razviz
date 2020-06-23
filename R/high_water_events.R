@@ -25,5 +25,10 @@ high_water_events <- function(high_water, events) {
   # Filter for the desired list of high water event years
   high_water <- dplyr::filter(high_water, event %in% events)
 
+  # Set Event as an ordered factor
+  high_water$event <- factor(high_water$event,
+                             levels = events,
+                             labels = events)
+
   return(high_water)
 }
