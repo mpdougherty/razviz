@@ -6,7 +6,7 @@
 #' @export
 #' @param gage_locations       data frame; A data frame of gage locations. See
 #'                             package dataset for example.
-#' @param stage_interval_boxes numeric; The interval used for drawing tick
+#' @param stage_interval_box   numeric; The interval used for drawing tick
 #'                             marks on gage boxes (units: feet).
 #' @param box_width            numeric; The width of the gage box (units:
 #'                             river miles)
@@ -14,7 +14,7 @@
 #' @return A data frame of dimensions used by the `razviz` longitudinal profile
 #' plot to draw gage boxes.
 #'
-gage_boxes <- function(gage_locations, stage_interval_boxes, box_width) {
+gage_boxes <- function(gage_locations, stage_interval_box, box_width) {
   # Create the data frame to hold gage stage boxes
   gage_boxes <- data.frame(gage_stage = character(),
                            river_mile = double(),
@@ -30,7 +30,7 @@ gage_boxes <- function(gage_locations, stage_interval_boxes, box_width) {
     max_stage  <- gage$max_stage
 
     # Iterate through the min and max stages for each gage creating the boxes.
-    for (j in seq(min_stage, max_stage, by = stage_interval_boxes)) {
+    for (j in seq(min_stage, max_stage, by = stage_interval_box)) {
       elevation  <- gage$elevation + j
       stage      <- j
       gage_stage <- paste(name, stage)
