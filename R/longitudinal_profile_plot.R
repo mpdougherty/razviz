@@ -4,31 +4,32 @@
 #' hydro model.
 #'
 #' @export
-#' @param hydro_model  data frame; A data frame of results from a RAS model. See
-#'                     the package dataset for required fields.
-#' @param plot_number  numeric; The plot number to graph.
-#' @param long_plot_pages data frame; A data frame of longitudinal plot pages
-#'                        produced by the `razviz::long_plot_pages` function.
-#' @param gages        data frame. A data frame of gages. See package dataset
-#'                     for required fields.
-#' @param gage_labels  data frame; A data frame of gage labels produced by the
-#'                     `razviz::gage_labels` function.
-#' @param gage_boxes   data frame; A data frame of gage boxes produced by the
-#'                     `razviz::gage_boxes` function.
-#' @param high_water   data frame; A data frame of high water marks. See the
-#'                     package dataset for required fields.
-#' @param levees       data frame; A data frame of levee elevations. See the
-#'                     package dataset for required fields.
-#' @param features     data frame; A data frame of salient river features (e.g.,
-#'                     tributary confluences, cities, bridges, dams, etc.). See
-#'                     package dataset for required fields.
-#' @param bridges      data frame; A data frame of bridge opening elevations.
-#'                     See package dataset for required fields.
-#' @param graph_colors character vector; A named character vector of colors to
-#'                     use for each series.
-#' @param legend_label character vector; A character vector of labels to be
-#'                     used in the legend.
-#' @param title        character; A title for the plot.
+#' @param plot_number    numeric; The plot number to graph.
+#' @param hydro_model    data frame; A data frame of results from a RAS model.
+#'                       See the package dataset for required fields.
+#' @param long_plot_pgs  data frame; A data frame of longitudinal plot pages
+#'                       produced by the `razviz::long_plot_pages` function.
+#' @param gages          data frame. A data frame of gages. See package dataset
+#'                       for required fields.
+#' @param gage_labels_df data frame; A data frame of gage labels produced by the
+#'                       `razviz::gage_labels` function.
+#' @param gage_boxes_df  data frame; A data frame of gage boxes produced by the
+#'                       `razviz::gage_boxes` function.
+#' @param high_water     data frame; A data frame of high water marks. See the
+#'                       package dataset for required fields.
+#' @param levees         data frame; A data frame of levee elevations. See the
+#'                       package dataset for required fields.
+#' @param features       data frame; A data frame of salient river features
+#'                       (e.g., tributary confluences, cities, bridges, dams,
+#'                       etc.). See package dataset for required fields.
+#' @param bridges        data frame; A data frame of bridge opening elevations.
+#'                       See package dataset for required fields.
+#' @param graph_colors   character vector; A named character vector of colors to
+#'                       use for each series.
+#' @param legend_labels  character vector; A character vector of labels to be
+#'                       used in the legend.
+#' @param plot_labels    list; A list of plot labeling elements. Must contain
+#'                       three named elements "title", "x_axis", and "y_axis".
 #'
 #' @return A `ggplot2` object depicting the river longitudinal profile graph.
 #'
@@ -40,34 +41,34 @@
 #' @importFrom scales squish
 #' @importFrom ggrepel geom_label_repel geom_text_repel
 #'
-longitudinal_profile_plot <- function(hydro_model, plot_num, long_plot_pages,
-                                      gages, gage_labels, gage_boxes,
+longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
+                                      gages, gage_labels_df, gage_boxes_df,
                                       high_water, levees,
                                       features, bridges,
-                                      graph_colors, legend_labels, title) {
-  # Get values from the long_plot_pages data frame for the current plot
-  start_mile <- long_plot_pages[long_plot_pages$plot == plot_number,]$start_mile
-  end_mile   <- long_plot_pages[long_plot_pages$plot == plot_number,]$end_mile
-  plot_max_y <- long_plot_pages[long_plot_pages$plot == plot_number,]$plot_max_y
-  plot_min_y <- long_plot_pages[long_plot_pages$plot == plot_number,]$plot_min_y
+                                      graph_colors, legend_labels, plot_labels) {
+  # Get values from the long_plot_pgs data frame for the current plot
+  start_mile <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$start_mile
+  end_mile   <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$end_mile
+  plot_max_y <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$plot_max_y
+  plot_min_y <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$plot_min_y
 
   # Subset data frames for the current plot
-  hm <-  hydro_model[hydro_model$River_Sta  <= start_mile &
-                     hydro_model$River_Sta  >= end_mile,]
-  hw <-  high_water[high_water$river_mile   <= start_mile &
-                    high_water$river_mile   >= end_mile,]
-  l  <-      levees[levees$river_mile       <= start_mile &
-                    levees$river_mile       >= end_mile,]
-  g  <-       gages[gages$river_mile        <= start_mile &
-                    gages$river_mile        >= end_mile,]
-  gl <- gage_labels[gage_labels$river_mile  <= start_mile &
-                    gage_labels$river_mile  >= end_mile,]
-  gb <-  gage_boxes[gage_boxes$river_mile   <= start_mile &
-                    gage_boxes$river_mile   >= end_mile,]
-  f  <-    features[features$river_mile     <= start_mile &
-                    features$river_mile     >= end_mile,]
-  b  <-     bridges[bridges$river_mile      <= start_mile &
-                    bridges$river_mile      >= end_mile,]
+  hm <- hydro_model[hydro_model$River_Sta <= start_mile &
+                    hydro_model$River_Sta >= end_mile,]
+  hw <- high_water[high_water$river_mile <= start_mile &
+                   high_water$river_mile >= end_mile,]
+  l  <- levees[levees$river_mile <= start_mile &
+               levees$river_mile >= end_mile,]
+  g  <- gages[gages$river_mile <= start_mile &
+              gages$river_mile >= end_mile,]
+  gl <- gage_labels_df[gage_labels_df$river_mile <= start_mile &
+                       gage_labels_df$river_mile >= end_mile,]
+  gb <- gage_boxes_df[gage_boxes_df$river_mile <= start_mile &
+                      gage_boxes_df$river_mile >= end_mile,]
+  f  <- features[features$river_mile <= start_mile &
+                 features$river_mile >= end_mile,]
+  b  <- bridges[bridges$river_mile <= start_mile &
+                bridges$river_mile >= end_mile,]
 
   # Create levee labels for the current plot
   levee_labels <- dplyr::summarize(dplyr::group_by(l, levee, descending_bank),
@@ -93,9 +94,9 @@ longitudinal_profile_plot <- function(hydro_model, plot_num, long_plot_pages,
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
-    labs(title = title,
-         x = "Miles Above Ohio River",
-         y = "Elevation (NAVD88 feet)") +
+    labs(title = plot_labels$title,
+         x = plot_labels$x_axis,
+         y = plot_labels$y_axis) +
     # Draw high water marks
     geom_point(inherit.aes = FALSE,
                data = hw,

@@ -1,6 +1,9 @@
 context("longitudinal profile plot")
 library(razviz)
 
+# plot_num
+plot_number <- 5
+
 # hydro_model
 path <- system.file("extdata", package = "razviz")
 pattern <- "Freq"
@@ -14,9 +17,6 @@ hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
-
-# plot_num
-plot_number <- 1
 
 # high_water
 high_water_csv <- system.file("extdata", "high_water_marks.csv",
@@ -83,21 +83,23 @@ legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
                    "Left Bank", "Right Bank")
 
 # title
-title <- "Upper Mississippi River Hydraulic Model - A to B"
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Guttenburg to Clarksville",
+                    "x_axis" = "Miles Above the Ohio River",
+                    "y_axis" = "Elevation (NAVD88 feet)")
 
 # longitudinal_profile_plot
-plot <- razviz::longitudinal_profile_plot(hydro_model = hydro_model_1,
-                                          plot_num = plot_number,
-                                          long_plot_pages = long_plot_pages_df,
+plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                          hydro_model = hydro_model_1,
+                                          long_plot_pgs = long_plot_pages_df,
                                           gages = gages,
-                                          gage_labels = gage_labels_df,
-                                          gage_boxes = gage_boxes_df,
+                                          gage_labels_df = gage_labels_df,
+                                          gage_boxes_df = gage_boxes_df,
                                           high_water = high_water_events_df,
                                           levees = levees,
                                           features = features,
                                           bridges = bridges,
                                           graph_colors = cols,
                                           legend_labels = legend_labels,
-                                          title = title)
+                                          plot_labels = plot_labels)
 print(plot)
 
