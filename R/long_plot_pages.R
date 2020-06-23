@@ -17,7 +17,7 @@
 #'
 #' @importFrom tibble tibble
 #'
-plot_pages <- function(hydro_model, high_water, miles_per_plot) {
+long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
   # Min and Max functions to return zero if vector contains all NAs
   max0 <- function (x) ifelse(!all(is.na(x)), max(x, na.rm = TRUE), 0)
   min0 <- function (x) ifelse(!all(is.na(x)), min(x, na.rm = TRUE), 0)
