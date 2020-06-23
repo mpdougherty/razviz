@@ -1,24 +1,24 @@
-name,river_mile,lowest_elevation,highest_elevation,
-Keokuk RR,364,505.74,526.44,
-US 136,363.9,506.83,558.64,
-Quincy RR,328,488.33,538.63,
-US 24 (Quincy Bayview),327.2,494.97,559.39,
-US 24 (Quincy Memorial Highway) ,327,482.24,533.34,
-Hannibal RR,309.9,479.82,483.42,
-Interstate 72 (Mark Twain Memorial),309.5,511.5,539.72,
-US 54 (Champ Clark),283.2,477.96,537.92,
-Louisiana RR,282.1,480,490,
-New Clark Hwy ,202.3,436.3,495.17,
-I-270 Dual Hwy ,190.815,449.3,469.4,
-Chain of Rocks Canal ,190.475,448,496,
-Merchants RR ,183.275,450,460,
-McKinley Hwy and RR ,182.51,456,480,
-I-70,181.2,464,480,
-MLK Memorial,180.215,478.3,488.3,
-Eads Hwy and RR,180.025,478,498,
-Poplar Street,179.13,477,485,
-Douglas MacArthur RR,178.885,460,470,
-Jefferson Barracks Hwy,168.805,417,483.23,
-Chester Hwy,109.915,400,410,
-Cape Girardeau Hwy,51.608,370,410,
-Thebes RR,43.708,400,410,
+name,river_mile,lowest_elevation,highest_elevation
+Keokuk RR,364,505.74,526.44
+US 136,363.9,506.83,558.64
+Quincy RR,328,488.33,538.63
+US 24 (Quincy Bayview),327.2,494.97,559.39
+US 24 (Quincy Memorial Highway) ,327,482.24,533.34
+Hannibal RR,309.9,479.82,483.42
+Interstate 72 (Mark Twain Memorial),309.5,511.5,539.72
+US 54 (Champ Clark),283.2,477.96,537.92
+Louisiana RR,282.1,480,490
+New Clark Hwy ,202.3,436.3,495.17
+I-270 Dual Hwy ,190.815,449.3,469.4
+Chain of Rocks Canal ,190.475,448,496
+Merchants RR ,183.275,450,460
+McKinley Hwy and RR ,182.51,456,480
+I-70,181.2,464,480
+MLK Memorial,180.215,478.3,488.3
+Eads Hwy and RR,180.025,478,498
+Poplar Street,179.13,477,485
+Douglas MacArthur RR,178.885,460,470
+Jefferson Barracks Hwy,168.805,417,483.23
+Chester Hwy,109.915,400,410
+Cape Girardeau Hwy,51.608,370,410
+Thebes RR,43.708,400,410

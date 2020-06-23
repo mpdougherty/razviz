@@ -1,76 +1,75 @@
-name,river_mile,,
-Keokuk Jct. RR \n US 136 Bridge,364,,
-Des Moines River \n IA-MO Border,361.4,,
-"Alexandria, MO",359.1,,
-Fox River,353.5,,
-"Canton, MO",342.5,,
-Bear Creek,341,,
-Wyaconda River,337.3,,
-Fabius River,323,,
-North River,321.1,,
-South River,320.8,,
-Mill Creek,318.4,,
-Salt River,284.2,,
-Louisiana RR Bridge,282.1,,
-"Clarksville, MO",273,,
-Cuivre River,236.7,,
-Illinois River,218,,
-"Portage Des Sioux, MO",215.2,,
-Missouri River,195.5,,
-Chain of Rocks Canal,194.2,,
-Low Water Rock Fill Dam No. 27,190.3,,
-Chain of Rocks Canal,184,,
-Merchants RR Bridge,183.2,,
-McKinley Hwy and RR Bridge,182.5,,
-MLK Memorial Bridge,180.2,,
-Interstate 55/70 HwyBridge,179.2,,
-Macarthur RR Bridge,179,,
-Interstate 255 Dual Hwy Bridge,168.6,,
-Meramec River,160.6,,
-"St. Genevieve, MO",123.5,,
-Kaskaskia River,117.5,,
-Chester Hwy Bridge,109.9,,
-TX-ILL Pipeline Suspension Bridge,80.7,,
-Big Muddy River,75.6,,
-Cape Girardeau Hwy Bridge,51.4,,
-Thebes Railway Bridge,43.7,,
-Henderson Creek,409.9,,
-U.S. HWY. 34 ,404.2,,
-Skunk River,396,,
-"NAV00, ILL & Montrose, IA",375,,
-Larry Creek ,369.2,,
-State HWY. 92,455.9,,
-Iowa River ,433.5,,
-New Boston ,433,,
-Edwards River,431.3,,
-"Rapid City, ILL ",496.4,,
-Interstate 80 Bridge ,495.4,,
-"Bettendorf, IA-Moline, ILL",486.6,,
-Interstate 74 (Memorial) Bridge,485.8,,
-"Davenport, IA",482.8,,
-"Rock Island, IL",482.1,,
-Rock River ,479.1,,
-Interstate 280 Bridge,478.3,,
-"Buffalo, IA",473,,
-"Montpelier, IA",468.5,,
-"Bellevue, IA",556.7,,
-Maouoketa River,548.6,,
-Apple River,545.2,,
-Savanna HWY. Bridge,537.8,,
-Plum River,536.8,,
-Iowa Chicago & Eastern R.R. Bridge,534.9,,
-Elk River ,527.8,,
-"Thomson, ILL",527,,
-"Fulton, ILL",520.3,,
-"Albany, ILL",513.6,,
-Wapsipinicon River,506.9,,
-"Cordova, ILL",503.2,,
-"Guttenberg, IA",614.8,,
-Turkey River,608.2,,
-Grant River,593.2,,
-Platte River ,588.3,,
-Little MaQuketa River,586.5,,
-Menominee River,574.5,,
-Sinsinawa River,568.9,,
-Galena River,564.9,,
-,35,,placeholder to ensure correct river miles on each plot
+name,river_mile
+Keokuk Jct. RR \n US 136 Bridge,364
+Des Moines River \n IA-MO Border,361.4
+"Alexandria, MO",359.1
+Fox River,353.5
+"Canton, MO",342.5
+Bear Creek,341
+Wyaconda River,337.3
+Fabius River,323
+North River,321.1
+South River,320.8
+Mill Creek,318.4
+Salt River,284.2
+Louisiana RR Bridge,282.1
+"Clarksville, MO",273
+Cuivre River,236.7
+Illinois River,218
+"Portage Des Sioux, MO",215.2
+Missouri River,195.5
+Chain of Rocks Canal,194.2
+Low Water Rock Fill Dam No. 27,190.3
+Chain of Rocks Canal,184
+Merchants RR Bridge,183.2
+McKinley Hwy and RR Bridge,182.5
+MLK Memorial Bridge,180.2
+Interstate 55/70 HwyBridge,179.2
+Macarthur RR Bridge,179
+Interstate 255 Dual Hwy Bridge,168.6
+Meramec River,160.6
+"St. Genevieve, MO",123.5
+Kaskaskia River,117.5
+Chester Hwy Bridge,109.9
+TX-ILL Pipeline Suspension Bridge,80.7
+Big Muddy River,75.6
+Cape Girardeau Hwy Bridge,51.4
+Thebes Railway Bridge,43.7
+Henderson Creek,409.9
+U.S. HWY. 34 ,404.2
+Skunk River,396
+"NAV00, ILL & Montrose, IA",375
+Larry Creek ,369.2
+State HWY. 92,455.9
+Iowa River ,433.5
+New Boston ,433
+Edwards River,431.3
+"Rapid City, ILL ",496.4
+Interstate 80 Bridge ,495.4
+"Bettendorf, IA-Moline, ILL",486.6
+Interstate 74 (Memorial) Bridge,485.8
+"Davenport, IA",482.8
+"Rock Island, IL",482.1
+Rock River ,479.1
+Interstate 280 Bridge,478.3
+"Buffalo, IA",473
+"Montpelier, IA",468.5
+"Bellevue, IA",556.7
+Maouoketa River,548.6
+Apple River,545.2
+Savanna HWY. Bridge,537.8
+Plum River,536.8
+Iowa Chicago & Eastern R.R. Bridge,534.9
+Elk River ,527.8
+"Thomson, ILL",527
+"Fulton, ILL",520.3
+"Albany, ILL",513.6
+Wapsipinicon River,506.9
+"Cordova, ILL",503.2
+"Guttenberg, IA",614.8
+Turkey River,608.2
+Grant River,593.2
+Platte River ,588.3
+Little MaQuketa River,586.5
+Menominee River,574.5
+Sinsinawa River,568.9
+Galena River,564.9
