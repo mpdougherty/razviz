@@ -5,7 +5,7 @@
 \title{Longitudinal Profile Plot}
 \usage{
 longitudinal_profile_plot(
-  plot_num,
+  plot_number,
   hydro_model,
   long_plot_pgs,
   gages,
@@ -21,6 +21,8 @@ longitudinal_profile_plot(
 )
 }
 \arguments{
+\item{plot_number}{numeric; The plot number to graph.}
+
 \item{hydro_model}{data frame; A data frame of results from a RAS model.
 See the package dataset for required fields.}
 
@@ -57,8 +59,6 @@ used in the legend.}
 
 \item{plot_labels}{list; A list of plot labeling elements. Must contain
 three named elements "title", "x_axis", and "y_axis".}
-
-\item{plot_number}{numeric; The plot number to graph.}
 }
 \value{
 A `ggplot2` object depicting the river longitudinal profile graph.
