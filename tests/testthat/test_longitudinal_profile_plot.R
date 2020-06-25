@@ -101,5 +101,9 @@ plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                           graph_colors = cols,
                                           legend_labels = legend_labels,
                                           plot_labels = plot_labels)
-print(plot)
+#print(plot)
 
+
+test_that("longitudinal profile plot", {
+  expect_true(class(plot)[[2]] == "ggplot")
+})

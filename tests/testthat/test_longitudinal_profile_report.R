@@ -89,16 +89,22 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B"
 temp_dir <- "D:/Workspace/ECHH_Tools"
 
 # longitudinal_profile_report
-longitudinal_profile_report(hydro_model = hydro_model_1,
-                            long_plot_pgs = long_plot_pages_df,
-                            gages = gages,
-                            gage_labels_df = gage_labels_df,
-                            gage_boxes_df = gage_boxes_df,
-                            high_water = high_water_events_df,
-                            levees = levees,
-                            features = features,
-                            bridges = bridges,
-                            graph_colors = cols,
-                            legend_labels = legend_labels,
-                            plot_labels = plot_labels,
-                            output_dir = temp_dir)
+razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
+                                    long_plot_pgs = long_plot_pages_df,
+                                    gages = gages,
+                                    gage_labels_df = gage_labels_df,
+                                    gage_boxes_df = gage_boxes_df,
+                                    high_water = high_water_events_df,
+                                    levees = levees,
+                                    features = features,
+                                    bridges = bridges,
+                                    graph_colors = cols,
+                                    legend_labels = legend_labels,
+                                    plot_labels = plot_labels,
+                                    output_dir = temp_dir)
+
+
+test_that("longitudinal profile report", {
+  expect_true(file.exists(file.path(temp_dir,
+                                    "Longitudinal_Profile_Report.pdf")))
+})
