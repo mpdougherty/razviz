@@ -16,7 +16,7 @@
 #'
 
 high_water_events <- function(high_water, events) {
-  # Ensure that the peak_date field is formated correctly
+  # Ensure that the peak_date field is formatted correctly
   high_water$peak_date <- lubridate::mdy(high_water$peak_date)
 
   # Create `event` field as year of `peak_date` field
