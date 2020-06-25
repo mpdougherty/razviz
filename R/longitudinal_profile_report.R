@@ -33,6 +33,8 @@
 #'
 #' @return A Longitudinal Profile Report in `pdf` document format.
 #'
+#' @importFrom grDevices pdf dev.off
+#'
 longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
                                         gages, gage_labels_df, gage_boxes_df,
                                         high_water, levees,
@@ -41,7 +43,7 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
                                         output_dir) {
   # Set the output document
   output_file <- file.path(output_dir, "Longitudinal_Profile_Report.pdf")
-  pdf(file = output_file, width = 16.5, height = 10.5)
+  grDevices::pdf(file = output_file, width = 16.5, height = 10.5)
 
   # Iterate through plot pages to produce longitudinal profile plots
   for (i in long_plot_pgs$plot) {
@@ -50,20 +52,20 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
     # Set the current plot number
     plot_number <- long_plot_pgs[long_plot_pgs$plot == i,]$plot
     # Create the longitudinal profile plot
-    print(longitudinal_profile_plot(plot_number = plot_number,
-                                    hydro_model = hydro_model,
-                                    long_plot_pgs = long_plot_pgs,
-                                    gages = gages,
-                                    gage_labels_df = gage_labels_df,
-                                    gage_boxes_df = gage_boxes_df,
-                                    high_water = high_water,
-                                    levees = levees,
-                                    features = features,
-                                    bridges = bridges,
-                                    graph_colors = cols,
-                                    legend_labels = legend_labels,
-                                    plot_labels = plot_labels))
+    print(razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                            hydro_model = hydro_model,
+                                            long_plot_pgs = long_plot_pgs,
+                                            gages = gages,
+                                            gage_labels_df = gage_labels_df,
+                                            gage_boxes_df = gage_boxes_df,
+                                            high_water = high_water,
+                                            levees = levees,
+                                            features = features,
+                                            bridges = bridges,
+                                            graph_colors = cols,
+                                            legend_labels = legend_labels,
+                                            plot_labels = plot_labels))
   }
   # Close the file and the graphics device
-  dev.off()
+  grDevices::dev.off()
 }
