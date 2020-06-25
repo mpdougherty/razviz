@@ -54,7 +54,8 @@ In this step we'll prepare the hydro model results.
 * Filter the model scenarios down to only the ones we want to visualize. 
 
 ```{r hydro_model}
-path <- system.file("extdata", package = "razviz")
+path <- system.file("extdata/longitudinal_profiles", 
+                    package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 ## Create `Event` field for labeling
@@ -75,7 +76,8 @@ In this step we'll prepare the high water marks dataset.
 * Define the high water events to be symbolized in the longitudinal profile graphs. 
 
 ```{r high_water}
-high_water_csv <- system.file("extdata", "high_water_marks.csv",
+high_water_csv <- system.file("extdata/longitudinal_profiles",
+                              "high_water_marks.csv",
                               package = "razviz")
 high_water <- readr::read_csv(high_water_csv)
 ## Define high water events
@@ -100,7 +102,9 @@ In this step we'll prepare the gage dataset.
 * Remove the double backslashes introduced by R during the import. 
 
 ```{r gages}
-gage_csv <- system.file("extdata", "gage_locations.csv", package = "razviz")
+gage_csv <- system.file("extdata/longitudinal_profiles", 
+                        "gage_locations.csv", 
+                        package = "razviz")
 gages <- readr::read_csv(gage_csv)
 
 ## Remove double backslashes introduced by R import
@@ -130,7 +134,8 @@ In this step we'll prepare the levee dataset.
 * Import the levees table in `.csv` format included in the package. 
 
 ```{r levees}
-levees_csv <- system.file("extdata", "levees_authorized_existing.csv",
+levees_csv <- system.file("extdata/longitudinal_profiles",
+                          "levees_authorized_existing.csv",
                           package = "razviz")
 levees <- readr::read_csv(levees_csv)
 ```
@@ -141,7 +146,8 @@ In this step we'll prepare the river features dataset.
 * Import the river features table in `.csv` format included in the package. 
 
 ```{r features}
-features_csv <- system.file("extdata", "river_features.csv",
+features_csv <- system.file("extdata/longitudinal_profiles",
+                            "river_features.csv",
                             package = "razviz")
 features <- readr::read_csv(features_csv)
 ```
@@ -152,7 +158,8 @@ In this step we'll prepare the bridges dataset.
 * Import the bridge table in `.csv` format included in the package. 
 
 ```{r bridges}
-bridges_csv <- system.file("extdata", "bridge_elevations.csv",
+bridges_csv <- system.file("extdata/longitudinal_profiles",
+                           "bridge_elevations.csv",
                            package = "razviz")
 bridges <- readr::read_csv(bridges_csv)
 ```
@@ -188,7 +195,7 @@ legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
 In this step we'll assign the plot labels. 
 
 ```{r plot_labels}
-plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B",
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk to Thebes",
                     "x_axis" = "Miles Above the Ohio River",
                     "y_axis" = "Elevation (NAVD88 feet)")
 ```
@@ -197,7 +204,7 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B"
 In this step we'll define the output folder. 
 
 ```{r output_dir}
-temp_dir <- "D:/Workspace/ECHH_Tools"
+temp_dir <- tempdir()
 ```
 
 ## Longitudinal Profile Report
