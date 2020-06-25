@@ -1,7 +1,7 @@
 Package: razviz
 Type: Package
 Title: A package to visualize performance of HEC-RAS models
-Version: 0.0.1
+Version: 0.0.2
 Date: 2020-06-22
 Authors@R: c(person("Michael", "Dougherty", role = c("aut", "cre"),
                     email = "Michael.P.Dougherty@usace.army.mil"))
@@ -29,9 +29,14 @@ RoxygenNote: 7.1.0
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
 Imports: 
-    readr,
     dplyr,
+    ggplot2,
+    ggrepel,
+    lubridate,
+    readr,
+    scales,
     tibble
 VignetteBuilder: knitr
