@@ -1,0 +1,43 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+# Install DSSVue
+
+* Download an apprpriate DSSVue version: [HEC-DSSVue v3.0.00.212](https://www.hec.usace.army.mil/software/hec-dssvue/downloads/dev/HEC-DSSVue-v3.0.00.212.7z)
+* Unzip somewhere: `D:\\HEC-DSSVue-v3.0.00.212`
+* set options:
+
+```{r}
+#options(dss_location = "D:\\HEC-DSSVue-v3.0.00.212")
+options(dss_location = "C:\\Program Files (x86)\\HEC\\DSSVue")
+```
+
+# Install pre-release version of `dssrip`
+
+```{r}
+detach("package:dssrip", unload = TRUE)
+detach("package:rJava", unload = TRUE)
+devtools::install_github("eheisman/dssrip", INSTALL_opts = "--no-multiarch", 
+                         ref="tidyup", force = TRUE)
+```
+
+```{r}
+library(dssrip)
+```
+
+# Load `rJava` and test
+
+```{r}
+library(rJava)
+print(.jclassPath())
+.jcall(.jnew("java/lang/Runtime"), "J", "totalMemory")
+.jcall(.jnew("java/lang/Runtime"), "J", "maxMemory")
+```
+# Test `dssrip`
+
+```{r}
+opendss("D:\\Workspace\\ECHH_Tools\\dssrip\\dssrip-master\\extdata\\test.dss") 
+```
+
