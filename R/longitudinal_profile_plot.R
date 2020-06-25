@@ -79,7 +79,7 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
   p <- ggplot2::ggplot(data = hm,
                        aes(x = River_Sta, y = WS_Elev, color = Event)) +
     geom_line(size = 2) +
-    scale_color_manual(values = cols, labels = legend_labels) +
+    scale_color_manual(values = graph_colors, labels = legend_labels) +
     theme_bw() +
     coord_cartesian(ylim = c(plot_min_y, plot_max_y)) +
     scale_x_reverse(minor_breaks = seq(from = ceiling(start_mile),
