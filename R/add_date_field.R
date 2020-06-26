@@ -22,8 +22,13 @@ add_date_field <- function(df) {
                                          pattern = ".(24:00)$",
                                          replacement = " 23:59")
 
+  # Guess the date time formats
+  check_orders <- c("%d %b %Y %H:%M", "%d-%b-%Y %H:%M")
+  guesses <- lubridate::guess_formats(df$date_string, orders = check_orders)
+  orders <- unique(guesses)
+
   # Parse date time character string of the form "30 April 2008 06:00"
   df$date <- lubridate::parse_date_time(x = df$date_string,
-                                        orders = c("d b Y H:M", "d b Y H:M:00"))
+                                        orders = orders)
   return(df)
 }
