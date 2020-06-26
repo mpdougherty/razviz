@@ -1,0 +1,53 @@
+---
+title: "Compare Modeled versus Observed Hydrographs using `razviz`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Compare Modeled versus Observed Hydrographs using `razviz`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+# Introduction
+The purpose of this vignette is to demonstrate how to use the `razviz` package to produce a `pdf` report of modeled versus observed hydrographs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. 
+
+## Install
+Begin by loading the needed packages. 
+```{r setup}
+library(tidyverse)
+library(devtools)
+```
+
+Next, we'll install the `razviz` package. 
+```{r install, eval=FALSE}
+devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
+```
+
+Finally, we'll load the `razviz` package. 
+```{r load_razviz}
+library(razviz)
+```
+
+## Hydraulic Model Output
+In this step we'll import the DSSVue exports from several RAS model calibration runs. 
+
+* Import the example RAS model results in `.csv` format included in the package. 
+
+```{r dssvue_columns}
+DSSVue_script_col_types = readr::cols(
+                "ModelCrossSection" = col_character(),
+                "ModelRiver"        = col_character(),
+                "ModelReach"        = col_character(),
+                "Date"              = col_character(),
+                "Time"              = col_character(),
+                "W.S. Elev"         = col_double(),
+                "Obs WS"            = col_double(),
+                "Modeled Q"         = col_double(),
+                "Obs Q"             = col_double())
+```
+
