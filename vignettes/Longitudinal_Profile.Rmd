@@ -2,7 +2,7 @@
 title: "Creating a Longitudinal Profile Report Using `razviz`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{longitudinal_profile}
+  %\VignetteIndexEntry{Creating a Longitudinal Profile Report Using `razviz`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
