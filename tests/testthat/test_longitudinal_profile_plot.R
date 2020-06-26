@@ -5,7 +5,8 @@ library(razviz)
 plot_number <- 5
 
 # hydro_model
-path <- system.file("extdata", package = "razviz")
+path <- system.file("extdata",
+                    package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 ## Create `Event` field for labeling
@@ -19,7 +20,8 @@ hydro_model_1$Event <- factor(hydro_model_1$Event,
                               labels = model_events)
 
 # high_water
-high_water_csv <- system.file("extdata", "high_water_marks.csv",
+high_water_csv <- system.file("extdata/longitudinal_profiles",
+                              "high_water_marks.csv",
                               package = "razviz")
 high_water <- readr::read_csv(high_water_csv)
 high_water_years <- c("2008", "2013", "2014")
@@ -36,7 +38,8 @@ long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
                                               miles_per_plot)
 
 # gages
-gage_csv <- system.file("extdata", "gage_locations.csv", package = "razviz")
+gage_csv <- system.file("extdata/longitudinal_profiles",
+                        "gage_locations.csv", package = "razviz")
 gages <- readr::read_csv(gage_csv)
 
 ## Remove double backslashes introduced by R import
@@ -52,17 +55,20 @@ box_width <- 0.1
 gage_boxes_df <- razviz::gage_boxes(gages, stage_interval_boxes, box_width)
 
 # levees
-levees_csv <- system.file("extdata", "levees_authorized_existing.csv",
+levees_csv <- system.file("extdata/longitudinal_profiles",
+                          "levees_authorized_existing.csv",
                           package = "razviz")
 levees <- readr::read_csv(levees_csv)
 
 # features
-features_csv <- system.file("extdata", "river_features.csv",
+features_csv <- system.file("extdata/longitudinal_profiles",
+                            "river_features.csv",
                             package = "razviz")
 features <- readr::read_csv(features_csv)
 
 # bridges
-bridges_csv <- system.file("extdata", "bridge_elevations.csv",
+bridges_csv <- system.file("extdata/longitudinal_profiles",
+                           "bridge_elevations.csv",
                            package = "razviz")
 bridges <- readr::read_csv(bridges_csv)
 
@@ -101,7 +107,6 @@ plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                           graph_colors = cols,
                                           legend_labels = legend_labels,
                                           plot_labels = plot_labels)
-#print(plot)
 
 
 test_that("longitudinal profile plot", {

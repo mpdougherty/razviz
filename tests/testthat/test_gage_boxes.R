@@ -2,7 +2,9 @@ context("gage boxes")
 library(razviz)
 
 # gages
-gage_csv <- system.file("extdata", "gage_locations.csv", package = "razviz")
+gage_csv <- system.file("extdata/longitudinal_profiles",
+                        "gage_locations.csv",
+                        package = "razviz")
 gages <- readr::read_csv(gage_csv)
 
 ## Remove double backslashes introduced by R import
