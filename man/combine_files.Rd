@@ -4,7 +4,7 @@
 \alias{combine_files}
 \title{Combine Model Results}
 \usage{
-combine_files(path, pattern = NULL, col_types = NULL)
+combine_files(path, pattern = NULL, col_spec = NULL)
 }
 \arguments{
 \item{path}{character; Path to a folder of RAS model results.}
@@ -12,7 +12,7 @@ combine_files(path, pattern = NULL, col_types = NULL)
 \item{pattern}{character; A regular expression passed to the `dir`
 function to select files in the specified folder. Optional.}
 
-\item{col_types}{readr::cols object; A column specification used to define
+\item{col_spec}{readr::cols object; A column specification used to define
 the columns of the input model results. Optional.}
 }
 \value{
