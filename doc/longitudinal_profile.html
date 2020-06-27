@@ -319,8 +319,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>The purpose of this vignette is to demonstrate how to use the <a href="https://mpdougherty.github.io/razviz/"><code>razviz</code></a> package to produce a <code>pdf</code> report of longitudinal profile graphs for a set of <a href="https://www.hec.usace.army.mil/software/hec-ras/">HEC-RAS</a> hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal river position (aka “river miles”) on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The <code>razviz::longitudinal_profile_plot</code> function is tailored to evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers to evaluate model results during calibration and floodplain managers to evaluate the impacts of model scenarios on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:</p>
 <ul>
 <li>Gages - Gage locations are symbolized at their river position by their name and stage (units: feet).</li>
@@ -331,6 +331,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul>
 <p>Symbolization of these ancillary graph elements requires a dataset for each. The <code>razviz</code> user is required to develop these datasets first, following the structure of the package datasets provided.</p>
 <p>HEC-RAS models are often used to model long river reaches. Effective longitudinal profile graphs must have sufficient x and y-axis resolution to see the differences between model scenarios and relationship to ancillary data (i.e., gage stage, high water marks, levees, bridges). This requires that long model reaches must be graphed using multiple graphs. However, each graph should not be too “zoomed-in” or medium and large scale trends are obscured. The purpose of the <code>razviz:long_plot_pages</code> is to define the graph dimensions for multiple page longitudinal profile graph reports. Users will need to adjust the <code>miles_per_plot</code> parameter to find the right “scale”.</p>
+</div>
 <div id="install" class="section level2">
 <h2>Install</h2>
 <p>Begin by loading the needed packages.</p>
@@ -945,7 +946,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>In this step we’ll call the longitudinal profile graph report.</p>
 <ul>
 <li>Run the report.</li>
-<li>Check the results in the file : C:5PMMMPD\1/Longitudinal_Profile_Report.pdf</li>
+<li>Check the results in the file : C:5PMMMPD\15BO2i/Longitudinal_Profile_Report.pdf</li>
 </ul>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>razviz<span class="op">::</span><span class="kw">longitudinal_profile_report</span>(<span class="dt">hydro_model =</span> hydro_model_<span class="dv">1</span>,</span>
 <span id="cb17-2"><a href="#cb17-2"></a>                                    <span class="dt">long_plot_pgs =</span> long_plot_pages_df,</span>
@@ -974,7 +975,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb17-25"><a href="#cb17-25"></a><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_label_repel).</span></span>
 <span id="cb17-26"><a href="#cb17-26"></a><span class="co">#&gt; png </span></span>
 <span id="cb17-27"><a href="#cb17-27"></a><span class="co">#&gt;   2</span></span></code></pre></div>
-</div>
 </div>
 
 
