@@ -321,7 +321,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The purpose of this vignette is to demonstrate how to use the <code>razviz</code> package to produce a <code>pdf</code> report of longitudinal profile graphs for a set of <a href="https://www.hec.usace.army.mil/software/hec-ras/">HEC-RAS</a> hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal river position (aka “river miles”) on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The <code>razviz::longitudinal_profile_plot</code> function is tailored to evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers to evaluate model results during calibration and floodplain managers to evaluate the impacts of model scenarios on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:</p>
+<p>The purpose of this vignette is to demonstrate how to use the <a href="https://mpdougherty.github.io/razviz/"><code>razviz</code></a> package to produce a <code>pdf</code> report of longitudinal profile graphs for a set of <a href="https://www.hec.usace.army.mil/software/hec-ras/">HEC-RAS</a> hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal river position (aka “river miles”) on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The <code>razviz::longitudinal_profile_plot</code> function is tailored to evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers to evaluate model results during calibration and floodplain managers to evaluate the impacts of model scenarios on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:</p>
 <ul>
 <li>Gages - Gage locations are symbolized at their river position by their name and stage (units: feet).</li>
 <li>High Water Marks - High water marks are symbolized with circles at the river position and elevation where they were recorded.</li>
@@ -945,7 +945,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>In this step we’ll call the longitudinal profile graph report.</p>
 <ul>
 <li>Run the report.</li>
-<li>Check the results in the file : C:5PMMMPD\17ZtB/Longitudinal_Profile_Report.pdf</li>
+<li>Check the results in the file : C:5PMMMPD\1/Longitudinal_Profile_Report.pdf</li>
 </ul>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>razviz<span class="op">::</span><span class="kw">longitudinal_profile_report</span>(<span class="dt">hydro_model =</span> hydro_model_<span class="dv">1</span>,</span>
 <span id="cb17-2"><a href="#cb17-2"></a>                                    <span class="dt">long_plot_pgs =</span> long_plot_pages_df,</span>

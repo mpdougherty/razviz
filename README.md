@@ -5,7 +5,7 @@
 
 An R package to produce visualizations for evaluating the performance of
 [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) models.
-<img src="man/figures/castle.png" align="right" />
+<img src="man/figures/HDQLO-03_h120.jpg" align="right" />
 
 ## Package Status
 
@@ -13,8 +13,8 @@ An R package to produce visualizations for evaluating the performance of
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.0.1-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--23-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.0.2-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--26-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
@@ -26,12 +26,13 @@ producing reports containing the following visualizations:
 
   - **Hydrographs** - Compare modeled versus observed values for both
     water surface elevation and discharge by cross section and model
-    scenario.
+    scenario. ![Hydrograph](man/figures/hydrograph.png)
   - **Longitudinal Profile Graph** - Compare water surface elevation by
     river mile for multiple model scenarios. Graphs can also contain
     additional annotations (i.e., river gage locations, levee
     elevations, bridge elevations, river features, and high water marks)
-    helpful for evaluating model results.
+    helpful for evaluating model results. ![Longitudinal Profile
+    Graph](man/figures/longitudinal_profile_w_1200.png)
   - **Goodness of Fit Statistics Tables** - A table of goodness of fit
     statistics (i.e., R^2, RMSE, MAE) between modeled versus observed
     values by cross section and model scenario.
@@ -58,3 +59,11 @@ To install the `razviz` package, install from GitHub using the
 library(devtools)
 devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 ```
+
+## Vignettes
+
+Learn how to use the `razviz` package to visualize your HEC-RAS model
+results:
+
+  - [Create Longitudinal Profile Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
+  - [Compare Modeled versus Observed Hydrographs](https://mpdougherty.github.io/razviz/doc/hydrographs.html)

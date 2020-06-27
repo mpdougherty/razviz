@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-The purpose of this vignette is to demonstrate how to use the `razviz` package to produce a `pdf` report of modeled versus observed hydrographs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. 
+The purpose of this vignette is to demonstrate how to use the [`razviz`](https://mpdougherty.github.io/razviz/) package to produce a `pdf` report of modeled versus observed hydrographs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. 
 
 ## Install
 Begin by loading the needed packages. 
