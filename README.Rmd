@@ -4,7 +4,7 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # razviz {#razviz}
-An R package to produce visualizations for evaluating the performance of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) models. <img src="man/figures/HDQLO-03_h120.jpg" align="right" />
+An R package to produce visualizations for evaluating the performance of  [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras) models. <img src="man/figures/HDQLO-03_h120.jpg" align="right" />
 
 ## Package Status
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)

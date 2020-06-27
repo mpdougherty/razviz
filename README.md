@@ -4,7 +4,7 @@
 # razviz
 
 An R package to produce visualizations for evaluating the performance of
-[HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) models.
+[HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras) models.
 <img src="man/figures/HDQLO-03_h120.jpg" align="right" />
 
 ## Package Status
@@ -65,5 +65,5 @@ devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 Learn how to use the `razviz` package to visualize your HEC-RAS model
 results:
 
-  - [Create Longitudinal Profile Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
-  - [Compare Modeled versus Observed Hydrographs](https://mpdougherty.github.io/razviz/doc/hydrographs.html)
+  - [Create Longitudinal Profile Graph](doc/longitudinal_profile.html)
+  - [Compare Modeled versus Observed Hydrographs](doc/hydrographs.html)
