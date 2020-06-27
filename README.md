@@ -65,5 +65,7 @@ devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 Learn how to use the `razviz` package to visualize your HEC-RAS model
 results:
 
-  - [Create Longitudinal Profile Graph](doc/longitudinal_profile.html)
-  - [Compare Modeled versus Observed Hydrographs](doc/hydrographs.html)
+  - [Create Longitudinal Profile
+    Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
+  - [Compare Modeled versus Observed
+    Hydrographs](https://mpdougherty.github.io/razviz/doc/hydrographs.html)
