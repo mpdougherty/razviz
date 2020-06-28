@@ -13,8 +13,8 @@ An R package to produce visualizations for evaluating the performance of
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.0.2-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--26-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.0.3-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--28-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
@@ -46,9 +46,16 @@ the US Army Corps of Engineers (USACE). <!--add program names here -->
 
 Check out the [NEWS](NEWS.md) for details on the latest updates.
 
-## Author
+## Authors
 
-  - Michael Dougherty, Geographer, U.S. Army Corps of Engineers
+  - Michael Dougherty, Geographer, U.S. Army Corps of Engineers, Rock
+    Island District
+  - Leigh Allison, Hydraulic Engineer, U.S. Army Corps of Engineers,
+    St. Paul District
+  - David Tsai, Hydraulic Engineer, U.S. Army Corps of Engineers, Rock
+    Island District
+  - Daniel Smith, Hydraulic Engineer, U.S. Army Corps of Engineers, Rock
+    Island District
 
 ## Install
 
@@ -65,7 +72,12 @@ devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 Learn how to use the `razviz` package to visualize your HEC-RAS model
 results:
 
-  - [Create Longitudinal Profile
+  - [Create a Longitudinal Profile
     Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
   - [Compare Modeled versus Observed
     Hydrographs](https://mpdougherty.github.io/razviz/doc/hydrographs.html)
+
+## Bug Reports
+
+If you find any bugs while using `razviz`, please open an issue in this
+repository.
