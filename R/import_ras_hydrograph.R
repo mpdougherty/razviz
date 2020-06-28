@@ -16,7 +16,7 @@
 #'
 #' @return A data frame of RAS model results.
 #'
-#' @importFrom readr cols
+#' @importFrom readr cols col_character col_double
 #' @importFrom tibble add_column
 #'
 import_ras_hydrographs <- function(folder, event, run_number,
