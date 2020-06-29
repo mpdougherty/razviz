@@ -5,7 +5,7 @@ library(razviz)
 plot_number <- 5
 
 # hydro_model
-path <- system.file("extdata",
+path <- system.file("extdata/longitudinal_profiles",
                     package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
@@ -73,15 +73,15 @@ bridges_csv <- system.file("extdata/longitudinal_profiles",
 bridges <- readr::read_csv(bridges_csv)
 
 # graph_colors https://wesandersonpalettes.tumblr.com, names from colors().
-cols <- c("2 Year"      = "darkslategray4",
-          "100 Year"    = "cadetblue3",
-          "500 Year"    = "coral3",
-          "100000 Year" = "burlywood3",
-          "2008"        = "red",
-          "2013"        = "red",
-          "2014"        = "red",
-          "LEFT"        = "palevioletred2",
-          "RIGHT"       = "palevioletred4")
+graph_cols <- c("2 Year"      = "darkslategray4",
+                "100 Year"    = "cadetblue3",
+                "500 Year"    = "coral3",
+                "100000 Year" = "burlywood3",
+                "2008"        = "red",
+                "2013"        = "red",
+                "2014"        = "red",
+                "LEFT"        = "palevioletred2",
+                "RIGHT"       = "palevioletred4")
 
 # legend_labels
 legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
@@ -104,7 +104,7 @@ plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                           levees = levees,
                                           features = features,
                                           bridges = bridges,
-                                          graph_colors = cols,
+                                          graph_colors = graph_cols,
                                           legend_labels = legend_labels,
                                           plot_labels = plot_labels)
 
