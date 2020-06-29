@@ -4,11 +4,11 @@ Title: A package to visualize performance of HEC-RAS models
 Version: 0.0.3
 Date: 2020-06-28
 Authors@R: c(person("Michael", "Dougherty", role = c("aut", "cre"),
-                    email = "Michael.P.Dougherty@usace.army.mil")
+                    email = "Michael.P.Dougherty@usace.army.mil"),
              person("Leigh", "Allison", role = "ctb",
-                    email = "Leigh.A.Allison@usace.army.mil")
+                    email = "Leigh.A.Allison@usace.army.mil"),
              person("David", "Tsai", role = "ctb",
-                    email = "Heng-Wei.Tsai@usace.army.mil")
+                    email = "Heng-Wei.Tsai@usace.army.mil"),
              person("Daniel", "Smith", role = "ctb", 
                     email = "Daniel.D.Smith@usace.army.mil")
             )
