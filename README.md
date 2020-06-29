@@ -26,7 +26,8 @@ producing reports containing the following visualizations:
 
   - **Hydrographs** - Compare modeled versus observed values for both
     water surface elevation and discharge by cross section and model
-    scenario. ![Hydrograph](man/figures/hydrograph.png)
+    scenario.
+    [![Hydrograph](man/figures/hydrograph.png)](https://mpdougherty.github.io/razviz/doc/Hydrograph_Plot_Report.pdf)
   - **Longitudinal Profile Graph** - Compare water surface elevation by
     river mile for multiple model scenarios. Graphs can also contain
     additional annotations (i.e., river gage locations, levee
