@@ -40,7 +40,10 @@ producing reports containing the following visualizations:
 ## Funding
 
 Funding for the development and maintenance of `razviz` was provided by
-the US Army Corps of Engineers (USACE). <!--add program names here -->
+the US Army Corps of Engineers (USACE):
+
+  - [Flood Plain Management Services (FPMS)
+    Program](https://www.mvr.usace.army.mil/Business-With-Us/Outreach-Customer-Service/Floodplain-Management-Services/).
 
 ## Latest Updates
 
@@ -72,10 +75,10 @@ devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
 Learn how to use the `razviz` package to visualize your HEC-RAS model
 results:
 
-  - [Create a Longitudinal Profile
-    Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
   - [Compare Modeled versus Observed
     Hydrographs](https://mpdougherty.github.io/razviz/doc/hydrographs.html)
+  - [Create a Longitudinal Profile
+    Graph](https://mpdougherty.github.io/razviz/doc/longitudinal_profile.html)
 
 ## Bug Reports
 
