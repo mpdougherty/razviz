@@ -2,7 +2,7 @@ context("longitudinal profile report")
 library(razviz)
 
 # hydro_model
-path <- system.file("extdata",
+path <- system.file("extdata/longitudinal_profiles",
                     package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
@@ -70,23 +70,23 @@ bridges_csv <- system.file("extdata/longitudinal_profiles",
 bridges <- readr::read_csv(bridges_csv)
 
 # graph_colors https://wesandersonpalettes.tumblr.com, names from colors().
-cols <- c("2 Year"      = "darkslategray4",
-          "100 Year"    = "cadetblue3",
-          "500 Year"    = "coral3",
-          "100000 Year" = "burlywood3",
-          "2008"        = "red",
-          "2013"        = "red",
-          "2014"        = "red",
-          "LEFT"        = "palevioletred2",
-          "RIGHT"       = "palevioletred4")
+graph_colors <- c("2 Year"      = "darkslategray4",
+                "100 Year"    = "cadetblue3",
+                "500 Year"    = "coral3",
+                "100000 Year" = "burlywood3",
+                "2008"        = "red",
+                "2013"        = "red",
+                "2014"        = "red",
+                "LEFT"        = "palevioletred2",
+                "RIGHT"       = "palevioletred4")
 
 # legend_labels
 legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
                    "2008", "2013", "2014",
                    "Left Bank", "Right Bank")
 
-# plot_labels
-plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - A to B",
+# title
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Guttenburg to Clarksville",
                     "x_axis" = "Miles Above the Ohio River",
                     "y_axis" = "Elevation (NAVD88 feet)")
 
@@ -103,7 +103,7 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     levees = levees,
                                     features = features,
                                     bridges = bridges,
-                                    graph_colors = cols,
+                                    graph_colors = graph_colors,
                                     legend_labels = legend_labels,
                                     plot_labels = plot_labels,
                                     output_dir = temp_dir)
