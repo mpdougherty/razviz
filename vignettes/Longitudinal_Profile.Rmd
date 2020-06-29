@@ -171,15 +171,15 @@ In this step we'll assign the colors to each of the series in the graph.
 * For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from `grDevices::colors()`). 
 
 ```{r colors}
-cols <- c("2 Year"      = "darkslategray4",
-          "100 Year"    = "cadetblue3",
-          "500 Year"    = "coral3",
-          "100000 Year" = "burlywood3",
-          "2008"        = "red",
-          "2013"        = "red",
-          "2014"        = "red",
-          "LEFT"        = "palevioletred2",
-          "RIGHT"       = "palevioletred4")
+graph_cols <- c("2 Year"      = "darkslategray4",
+                "100 Year"    = "cadetblue3",
+                "500 Year"    = "coral3",
+                "100000 Year" = "burlywood3",
+                "2008"        = "red",
+                "2013"        = "red",
+                "2014"        = "red",
+                "LEFT"        = "palevioletred2",
+                "RIGHT"       = "palevioletred4")
 ```
 
 ## Legend Labels
@@ -204,16 +204,17 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk 
 In this step we'll define the output folder. 
 
 ```{r output_dir}
-temp_dir <- tempdir()
+output_dir <- "C:/temp"
+if (!dir.exists(output_dir)) {dir.create(output_dir)}
 ```
 
 ## Longitudinal Profile Report
 In this step we'll call the longitudinal profile graph report. 
 
 * Run the report. 
-* Check the results in the file : `r file.path(temp_dir, "Longitudinal_Profile_Report.pdf")`
+* Check the results in the file: [Longitudinal_Profile_Report.pdf](https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
 
-```{r run_report}
+```{r run_report, echo=FALSE}
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     long_plot_pgs = long_plot_pages_df,
                                     gages = gages,
@@ -223,8 +224,8 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     levees = levees,
                                     features = features,
                                     bridges = bridges,
-                                    graph_colors = cols,
+                                    graph_colors = graph_cols,
                                     legend_labels = legend_labels,
                                     plot_labels = plot_labels,
-                                    output_dir = temp_dir)
+                                    output_dir = output_dir)
 ```
