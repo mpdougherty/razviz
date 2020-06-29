@@ -1,8 +1,8 @@
 context("longitudinal profile plot")
 library(razviz)
 
-# plot_num
-plot_number <- 5
+# plot_number
+plot_number <- 1
 
 # hydro_model
 path <- system.file("extdata/longitudinal_profiles",
@@ -33,9 +33,9 @@ high_water_events_df$event <- factor(high_water_events_df$event,
 
 # long_plot_pages
 miles_per_plot <- 60
-long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
-                                              high_water_events_df,
-                                              miles_per_plot)
+long_plot_pgs <- razviz::long_plot_pages(hydro_model,
+                                         high_water_events_df,
+                                         miles_per_plot)
 
 # gages
 gage_csv <- system.file("extdata/longitudinal_profiles",
@@ -73,15 +73,15 @@ bridges_csv <- system.file("extdata/longitudinal_profiles",
 bridges <- readr::read_csv(bridges_csv)
 
 # graph_colors https://wesandersonpalettes.tumblr.com, names from colors().
-graph_cols <- c("2 Year"      = "darkslategray4",
-                "100 Year"    = "cadetblue3",
-                "500 Year"    = "coral3",
-                "100000 Year" = "burlywood3",
-                "2008"        = "red",
-                "2013"        = "red",
-                "2014"        = "red",
-                "LEFT"        = "palevioletred2",
-                "RIGHT"       = "palevioletred4")
+graph_colors <- c("2 Year"      = "darkslategray4",
+                  "100 Year"    = "cadetblue3",
+                  "500 Year"    = "coral3",
+                  "100000 Year" = "burlywood3",
+                  "2008"        = "red",
+                  "2013"        = "red",
+                  "2014"        = "red",
+                  "LEFT"        = "palevioletred2",
+                  "RIGHT"       = "palevioletred4")
 
 # legend_labels
 legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
@@ -96,7 +96,7 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Guttenb
 # longitudinal_profile_plot
 plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                           hydro_model = hydro_model_1,
-                                          long_plot_pgs = long_plot_pages_df,
+                                          long_plot_pgs = long_plot_pgs,
                                           gages = gages,
                                           gage_labels_df = gage_labels_df,
                                           gage_boxes_df = gage_boxes_df,
@@ -104,7 +104,7 @@ plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                           levees = levees,
                                           features = features,
                                           bridges = bridges,
-                                          graph_colors = graph_cols,
+                                          graph_colors = graph_colors,
                                           legend_labels = legend_labels,
                                           plot_labels = plot_labels)
 
