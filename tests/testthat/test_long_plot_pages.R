@@ -2,13 +2,14 @@ context("long plot pages")
 library(razviz)
 
 # hydro_model
-path <- system.file("extdata",
+path <- system.file("extdata/longitudinal_profiles",
                     package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 
 # high_water
-high_water_csv <- system.file("extdata", "high_water_marks.csv",
+high_water_csv <- system.file("extdata/longitudinal_profiles",
+                              "high_water_marks.csv",
                               package = "razviz")
 high_water <- readr::read_csv(high_water_csv)
 high_water_years <- c("2008", "2013", "2014")
