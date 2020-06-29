@@ -96,6 +96,6 @@ cal_plots <- razviz::hydrograph_plot_pages(cal)
 output_dir <- "C:/temp"
 if (!dir.exists(output_dir)) {dir.create(output_dir)}
 
-## ----hydrograph_report, message=FALSE-----------------------------------------
+## ----hydrograph_report, echo=FALSE--------------------------------------------
 razviz::hydrograph_report(cal, cal_plots, output_dir)
 

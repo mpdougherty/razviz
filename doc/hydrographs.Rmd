@@ -153,7 +153,7 @@ In this step we'll cal the hydrograph report.
 * Run the report.
 * Check the results in the file: [Hydrograph_Plot_Report.pdf](https://mpdougherty.github.io/razviz/doc/Hydrograph_Plot_Report.pdf)
 
-```{r hydrograph_report, message=FALSE}
+```{r hydrograph_report, echo=FALSE}
 razviz::hydrograph_report(cal, cal_plots, output_dir)
 ```
 
