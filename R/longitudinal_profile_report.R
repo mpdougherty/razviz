@@ -50,7 +50,7 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
     # insert vertical white space so that the next figure is on a new page
     cat('\\newpage')
     # Set the current plot number
-    plot_number <- long_plot_pgs[long_plot_pgs$plot == i,]$plot
+    plot_number <- long_plot_pgs[long_plot_pgs$plot == i, ]$plot
     # Create the longitudinal profile plot
     suppressWarnings(print(razviz::longitudinal_profile_plot(
                                             plot_number = plot_number,
@@ -63,7 +63,7 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
                                             levees = levees,
                                             features = features,
                                             bridges = bridges,
-                                            graph_colors = cols,
+                                            graph_colors = graph_colors,
                                             legend_labels = legend_labels,
                                             plot_labels = plot_labels)))
   }
