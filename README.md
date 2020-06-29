@@ -32,8 +32,8 @@ producing reports containing the following visualizations:
     river mile for multiple model scenarios. Graphs can also contain
     additional annotations (i.e., river gage locations, levee
     elevations, bridge elevations, river features, and high water marks)
-    helpful for evaluating model results. ![Longitudinal Profile
-    Graph](man/figures/longitudinal_profile_w_1200.png)
+    helpful for evaluating model results. [![Longitudinal Profile
+    Graph](man/figures/longitudinal_profile_w_1200.png)](https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
   - **Goodness of Fit Statistics Tables** - A table of goodness of fit
     statistics (i.e., R^2, RMSE, MAE) between modeled versus observed
     values by cross section and model scenario.

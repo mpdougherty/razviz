@@ -19,7 +19,7 @@ This package contains a set of standard graphing and summary table functions to 
 * **Hydrographs** - Compare modeled versus observed values for both water surface elevation and discharge by cross section and model scenario. 
 [![Hydrograph](man/figures/hydrograph.png)](https://mpdougherty.github.io/razviz/doc/Hydrograph_Plot_Report.pdf)
 * **Longitudinal Profile Graph** - Compare water surface elevation by river mile for multiple model scenarios. Graphs can also contain additional annotations (i.e., river gage locations, levee elevations, bridge elevations, river features, and high water marks) helpful for evaluating model results. 
-![Longitudinal Profile Graph](man/figures/longitudinal_profile_w_1200.png)
+[![Longitudinal Profile Graph](man/figures/longitudinal_profile_w_1200.png)](https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
 * **Goodness of Fit Statistics Tables** - A table of goodness of fit statistics (i.e., R^2, RMSE, MAE) between modeled versus observed values by cross section and model scenario. 
 
 ## Funding
