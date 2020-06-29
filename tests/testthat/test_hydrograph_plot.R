@@ -68,13 +68,13 @@ hydrograph_df$Reach <- forcats::fct_recode(hydrograph_df$Reach,
                                  "Wyaconda to Fabius"     = "WYACONDATOFABIUS")
 
 # Create hydrograph plot pages
-hg_plot_pages <- hydrograph_plot_pages(hydrograph_df)
+hg_plot_pages <- razviz::hydrograph_plot_pages(hydrograph_df)
 
 # Create hydrograph plot
-plot_number <- 1
-hg_plot <- hydrograph_plot(plot_number = plot_number,
-                           hydrograph_df = hydrograph_df,
-                           hg_plot_pages = hg_plot_pages)
+plot_number <- 3
+hg_plot <- suppressWarnings(razviz::hydrograph_plot(plot_number = plot_number,
+                                                hydrograph_df = hydrograph_df,
+                                                hg_plot_pages = hg_plot_pages))
 
 
 test_that("hydrograph plot", {
