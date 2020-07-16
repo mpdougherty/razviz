@@ -84,9 +84,10 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
     labs(y = "Discharge (1000 cubic feet per second)")
 
   # Create title for plot group
-  title <- textGrob(label = paste(ws$River, " River, ", ws$Reach,
-                                  " Reach, River Mile ", ws$River_Sta,
-                                  "\n", ws$Run_type, " #", ws$Run_num,
+  title <- textGrob(label = paste(trimws(ws$River), " River, ",
+                                  trimws(ws$Reach), " Reach, ",
+                                  "River Mile ", ws$River_Sta,
+                                  "\n", "Gage", ws$Gage,
                                   sep = ""),
                     x = unit(0, "lines"), y = unit(0, "lines"),
                     hjust = 0, vjust = 0,
