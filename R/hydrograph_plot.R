@@ -14,6 +14,7 @@
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 ggplot aes geom_line facet_grid theme_bw theme labs
 #' scale_color_manual element_blank element_text scale_x_datetime unit
+#' scale_linetype_manual
 #' @importFrom grid textGrob gpar
 #' @importFrom gridExtra grid.arrange
 #'
@@ -34,7 +35,7 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
   # Filter for observed and modeled discharge records
   q  <- dplyr::filter(hg_df_plot, Type == "Obs_Q" | Type == "Model_Q")
 
-  # Define colors from https://wesandersonpalettes.tumblr.com/ using names from colors().
+  # Define colors https://wesandersonpalettes.tumblr.com; names from colors().
   WS_cols          <- c("WS_Elev" = "darkslategray4", "Obs_WS" = "coral3")
   Discharge_cols   <- c("Model_Q" = "darkslategray4", "Obs_Q"  = "coral3")
 
@@ -42,15 +43,20 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
   WS_labels        <- c("WS_Elev" = "Modeled", "Obs_WS" = "Observed")
   Discharge_labels <- c("Model_Q" = "Modeled", "Obs_Q"  = "Observed")
 
+  # Define line types
+  WS_line        <- c(WS_Elev = "solid", Obs_WS = "dashed")
+  Discharge_line <- c(Model_Q = "solid", Obs_Q = "dashed")
+
   # Water surface elevation hydrograph
   ws_plot <- ggplot(data = ws,
                     aes(x = date, y = value, color = Type),
                     na.rm = TRUE) +
-    geom_line(size = 1) +
+    geom_line(aes(linetype = Type) , size = 1) +
+    scale_linetype_manual(values = WS_line, labels = WS_labels ) +
     facet_grid(. ~ Event, scales = "free") +
     theme_bw() +
     scale_color_manual(values = WS_cols, labels = WS_labels) +
-    theme(legend.position = "none",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.title.x = element_blank(),
           axis.text.x  = element_text(angle = 50, hjust = 1)) +
@@ -63,7 +69,8 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
   q_plot <- ggplot(data = q,
                    aes(x = date, y = value/1000, color = Type),
                    na.rm = TRUE) +
-    geom_line(size = 1) +
+    geom_line(aes(linetype = Type), size = 1) +
+    scale_linetype_manual(values = Discharge_line, labels = Discharge_labels) +
     facet_grid(. ~ Event, scales = "free") +
     theme_bw() +
     scale_color_manual(values = Discharge_cols, labels = Discharge_labels) +
