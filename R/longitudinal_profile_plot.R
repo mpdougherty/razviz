@@ -93,7 +93,8 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
           legend.justification = c("right", "top"),
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
-          panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+          panel.grid.major = element_line(colour = "grey10", size = 0.1),
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "in")) +
     labs(title = plot_labels$title,
          x = plot_labels$x_axis,
          y = plot_labels$y_axis) +

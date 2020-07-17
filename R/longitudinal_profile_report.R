@@ -43,7 +43,7 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
                                         output_dir) {
   # Set the output document
   output_file <- file.path(output_dir, "Longitudinal_Profile_Report.pdf")
-  grDevices::pdf(file = output_file, width = 16.5, height = 10.5)
+  grDevices::pdf(file = output_file, width = 17, height = 11)
 
   # Iterate through plot pages to produce longitudinal profile plots
   for (i in long_plot_pgs$plot) {
