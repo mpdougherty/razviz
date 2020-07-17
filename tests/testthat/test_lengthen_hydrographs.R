@@ -52,7 +52,7 @@ cal_wide <- razviz::combine_hydrographs(hydrograph_list)
 # Convert to long format suitable for plotting
 cal <- razviz::lengthen_hydrographs(cal_wide)
 
-hydrograph_variables <- c("Model_Q", "Obs_Q", "Obs_WS", "WS_Elev")
+hydrograph_variables <- c("WS_Elev","Obs_WS", "Model_Q", "Obs_Q")
 
 
 test_that("lengthen hydrographs", {

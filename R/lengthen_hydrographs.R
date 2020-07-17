@@ -19,7 +19,14 @@ lengthen_hydrographs <- function(hydrograph_df) {
                                          values_to = "value")
 
   # Assign factors
-  long_hydrograph$Type <- factor(long_hydrograph$Type)
+  long_hydrograph$Type <- factor(long_hydrograph$Type,
+                                 levels = c("WS_Elev","Obs_WS", "Model_Q",
+                                            "Obs_Q"),
+                                 labels = c("WS_Elev","Obs_WS", "Model_Q",
+                                            "Obs_Q"))
+
+  # Remove missing records
+  long_hydrograph <- na.omit(long_hydrograph)
 
   return(long_hydrograph)
 }
