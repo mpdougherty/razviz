@@ -104,13 +104,13 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                show.legend = FALSE, size = 4) +
     # Draw raw levee lines, existing elevation
     geom_line(inherit.aes = FALSE,
-              data = dplyr::filter(l, elevation_type == "2016_NLD"),
+              data = l,
               aes(x = river_mile, y = elevation_NAVD88, group = levee,
                   color = descending_bank),
               show.legend = FALSE, size = 0.2, alpha = 0.5) +
     # Draw smooth levee lines, existing elevation
     geom_smooth(inherit.aes = FALSE,
-                data = dplyr::filter(l, elevation_type == "2016_NLD"),
+                data = l,
                 aes(x = river_mile, y = elevation_NAVD88, group = levee,
                     color = descending_bank),
                 method = "gam",
