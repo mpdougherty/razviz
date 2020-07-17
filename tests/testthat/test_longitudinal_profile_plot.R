@@ -59,6 +59,7 @@ levees_csv <- system.file("extdata/longitudinal_profiles",
                           "levees_authorized_existing.csv",
                           package = "razviz")
 levees <- readr::read_csv(levees_csv)
+levees <- dplyr::filter(levees, elevation_type == "2016_NLD")
 
 # features
 features_csv <- system.file("extdata/longitudinal_profiles",
