@@ -1,0 +1,31 @@
+---
+title: "Create a Goodness of Fit Report Using `razviz`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Create a Goodness of Fit Report Using `razviz`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+```{r setup}
+library(razviz)
+```
+
+## Import Hydrograph
+```{r}
+hydrograph_csv <- system.file("extdata/hydrographs", "LD10.csv",
+                    package = "razviz")
+hydrograph <- readr::read_csv(hydrograph_csv)
+```
+
+
+
