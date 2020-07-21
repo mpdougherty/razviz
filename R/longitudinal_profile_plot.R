@@ -30,6 +30,7 @@
 #'                       used in the legend.
 #' @param plot_labels    list; A list of plot labeling elements. Must contain
 #'                       three named elements "title", "x_axis", and "y_axis".
+#' @param levee_smooth   logical; Draw a smoothed levee line?
 #'
 #' @return A `ggplot2` object depicting the river longitudinal profile graph.
 #'
@@ -45,7 +46,8 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                                       gages, gage_labels_df, gage_boxes_df,
                                       high_water, levees,
                                       features, bridges,
-                                      graph_colors, legend_labels, plot_labels) {
+                                      graph_colors, legend_labels, plot_labels,
+                                      levee_smooth = FALSE) {
   # Get values from the long_plot_pgs data frame for the current plot
   start_mile <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$start_mile
   end_mile   <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$end_mile
@@ -109,13 +111,6 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
               aes(x = river_mile, y = elevation_NAVD88, group = levee,
                   color = descending_bank),
               show.legend = FALSE, size = 0.2, alpha = 0.5) +
-    # Draw smooth levee lines, existing elevation
-    geom_smooth(inherit.aes = FALSE,
-                data = l,
-                aes(x = river_mile, y = elevation_NAVD88, group = levee,
-                    color = descending_bank),
-                method = "gam",
-                formula = y ~ s(x, bs = "cs"), se = FALSE, size = 0.4) +
     # Label levees
     geom_label_repel(inherit.aes = FALSE,
                      data = levee_labels,
@@ -154,6 +149,21 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                   data = b,
                   aes(x = river_mile, ymin = lowest_elevation,
                                       ymax = highest_elevation),
-                  width = 0.5, size = 0.2, color = "red4")
-  return(p)
+                  width = 0.5, size = 0.5, color = "red4")
+
+  # Draw smooth levee lines, existing elevation
+  levee_smooth_line <- geom_smooth(inherit.aes = FALSE,
+                                   data = l,
+                                   aes(x = river_mile,
+                                       y = elevation_NAVD88, group = levee,
+                                   color = descending_bank),
+                                   method = "gam",
+                                   formula = y ~ s(x, bs = "cs"),
+                                   se = FALSE, size = 0.4)
+
+  if(levee_smooth) {
+    return(p + levee_smooth_line)
+  } else {
+    return(p)
+  }
 }

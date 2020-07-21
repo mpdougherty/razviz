@@ -2,7 +2,7 @@ context("longitudinal profile plot")
 library(razviz)
 
 # plot_number
-plot_number <- 1
+plot_number <- 9
 
 # hydro_model
 path <- system.file("extdata/longitudinal_profiles",
@@ -32,7 +32,7 @@ high_water_events_df$event <- factor(high_water_events_df$event,
                                      labels = high_water_years)
 
 # long_plot_pages
-miles_per_plot <- 60
+miles_per_plot <- 30
 long_plot_pgs <- razviz::long_plot_pages(hydro_model,
                                          high_water_events_df,
                                          miles_per_plot)
@@ -94,22 +94,39 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Guttenb
                     "x_axis" = "Miles Above the Ohio River",
                     "y_axis" = "Elevation (NAVD88 feet)")
 
-# longitudinal_profile_plot
-plot <- razviz::longitudinal_profile_plot(plot_number = plot_number,
-                                          hydro_model = hydro_model_1,
-                                          long_plot_pgs = long_plot_pgs,
-                                          gages = gages,
-                                          gage_labels_df = gage_labels_df,
-                                          gage_boxes_df = gage_boxes_df,
-                                          high_water = high_water_events_df,
-                                          levees = levees,
-                                          features = features,
-                                          bridges = bridges,
-                                          graph_colors = graph_colors,
-                                          legend_labels = legend_labels,
-                                          plot_labels = plot_labels)
+# longitudinal_profile_plot (without smoothed levees)
+plot1 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                           hydro_model = hydro_model_1,
+                                           long_plot_pgs = long_plot_pgs,
+                                           gages = gages,
+                                           gage_labels_df = gage_labels_df,
+                                           gage_boxes_df = gage_boxes_df,
+                                           high_water = high_water_events_df,
+                                           levees = levees,
+                                           features = features,
+                                           bridges = bridges,
+                                           graph_colors = graph_colors,
+                                           legend_labels = legend_labels,
+                                           plot_labels = plot_labels,
+                                           levee_smooth = FALSE)
 
+# longitudinal_profile_plot (without smoothed levees)
+plot2 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                           hydro_model = hydro_model_1,
+                                           long_plot_pgs = long_plot_pgs,
+                                           gages = gages,
+                                           gage_labels_df = gage_labels_df,
+                                           gage_boxes_df = gage_boxes_df,
+                                           high_water = high_water_events_df,
+                                           levees = levees,
+                                           features = features,
+                                           bridges = bridges,
+                                           graph_colors = graph_colors,
+                                           legend_labels = legend_labels,
+                                           plot_labels = plot_labels,
+                                           levee_smooth = TRUE)
 
 test_that("longitudinal profile plot", {
-  expect_true(class(plot)[[2]] == "ggplot")
+  expect_true(class(plot1)[[2]] == "ggplot")
+  expect_true(class(plot2)[[2]] == "ggplot")
 })
