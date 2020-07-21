@@ -17,7 +17,8 @@ longitudinal_profile_plot(
   bridges,
   graph_colors,
   legend_labels,
-  plot_labels
+  plot_labels,
+  levee_smooth = FALSE
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ used in the legend.}
 
 \item{plot_labels}{list; A list of plot labeling elements. Must contain
 three named elements "title", "x_axis", and "y_axis".}
+
+\item{levee_smooth}{logical; Draw a smoothed levee line?}
 }
 \value{
 A `ggplot2` object depicting the river longitudinal profile graph.
