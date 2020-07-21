@@ -42,9 +42,7 @@ rm_event_stats <- function(hydrograph, rm_event, cal_stats) {
 
   # Calculate water surface goodness of fit statistics
   if (all(c("WS_Elev", "Obs_WS") %in% colnames(c_wide_na))) {
-    if(all(is.na(c_wide_na$WS_Elev)) & all(is.na(c_wide_na$Obs_WS))) {
-      break
-    } else {
+    if(all(!is.na(c_wide_na$WS_Elev)) & all(!is.na(c_wide_na$Obs_WS))) {
       # Create linear model of modeled water surface elevation
       rm_event_WS_lm <- lm(c_wide_na$WS_Elev ~ c_wide_na$Obs_WS,
                            data = c_wide_na)
@@ -65,9 +63,7 @@ rm_event_stats <- function(hydrograph, rm_event, cal_stats) {
 
   # Calculate discharge goodness of fit statistics
   if (all(c("Model_Q", "Obs_Q") %in% colnames(c_wide))) {
-    if(all(is.na(c_wide_na$Model_Q)) & all(is.na(c_wide_na$Obs_Q))) {
-      break
-    } else {
+    if(all(!is.na(c_wide_na$Model_Q)) & all(!is.na(c_wide_na$Obs_Q))) {
       # Create linear model of modeled water surface elevation
       rm_event_Q_lm <- lm(c_wide_na$Model_Q ~ c_wide_na$Obs_Q,
                           data = c_wide_na)

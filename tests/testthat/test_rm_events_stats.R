@@ -2,9 +2,12 @@ context("rm_event_stats")
 library(razviz)
 
 # Import hydrograph data
-hydrograph_csv <- system.file("extdata/hydrographs", "LD10.csv",
+hydrograph_csv <- system.file("extdata/hydrographs", "hydrograph_data.csv",
                               package = "razviz")
-hydrograph <- readr::read_csv(hydrograph_csv)
+hydrograph_whole <- readr::read_csv(hydrograph_csv)
+
+# Filter for Mississippi River
+hydrograph <- dplyr::filter(hydrograph_whole, River == "Mississippi")
 
 # Create table with unique records Run_type, Run_num, River_Sta, and Event
 cal_stats <- unique(hydrograph[, c("Run_type", "Run_num",
@@ -33,15 +36,15 @@ cal_stats <- tibble::add_column(cal_stats,
 # Discharge
 cal_stats <- tibble::add_column(cal_stats,
                                 Q_R2 = as.numeric(rep(NA,
-                                                      times = length(cal_stats$rm_event))))
+                                           times = length(cal_stats$rm_event))))
 cal_stats <- tibble::add_column(cal_stats,
                                 Q_RMSE = as.numeric(rep(NA,
-                                                        times = length(cal_stats$rm_event))))
+                                           times = length(cal_stats$rm_event))))
 cal_stats <- tibble::add_column(cal_stats,
                                 Q_MAE  = as.numeric(rep(NA,
-                                                        times = length(cal_stats$rm_event))))
+                                           times = length(cal_stats$rm_event))))
 # Set the test event
-rm_event <- 4
+rm_event <- 2
 
 # Calculate the stats
 calibration_stats <- rm_event_stats(hydrograph, rm_event, cal_stats)
