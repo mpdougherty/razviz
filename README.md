@@ -13,8 +13,8 @@ An R package to produce visualizations for evaluating the performance of
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.0.3-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--06--28-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.0.4-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--08--28-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
@@ -68,7 +68,8 @@ To install the `razviz` package, install from GitHub using the
 
 ``` r
 library(devtools)
-devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
+devtools::install_github(repo = "mpdougherty/razviz@*release", 
+                         build_vignettes = TRUE)
 ```
 
 ## Vignettes
