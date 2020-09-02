@@ -81,15 +81,15 @@ high_water_csv <- system.file("extdata/longitudinal_profiles",
                               package = "razviz")
 high_water <- readr::read_csv(high_water_csv)
 
-## Define high water events in YEARS (these must be years) and add event year to high water marks dataframe.
-## NOTE: If your events are not years, DO NOT USE line 86 or 87.  
+## Define high water events in YEARS and add event year column to high water marks dataframe.
+## NOTE: Your high water years do not have to match your model_events, but high_water_events must be a list of years. If the model_event and high_water_year event are different, there will be additional items in the legend. 
 ## The high_water_events function searches the date column for the year of the event and adds a column with the matching event year.
 high_water_years <- c("2008", "2013", "2014")
 high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 
-##If you are working with a single profile or events that are not classified by years (e.g.25% duration flows or similar), INSTEAD add a column which specifies the event, using the following code.
+##If you are working with a single profile or events that are not classified by years (e.g.25% duration flows or similar), and INSTEAD want to add a column which specifies the event, use the following code.
 
-#high_water_events <- c("25")
+#high_water_events <- c("25% Duration")
 #high_water_events_df <- add_column(high_water, event = high_water_events)
 ```
 
