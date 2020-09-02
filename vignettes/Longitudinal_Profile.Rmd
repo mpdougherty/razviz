@@ -161,7 +161,7 @@ features <- readr::read_csv(features_csv)
 ```
 
 ## Bridges
-In this step we'll prepare the bridges dataset. 
+In this step we'll prepare the bridges dataset. This dataset must include elevations both lowest_elevation and highest_elevation for all bridges listed.
 
 * Import the bridge table in `.csv` format included in the package. 
 
