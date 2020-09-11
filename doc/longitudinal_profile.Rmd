@@ -31,7 +31,8 @@ HEC-RAS models are often used to model long river reaches. Effective longitudina
 ## Install
 Begin by loading the needed packages. 
 ```{r setup}
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(devtools)
 ```
 

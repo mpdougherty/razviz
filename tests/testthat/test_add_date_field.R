@@ -3,7 +3,7 @@ library(razviz)
 library(readr)
 
 ras_csv <- system.file("extdata/hydrographs/2008_calibration_9",
-                       "CS_43.702_MISSISSIPPI_BIG MUDDY_OHIO_GAUGE_THEBES.csv",
+                       "CS_43.702.csv",
                        package = "razviz")
 
 # DSSVue export

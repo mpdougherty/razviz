@@ -17,7 +17,7 @@ hydrograph_report(hydrograph_df, hg_plot_pages, output_dir)
 report will be written.}
 }
 \value{
-
+Creates a Hydrograph Report in the output directory.
 }
 \description{
 Create a Hydrograph Report for the input RAS model.

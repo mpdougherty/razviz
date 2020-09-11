@@ -19,7 +19,7 @@ The purpose of this vignette is to demonstrate how to use the [`razviz`](https:/
 ## Install
 Begin by loading the needed packages. 
 ```{r setup, message=FALSE}
-library(tidyverse)
+library(forcats)
 library(devtools)
 ```
 
