@@ -16,10 +16,8 @@
 #'
 
 high_water_events <- function(high_water, events) {
-  # Ensure that the peak_date field is formatted correctly
-  high_water$peak_date <- lubridate::mdy(high_water$peak_date)
 
-  # Create `event` field as year of `peak_date` field
+    # Create `event` field as year of `peak_date` field
   high_water$event <- as.character(lubridate::year(high_water$peak_date))
 
   # Filter for the desired list of high water event years
