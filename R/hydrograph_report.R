@@ -10,7 +10,7 @@
 #' @param output_dir       character; The path to the folder where the output
 #'                         report will be written.
 #'
-#' @return
+#' @return Creates a Hydrograph Report in the output directory.
 #'
 #' @importFrom grDevices pdf dev.off
 #' @importFrom grid grid.draw
