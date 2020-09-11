@@ -53,21 +53,91 @@ In this step we'll prepare the hydro model results.
 * Create the `Event` field to specify the model scenarios that will be plotted as different series in the longitudinal profile graph. 
 * Filter the model scenarios down to only the ones we want to visualize. 
 
+###Option #1
 ```{r hydro_model, message=FALSE}
+#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
 path <- system.file("extdata/longitudinal_profiles", 
                     package = "razviz")
+
+#Identify the pattern in the file name for each profile that needs to be imported. 
 pattern <- "Freq"
+
+#Combines all the files that have been identified. 
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
-## Create `Event` field for labeling
+
+## Create `Event` field for labeling - in this example the frequency column is being renamed. 
 hydro_model$Event <- hydro_model$Freq
+
 ## Filter the Events
 model_events <- c("2 Year", "100 Year", "500 Year", "100000 Year")
 hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
+
 ## Set Event as an ordered factor
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
 ```
+
+### Option #2
+If the water surface profiles are still in HEC-RAS 5.0.7, the following steps will help you create the necessary .csv files
+
+*Load the HEC-RAS Profile Output Summary table (selecting all reaches of the river of interest). 
+*use file >> copy to clipboard (headings and data) to move the data to excel.  
+*Delete the second row that is pasted. It should have the units.  
+*Save the excel file as a .csv(comma delimited) in the working directory. 
+*Add column named "Event" - fill in with event name or year.
+*Repeat for each plan that was run.  
+
+When the data is taken from HEC-RAS without reformatting in excel, the river mile column sometimes contains descriptions of the physical structures located at those river miles (e.g. bridge, lateral structure).  In order for to plot river mile as a number on the x-axis, those text descriptions need to be removed and the river mile column needs to be a 'numeric' variable in r.  Also, the total flow (Q_Total) will also have text for structures.
+
+```{r}
+#Need to add a column with the Event year before combining. 
+#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
+path <- system.file("extdata/longitudinal_profiles", 
+                    package = "razviz")
+
+#Identify the pattern in the file name for each profile that needs to be imported. 
+pattern <- "Profile_"
+
+Profile_Summary <- razviz::combine_files(path = path, pattern = pattern)
+
+data.table::setnames(Profile_Summary, old = c("River","Reach","River Sta",
+                     "Profile", "Q Total",
+                     "Min Ch El","W.S. Elev",
+                     "Crit W.S.","E.G. Elev",
+                     "E.G. Slope","Vel Chnl",
+                     "Flow Area","Top Width",
+                     "Froude # Chl","Event") , 
+                     new = c("River","Reach","River_Sta",
+                      "Profile", "Q_Total",
+                      "Min_Ch_El","WS_Elev",
+                      "Crit_WS","EG_Elev", 
+                      "EG_Slope","Vel_Chnl",
+                      "Flow_Area","Top_Width", 
+                    "Froude_Chl","Event"), skip_absent = TRUE)
+
+#remove rows that do not have a number in the Q_Total column
+profile_data <- Profile_Summary[!is.na(as.numeric(as.character(Profile_Summary$Q_Total))),]
+
+#Reformat river mile column to contain only numbers by splitting the column into numbers and text using a space (' ') as the delimiter
+rm <- as.data.frame(str_split_fixed(profile_data$River_Sta, c(" "),2))
+profile_data$River_Sta <- rm$V1
+
+#save the river mile column as a number
+profile_data$River_Sta <- as.numeric(as.character(profile_data$River_Sta))
+
+#add ordered factor - this will be used during plotting
+model_events<- c(2001, 2014, 2019)
+profile_data_ordered <- dplyr::filter(profile_data, Event %in% model_events)
+
+## Set Event as an ordered factor
+profile_data_ordered$Event <- factor(profile_data_ordered$Event,
+                              levels = model_events,
+                              labels = model_events)
+
+hydro_model_1 <- profile_data_ordered
+```
+
 
 ## High Water Marks
 In this step we'll prepare the high water marks dataset. 
