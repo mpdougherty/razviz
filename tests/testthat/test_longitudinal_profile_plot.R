@@ -25,6 +25,7 @@ high_water_csv <- system.file("extdata/longitudinal_profiles",
                               package = "razviz")
 high_water <- readr::read_csv(high_water_csv)
 high_water_years <- c("2008", "2013", "2014")
+
 high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 ## Set Event as an ordered factor
 high_water_events_df$event <- factor(high_water_events_df$event,
@@ -108,9 +109,9 @@ plot1 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                            graph_colors = graph_colors,
                                            legend_labels = legend_labels,
                                            plot_labels = plot_labels,
-                                           levee_smooth = FALSE)
+                                           levee_smooth = FALSE, hw_pts = TRUE)
 
-# longitudinal_profile_plot (without smoothed levees)
+# longitudinal_profile_plot (with smoothed levees)
 plot2 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                            hydro_model = hydro_model_1,
                                            long_plot_pgs = long_plot_pgs,
@@ -124,7 +125,7 @@ plot2 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                            graph_colors = graph_colors,
                                            legend_labels = legend_labels,
                                            plot_labels = plot_labels,
-                                           levee_smooth = TRUE)
+                                           levee_smooth = TRUE, hw_pts = FALSE)
 
 test_that("longitudinal profile plot", {
   expect_true(class(plot1)[[2]] == "ggplot")

@@ -30,7 +30,8 @@
 #'                       used in the legend.
 #' @param plot_labels    list; A list of plot labeling elements. Must contain
 #'                       three named elements "title", "x_axis", and "y_axis".
-#' @param levee_smooth   logical; Draw a smoothed levee line?
+#' @param levee_smooth   logical; Draw a smoothed levee line? (Default FALSE)
+#' @param hw_pts         logical; Draw highwater points? (Default TRUE)
 #'
 #' @return A `ggplot2` object depicting the river longitudinal profile graph.
 #'
@@ -47,7 +48,7 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                                       high_water, levees,
                                       features, bridges,
                                       graph_colors, legend_labels, plot_labels,
-                                      levee_smooth = FALSE) {
+                                      levee_smooth = FALSE, hw_pts = TRUE) {
   # Get values from the long_plot_pgs data frame for the current plot
   start_mile <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$start_mile
   end_mile   <- long_plot_pgs[long_plot_pgs$plot == plot_number,]$end_mile
@@ -77,7 +78,7 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                             river_mile = mean(river_mile),
                             elevation_NAVD88 = mean(elevation_NAVD88))
 
-  # Create the plot
+  # Create the basic plot with only water surface profile or parameter of interest
   p <- ggplot2::ggplot(data = hm,
                        aes(x = River_Sta, y = WS_Elev, color = Event)) +
     geom_line(size = 2) +
@@ -100,11 +101,8 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
     labs(title = plot_labels$title,
          x = plot_labels$x_axis,
          y = plot_labels$y_axis) +
-    # Draw high water marks
-    geom_point(inherit.aes = FALSE,
-               data = hw,
-               aes(x = river_mile, y = elevation_NAVD88, color = event),
-               show.legend = FALSE, size = 4) +
+
+
     # Draw raw levee lines, existing elevation
     geom_line(inherit.aes = FALSE,
               data = l,
@@ -151,6 +149,16 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                                       ymax = highest_elevation),
                   width = 0.5, size = 0.5, color = "red4")
 
+  # Draw high water marks
+    if(hw_pts == TRUE){
+      if(is.factor(hw[["event"]]) == "TRUE"){
+        hw_points <- geom_point(inherit.aes = FALSE,
+          data = hw,
+          aes(x = river_mile, y = elevation_NAVD88, color = event),
+          show.legend = FALSE, size = 4)
+      } else{ stop("'event' column in not factor. Please change class to factor")}
+    }
+
   # Draw smooth levee lines, existing elevation
   levee_smooth_line <- geom_smooth(inherit.aes = FALSE,
                                    data = l,
@@ -161,9 +169,12 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
                                    formula = y ~ s(x, bs = "cs"),
                                    se = FALSE, size = 0.4)
 
-  if(levee_smooth) {
-    return(p + levee_smooth_line)
-  } else {
-    return(p)
-  }
+
+  if(levee_smooth == TRUE  && hw_pts == TRUE)  return(p + levee_smooth_line + hw_points)
+  if(levee_smooth == TRUE  && hw_pts == FALSE) return(p + levee_smooth_line)
+  if(levee_smooth == FALSE && hw_pts == TRUE)  return(p + hw_points)
+  if(levee_smooth == FALSE && hw_pts == FALSE) return(p)
+
+
+
 }

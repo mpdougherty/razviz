@@ -30,6 +30,7 @@
 #'                        three named elements "title", "x_axis", and "y_axis".
 #' @param output_dir      character; The path to the folder where the output
 #'                        report will be written.
+#' @param filename        character; the pdf filename (must end in .pdf)
 #'
 #' @return A Longitudinal Profile Report in `pdf` document format.
 #'
@@ -40,9 +41,9 @@ longitudinal_profile_report <- function(hydro_model, long_plot_pgs,
                                         high_water, levees,
                                         features, bridges,
                                         graph_colors, legend_labels, plot_labels,
-                                        output_dir) {
+                                        output_dir, filename) {
   # Set the output document
-  output_file <- file.path(output_dir, "Longitudinal_Profile_Report.pdf")
+  output_file <- file.path(output_dir, filename)
   grDevices::pdf(file = output_file, width = 17, height = 11)
 
   # Iterate through plot pages to produce longitudinal profile plots

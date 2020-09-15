@@ -94,6 +94,8 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Guttenb
 output_dir <- "C:/temp"
 if (!dir.exists(output_dir)) {dir.create(output_dir)}
 
+filename <- "Longitudinal_Profile_Report.pdf"
+
 # longitudinal_profile_report
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     long_plot_pgs = long_plot_pgs,
@@ -107,7 +109,8 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     graph_colors = graph_colors,
                                     legend_labels = legend_labels,
                                     plot_labels = plot_labels,
-                                    output_dir = output_dir)
+                                    output_dir = output_dir,
+                                    filename = filename)
 
 
 test_that("longitudinal profile report", {

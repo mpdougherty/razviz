@@ -18,7 +18,7 @@
 high_water_events <- function(high_water, events) {
 
     # Create `event` field as year of `peak_date` field
-  high_water$event <- as.character(lubridate::year(high_water$peak_date))
+    high_water$event <- as.character(lubridate::year(anytime::anydate(high_water$peak_date)))
 
   # Filter for the desired list of high water event years
   high_water <- dplyr::filter(high_water, event %in% events)
