@@ -1,0 +1,259 @@
+Observed DSS Loc=Mississippi     ,DSCoonRapidsDam ,864.83  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/HWY 610 IN BROOKLYN PARK, MN/FLOW/01MAR2000/15MIN/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,DSCoonRapidsDam ,858.56  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/37TH AVE. NE IN FRIDLEY, MN/STAGE/01JAN2020/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,DSMinnesota     ,839.25  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/ST. PAUL, MN/STAGE/01OCT2013/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,DSMinnesota     ,839.25  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/ST. PAUL, MN/FLOW/01OCT2013/15MIN/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,DSMinnesota     ,833.63  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//SSPM5/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowGreyCloud  ,815.43  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_02/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowGreyCloud  ,815.43  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_02/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowGreyCloud  ,814.98  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_02-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowGreyCloud  ,813.69  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER BELOW L&D #2/HASTINGS, MN/STAGE/01NOV2008/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowGreyCloud  ,813.69  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER BELOW L&D #2/HASTINGS, MN/FLOW/01JAN1995/1DAY/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,811.27  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/PRESCOTT, WI/FLOW/01FEB2009/15MIN/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,811.27  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/PRESCOTT, WI/STAGE/01SEP2008/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,797.08  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_03/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,797.08  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_03/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,796.75  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_03-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,790.93  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/RED WING, MN/FLOW/01OCT2018/15MIN/USGS-ESTIMATED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,772.6   
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LKCM5/ELEV-TRANSDUCER/01JAN1999/1DAY/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,760.52  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//WABM5/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,753.12  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_04/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,753.12  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_04/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,752.6   
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_04-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,749.83  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//AMAW3/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,738.3   
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,738.3   
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,737.92  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,728.63  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05A/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,728.63  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05A/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,728.27  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_05A-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,725.68  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/WINONA, MN/STAGE/01SEP2007/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,725.68  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/WINONA, MN/FLOW/01FEB2000/15MIN/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,714.53  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_06/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,714.53  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_06/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,714.03  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_06-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,702.55  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_07/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,702.55  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_07/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowVermillion ,702.28  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_07-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,697.98  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LACW3/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,689     
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//BRWM5/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,679.38  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_08/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,679.38  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_08/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,679.03  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_08-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,663.18  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LNSI4/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,648.03  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_09/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,648.03  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_09/FLOW/01DEC1999/15MIN/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,647.67  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_09-TAILWATER/ELEV/01DEC1999/15MIN/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,633.28  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/MCGREGOR, IA/STAGE/01JAN2005/1DAY/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,633.28  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/MCGREGOR, IA/FLOW/01JAN2000/1DAY/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,624.72  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/CLAYTON, IA/STAGE/01JAN2000/1DAY/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,624.72  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/CLAYTON, IA/STAGE/01SEP2007/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,615.27  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_10/ELEV/01DEC1999/1HOUR/MERGED-NAVD88/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,615.27  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_10/FLOW/01DEC1999/1HOUR/MERGED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,LaCrossToLD10   ,615.04  
+Observed DSS Filename=Miss Data v6.dss
+Observed DSS Pathname=//LOCKDAM_10-TAILWATER/ELEV/01DEC1999/IR-MONTH/MERGED-NAVD88/
+Observed DSS Dn Dist=
