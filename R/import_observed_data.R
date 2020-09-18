@@ -116,5 +116,39 @@ import_observed_data <- function(observed_dss_file,
   #list of the individual time series which are now stored in data frames that were used as inputs in the HEC-RAS model
   observed_dataframes_list <- mget(ls(pattern="obs_data"))
 
-  return(observed_dataframes_list)
+  #Make a list of river miles where there are gage locations in the RAS model
+  Locations <- unique(Formatted_UnsteadyFlowFile$RiverMile)
+
+  for(p in 1:length(plan_events)){ #LOOP THROUGH REACH PLAN/event
+    event_year <- plan_events[p]
+
+    for (y in Locations){ #loop through all the UNIQUE LOCATION on the river where observed flow and stage data are recorded
+
+      #need to pull from the list of data frames need to pull the ones that start with the same river mile
+      subset <- observed_dataframes_list[grepl(y, names(observed_dataframes_list))]
+
+      #then need to subset it for the plan
+      subset <- subset[grepl(event_year, names(subset))]
+      DF_1 <- subset[[1]]
+
+      #NOT ALL LOCATIONS HAVE BOTH OBSERVED FLOW AND STAGE
+      if(length(subset) == 2){
+        DF_2 <- subset[[2]]
+        OBS_DF <- merge(DF_1, DF_2, all = TRUE)
+      }else{
+        OBS_DF <- DF_1
+      }
+
+      #make a new name for the dataframe containing observed flow and stage data that was used for that plan.
+      obs_name <- paste("observed_Q_WS_df", y , event_year, sep="_")
+
+      #save the data frame under the new name
+      assign(obs_name,OBS_DF)
+    }
+  }
+  #create a new list of the dataframes for each location along the river
+  observed_Q_WS_df_list <- mget(ls(pattern="observed_Q_WS_df"))
+
+
+  return(observed_Q_WS_df_list)
 }

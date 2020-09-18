@@ -42,12 +42,12 @@ Formatted_UnsteadyFlowFileList <- razviz::import_unsteadyflowfile(
                                               unsteadyflowfile_list = unsteadyflowfile_list,
                                               plan_events = plan_events)
 
-observed_dataframes_list <- razviz::import_observed_data(observed_dss_file = observed_dss_file,
+observed_Q_WS_df_list <- razviz::import_observed_data(observed_dss_file = observed_dss_file,
                                                          Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList,
                                                          plan_events = plan_events)
 
 test_that("import observed data", {
-  expect_true(is.list(observed_dataframes_list))
+  expect_true(is.list(observed_Q_WS_df_list))
 })
 
 
