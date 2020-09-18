@@ -1,20 +1,15 @@
 #' @title Import RAS Hydrographs
 #'
-#' @description Imports a folder of RAS model hydrograph `.csv` files exported
-#' from the RAS GUI.
+#' @description Imports and formats the unsteady flow files (.u)
+#' from the HEC-RAS GUI.
 #'
 #' @export
-#' @param folder      character; Path to a folder of `.csv` files of RAS model
-#'                    hydrograph `.csv` files.
-#' @param event       character; The name of the model event.
-#' @param run_number  numeric; The model run number. Used to label plot title.
-#' @param run_type    character; The type of model run. Label used to in plot
-#'                    title.
-#' @param col_spec    readr::cols object; A column specification used to define
-#'                    the columns of the input model results. Optional. Defaults
-#'                    to the current RAS column names.
+#' @param unsteadyflowfile_list  list; list of dataframes which contain
+#'                                unsteady flow text files
+#' @param plan_events            numeric; list of the years in which events occurred.
 #'
-#' @return A data frame of RAS model results.
+#'
+#' @return A list data frames containing unsteady flow files.
 #'
 #' @importFrom readr cols col_character col_double
 #' @importFrom tibble add_column
