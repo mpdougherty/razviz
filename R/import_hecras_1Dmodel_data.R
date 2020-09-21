@@ -1,15 +1,13 @@
-#' @title Import RAS Hydrographs
+#' @title Import HEC-RAS 1D Model Data
 #'
-#' @description Imports a folder of RAS model hydrograph `.csv` files exported
-#' from the RAS GUI.
+#' @description Imports data from dss file created from HEC-RAS model
 #'
-#' @export
 #' @param model_dss_file   jobjRef; open dss file where observed data is stored hydrograph using dssrip.
 #'
 #' @param plan_names       list; list of the plan names as they are written in Part F of dss path.
 #' @param plan_events      list; list of years of when events used in the plans occured.
 #' @param time_interval    character; time interval chosen to run HEC-RAS model,matches Part E dss path.
-#'@param Formatted_UnsteadyFlowFileList    list; list containing the unsteady flow data for each plan;
+#' @param Formatted_UnsteadyFlowFileList    list; list containing the unsteady flow data for each plan;
 #'                                          output from import_hecras_unsteadyflowfiles function.
 
 #' @return A list of data frames with the HEC-RAS model results.
