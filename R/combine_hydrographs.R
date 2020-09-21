@@ -39,7 +39,7 @@ combine_hydrographs <- function(hydrograph_list) {
   hg$River_Sta <- factor(as.numeric(hg$River_Sta))
   hg$River     <- factor(hg$River)
   hg$Reach     <- factor(hg$Reach)
-  hg$Gage      <- factor(hg$Gage)
+  hg$Gage      <- factor(hg$Gage_Location)
   hg$Event     <- factor(hg$Event)
   hg$Run_type  <- factor(hg$Run_type)
   hg$Run_num   <- factor(hg$Run_num)
