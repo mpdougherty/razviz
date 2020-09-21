@@ -61,9 +61,10 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
           axis.title.x = element_blank(),
           axis.text.x  = element_text(angle = 50, hjust = 1)) +
     scale_x_datetime(date_labels = "%e %b",
-                     date_breaks = "7 days",
+                     date_breaks = "14 days",
                      date_minor_breaks = "1 day") +
-    labs(y = "Elevation (NAVD88 feet)")
+    labs(y = "Elevation (NAVD88 feet)")+
+    scale_y_continuous(minor_breaks = seq(500 , 900, 1), breaks = seq(500 , 900,2))
 
   # Discharge hydrograph
   q_plot <- ggplot(data = q,
@@ -79,9 +80,10 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
           axis.title.x = element_blank(),
           axis.text.x  = element_text(angle = 50, hjust = 1)) +
     scale_x_datetime(date_labels = "%e %b",
-                     date_breaks = "7 days",
+                     date_breaks = "14 days",
                      date_minor_breaks = "1 day") +
-    labs(y = "Discharge (1000 cubic feet per second)")
+    labs(y = "Discharge (1000 cubic feet per second)")+
+    scale_y_continuous(minor_breaks = seq(0 , 1000, 5), breaks = seq(0 , 1000, 10))
 
   # Create title for plot group
   title <- textGrob(label = paste(trimws(ws$River), " River, ",
