@@ -9,15 +9,17 @@
 #'                         `razviz::hydrograph_plot_pages` function.
 #' @param output_dir       character; The path to the folder where the output
 #'                         report will be written.
+#' @param filename         character; The filename of the report
+#'
 #'
 #' @return Creates a Hydrograph Report in the output directory.
 #'
 #' @importFrom grDevices pdf dev.off
 #' @importFrom grid grid.draw
 #'
-hydrograph_report <- function(hydrograph_df, hg_plot_pages, output_dir) {
+hydrograph_report <- function(hydrograph_df, hg_plot_pages, output_dir, filename) {
   # Set the output document
-  output_file <- file.path(output_dir, "Hydrograph_Plot_Report.pdf")
+  output_file <- file.path(output_dir, filename)
   grDevices::pdf(file = output_file, width = 8.5, height = 11)
 
   # Iterate through plots table to draw hydrograph plots
