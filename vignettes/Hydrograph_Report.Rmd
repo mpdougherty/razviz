@@ -1,0 +1,365 @@
+---
+title: "Compare Modeled versus Observed Hydrographs using `razviz`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Compare Modeled versus Observed Hydrographs using `razviz`}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r options, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+## Introduction
+The purpose of this vignette is to demonstrate how to use the [`razviz`](https://mpdougherty.github.io/razviz/) package to produce a `pdf` report of modeled versus observed hydrographs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. 
+
+## Install
+Begin by loading the needed packages. 
+```{r setup, message=FALSE}
+#install.packages("ggplot2")
+library(ggplot2)
+
+#install.packages("reshape2")
+library(reshape2)
+
+#install.packages("stringr")
+library(stringr)
+
+#install.packages("devtools")
+library(devtools)
+
+#install.packages("tidyverse")
+library(tidyverse)
+
+#install.packages("readr")
+library(readr)
+
+#install.packages("tibble")
+library(tibble)
+
+#install.packages("R.utils")
+library(R.utils)
+
+#install.packages("readtext")
+library(readtext)
+```
+
+Next, we'll install the `razviz` package. 
+```{r install, eval=FALSE}
+devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
+```
+
+Finally, we'll load the `razviz` package. 
+```{r load_razviz}
+library(razviz)
+```
+
+
+##DSS-Vue
+dssrip needs to know where DSS is stored on your computer. If you are using DSSVue which was installed from ACE-IT, it will likely be in your programs folder under HEC. If you get errors that your path could not be found, make sure that two back slashes (e.g. \\ ) are included in the path name.  For some, DSS is downloaded into a new location in order to use a more recent version. 
+
+###R profile 
+Save a text file called .Rprofile in you documents folder
+
+if(R.Version()$arch=="x86_64"){
+  # use 64-bit .jar and .dll
+  options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
+  #options(dss_jre_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212")
+  #Sys.setenv(JAVA_HOME=options("dss_jre_location"))  # I think this should be: Sys.setenv(JAVA_HOME=""), but works anyway because not set for 64-bit.
+}
+https://www.hec.usace.army.mil/software/hec-dssvue/downloads/dev/HEC-DSSVue-v3.0.00.212.7z
+
+```{r DSS Location}
+#options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
+options("dss_location")
+```
+
+###Java
+rJava is a hard package to get working. The only way I could get it load was from the default settings. 
+```{r}
+#install.packages("rJava")
+library(rJava)
+packageVersion("rJava")
+```
+
+###dssrip
+Now with all the previous files installed, install dssrip using the code provided in the read me file.  If that does not work, you can download the tar.gz file on to a local drive and install it from there. Often the tar.gz file will be saved in a temporary location and you can copy to a new location from there.
+
+Source: https://github.com/eheisman/dssrip/
+Helpful Blog Post (cannot access while on VPN)
+http://eaheisman.blogspot.com/2013/04/hec-dss-files-and-r-and-python.html
+```{r dssrip install}
+#devtools::install_github("eheisman/dssrip", INSTALL_opts = "--no-multiarch", ref="r36_rJava0.9-12_fixes",force = TRUE)
+library(dssrip)
+```
+
+### Troubleshooting
+Run these codes to ensure that rJava and DSS are woring through dssrip properly
+```{r}
+.jinit() #temporary fix
+.jclassPath() #should include DSS locations
+```
+
+### dssrip 
+List the functions which dssrip has available. In July 2020, the developer of dssrip, made changes to the code. Please refer to the github account for updates.
+```{r dssrip functions, eval=FALSE}
+#List the functions that dssrip has available to use.
+lsf.str("package:dssrip")
+```
+
+## Read the Unsteady Flow Files
+In this step, we need to tell R which paths to take from observed DSS database. HEC-RAS creates an unsteady flow file that lists the observed data which is input in the data for each plan.  
+
+Save as a new text file and save it in the working directory folder under the name "UnsteadyFlowObservedDateFile_EVENT.txt" Substitute event for the event year used in each plan. 
+
+NOTE: Option #2 allows you to individually import unsteady flow files. If you are changing more than plan_events in the naming structure, it may be easier to just import the files individually. 
+```{r HEC-RAS Unsteady Flow File}
+plan_events <- c(2001, 2014, 2019) #Replace with years for each event within the HEC-RAS plans
+
+#Option #1: Automatically import several files
+path <- system.file("extdata/hydrographs",
+                                package = "razviz")
+
+filelist = list.files(path, pattern="*.txt")
+
+textfiles <- readtext::readtext(paste0(path,"/*.txt"), docvarsfrom = "filepaths")
+for(i in 1:length(plan_events)){
+  assign(paste0("UnsteadyFlowFile_",plan_events[i]),textfiles$text[i])
+}
+
+unsteadyflowfile_list <- mget(ls(pattern="UnsteadyFlowFile_"))
+
+#Option #2 Manually import individual files
+
+#UnsteadyFlowFile_2001 <- readtext::readtext(paste0(path,"/UnsteadyFlowObservedData_2001mod.txt"))
+#UnsteadyFlowFile_2014 <- readtext::readtext(paste0(path,"/UnsteadyFlowObservedData_2014.txt"))
+#UnsteadyFlowFile_2019 <- readtext::readtext(paste0(path,"/UnsteadyFlowObservedData_2019mod.txt"))
+#unsteadyflowfile_list <- list(UnsteadyFlowFile_2001,UnsteadyFlowFile_2014,UnsteadyFlowFile_2019)
+
+#function automatically reformats the text file into useable formats for the rest of the code. 
+#function returns a list of dataframes. If you want to see the data within
+Formatted_UnsteadyFlowFileList <- razviz::import_unsteadyflowfile(unsteadyflowfile_list = unsteadyflowfile_list,
+                                                                  plan_events = plan_events)
+
+#function returns a list of dataframes. If you want to see the data within, use the following code.
+example <- Formatted_UnsteadyFlowFileList[[1]]
+```
+
+
+
+## Import Data from DSS (Option #1)
+### Observed Data
+In this step we'll import the observed data that was used in the HEC-RAS model. Most often this data comes from USGS, but USACE has gages at individual lock and dams that may also be used in the model.  All observed data should be combined into one dss file. Update the file path and name to identify the observed dss file for your particular model. 
+```{r}
+#to remove scientific notation
+options(scipen=999)
+
+path <- system.file("extdata/hydrographs", package = "razviz")
+dss_observed_filename <- "razviz_ex_observed.dss"
+
+observed_dss_file <- dssrip::opendss(paste0(path,"/", dss_observed_filename), stopIfNew = TRUE)
+
+#TIME IN DSS IS DIFFERENT THAN TIME STORAGE IN R
+test <-as.data.frame(dssrip::getTSC(observed_dss_file, "/MISSISSIPPI RIVER/HWY 610 IN BROOKLYN PARK, MN/FLOW//15MIN/USGS/"))
+head(test)
+
+
+observed_dataframes_list <- razviz::import_observed_data(observed_dss_file = observed_dss_file,
+                                                         Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList,
+                                                         plan_events = plan_events)
+```
+
+### Model Data
+```{r import 1D model data}
+path <- system.file("extdata/hydrographs", package = "razviz")
+dss_observed_filename <- "razviz_ex_model.dss"
+
+model_dss_file <- dssrip::opendss(paste0(path,"/", dss_observed_filename), stopIfNew = TRUE)
+
+time_interval <- "6HOUR"
+plan_names <- c("UMR_PHASEIV_2001MOD-EVENT","UMR_PHASEIV_2014-EVENT","UMR_PHASEIV_2019MOD-EVENT")
+plan_events <- c(2001, 2014, 2019)
+
+List_1Dmodel_data <- import_hecras_1Dmodel_data(model_dss_file = model_dss_file,
+                                                  plan_names = plan_names,
+                                                  plan_events = plan_events,
+                                                  time_interval = time_interval,
+                                                  Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList)
+```
+
+
+```{r import 2D model data}
+
+#import .csv file shows SA connection flows to import and which CX to associate it to
+SA2D_CONNECTIONS <- read.csv(paste0(path,"/UMR_2DFLOWAREAS.csv"))
+
+#Clean up data frame so that only 2D areas that have cross sections associated are kept.
+SA2D_CONNECTIONS <- SA2D_CONNECTIONS[!(is.na(SA2D_CONNECTIONS$CX_RM) | SA2D_CONNECTIONS$CX_RM==""), ]
+
+
+List_2Dmodel_data <- import_hecras_2Dmodel_data(model_dss_file = model_dss_file,
+                                                  plan_names = plan_names,
+                                                  plan_events = plan_events,
+                                                  time_interval = time_interval,
+                                                  Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList,
+                                                  SA2D_CONNECTIONS = SA2D_CONNECTIONS)
+```
+
+
+###Combine observed and model data into one dataframe for each cross section
+```{r}
+#Identify if modeled data is a calibration run or final model
+run_type <- "Calibration"
+#Identify which calibration run it is
+run_number <- 1
+
+#Make a list of river miles where there are gage locations in the RAS model
+Formatted_UnsteadyFlowFile <- Formatted_UnsteadyFlowFileList[[1]]
+locations <- unique(Formatted_UnsteadyFlowFile$RiverMile)
+
+hydrograph_list <- razviz::hydrograph_datatables(list_observed_data = list_observed_data,
+                                                      list_1Dmodel_data = list_1Dmodel_data,
+                                                      list_2Dmodel_data = list_2Dmodel_data,
+                                                      locations = locations,
+                                                      plan_events = plan_events,
+                                                      run_type = run_type,
+                                                      run_number = number)
+```
+
+
+
+
+
+
+###Manually Add 2D Flows - 
+In HEC-RAS, the modeler can a profile line across the 2D area and copy and pasted it out of the HEC-RAS GUI. In the following section, we demonstrate how to import that data and add it to the 1D model output for a particular cross-section
+```{r Manually adding flows to particular cross-section(s), eval=FALSE}
+#read in csv files
+
+#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
+path <- "C:/Users/b6echla0/Documents/04_Projects/05_UMR PHASE IV/UMR Phase II/RScript_Plots_9.11.2020"
+#Identify the pattern in the file name for each profile that needs to be imported. 
+pattern <- "2DArea"
+
+
+files <- dir(path, pattern = pattern, full.names = TRUE)
+tables <- lapply(X = files, FUN = readr::read_csv)
+for(i in 1:4){
+  table <- tables[[i]]
+  table$Date <- parse_datetime(table$Date,format = "%m/%d/%Y %H:%M")
+  assign(paste0("Profile_Line_",plans[i]),table)
+  }
+  
+#Cross sections where the flow needs to be added
+CX_2D <- c(437.08, 437.18)
+CX_2DAREA_FLOWS_HW <- mget(ls(pattern="Final_DF_437.08"))
+CX_2DAREA_FLOWS_TW <- mget(ls(pattern="Final_DF_437.18"))
+ADD_2DAREA_FLOWS <- mget(ls(pattern="Profile_Line"))
+names(ADD_2DAREA_FLOWS)
+
+for (y in CX_2D){
+  if(y == 437.08){CX_2DAREA_FLOWS <- CX_2DAREA_FLOWS_HW  
+  }else{CX_2DAREA_FLOWS <- CX_2DAREA_FLOWS_TW}
+
+  for(p in 1:length(plan_events)){ #start with a specific plan
+    event_year <- plan_events[p]
+ 
+    #loop through all the CX
+    #add 2D flows if needed at the particular river mile location
+    #start by looking at river mile locations that have 2D areas associated with them
+  
+    Flow_2DArea <- ADD_2DAREA_FLOWS[[p]]
+    CX_FLOWS <- CX_2DAREA_FLOWS[[p]]
+    
+    #Merge to ADD to the model flow the 2D area flow from that plan (should be at the same timestep)
+    Add_SA_Connection <- merge(CX_FLOWS, Flow_2DArea, by.x="date", by.y = "Date") #merge the two dataframes
+    
+    #add the flow columns together and create a new column called sum
+    Add_SA_Connection$Sum <- Add_SA_Connection$Model_Q + Add_SA_Connection$`FLOW` 
+    
+    #rename the columns to match razviz and save as 
+    setnames(Add_SA_Connection, old = c('Model_Q','Sum'), new = c('Model_Q_CXonly','Model_Q'))
+
+    #rename Gage to show added flow  
+    Add_SA_Connection$Gage_Location <- paste0(CX_FLOWS$Gage_Location[1] , " + 2D Connection Lake Odessa")
+    
+    #save the new totals on top of the old datatable
+    assign(paste("Final_DF",y, Plan_Event, sep="_"), Add_SA_Connection)
+
+ } #start a new plan
+} #start at a new cross section
+```
+
+##Import Data from csv files (Option #2)
+* Use the `razviz::import_csv_manualrasoutput` function to import data the example RAS model results included in the package for each modeled event. * Specify the hydrologic event name, the model run number, and the model type. 
+* Repeat for each model scenario to be examined. 
+```{r import_csv_manualrasoutput, eval=FALSE}
+# Set event parameters
+folder <- system.file("extdata/hydrographs/2008_calibration_9",
+                      package = "razviz")
+event <- "2008"
+run_number <- 9
+run_type <- "Calibration"
+# Import event model results
+cal_2008 <- razviz::import_csv_manualrasoutput(folder = folder,
+                                           event = event,
+                                           run_number = run_number,
+                                           run_type = run_type)
+
+# Set event parameters
+folder <- system.file("extdata/hydrographs/2013_calibration_9",
+                      package = "razviz")
+event <- "2013"
+run_number <- 9
+run_type <- "Calibration"
+# Import event model results
+cal_2013 <- razviz::import_csv_manualrasoutput(folder = folder,
+                                           event = event,
+                                           run_number = run_number,
+                                           run_type = run_type)
+
+hydrograph_list <- list(cal_2008, cal_2013)
+```
+
+# Combine all cross-sections and events
+Combine all the dataframes into one table and reorganize for plotting. 
+```{r combine events}
+ #wide version
+hydrograph_df_wide <- razviz::combine_hydrographs(hydrograph_datatables)
+
+# Convert to long format suitable for plotting
+hydrograph_df <- razviz::lengthen_hydrographs(hydrograph_df_wide) 
+
+#remove missing values
+hydrograph_df_na <- hydrograph_df[!is.na(hydrograph_df$value),]
+
+#rename the levels to what will be shown on plots.
+hydrograph_df_na$Event <- factor(hydrograph_df_na$Event, levels = c("2001","2014","2019"),
+                                                         labels = c("2001MOD","2014","2019MOD") )
+
+#assign the group of data a run number and type
+hydrograph_df_na$Run_num <- 1
+hydrograph_df_na$Run_type <- "Calibration"
+```
+
+#Hydrograph Report 
+These plots will include all the observed data with the observed data dashed
+```{r hydrograph_report, echo=FALSE}
+output_dir <- "C:/temp"
+if (!dir.exists(output_dir)) {dir.create(output_dir)}
+
+filename <- "Hydrograph_Plot_Report.pdf"
+
+#Define hydrograph plot pages
+hg_plot_pages <- razviz::hydrograph_plot_pages(hydrograph_df_na)
+
+
+# Create hydrograph report
+razviz::hydrograph_report(hydrograph_df = hydrograph_df_na,
+                          hg_plot_pages = hg_plot_pages,
+                          output_dir = output_dir, filename = filename)
+
+```
