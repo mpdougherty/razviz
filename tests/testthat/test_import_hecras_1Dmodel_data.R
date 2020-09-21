@@ -14,9 +14,9 @@ library(dssrip)
 options(scipen=999)
 
 path <- system.file("extdata/hydrographs", package = "razviz")
-dss_observed_filename <- "razviz_ex_model.dss"
+dss_model_filename <- "razviz_ex_model.dss"
 
-model_dss_file <- dssrip::opendss(paste0(path,"/", dss_observed_filename), stopIfNew = TRUE)
+model_dss_file <- dssrip::opendss(paste0(path,"/", dss_model_filename), stopIfNew = TRUE)
 
 time_interval <- "6HOUR"
 plan_names <- c("UMR_PHASEIV_2001MOD-EVENT","UMR_PHASEIV_2014-EVENT","UMR_PHASEIV_2019MOD-EVENT")
