@@ -17,3 +17,13 @@ Observed DSS Loc=Mississippi     ,DSMinnesota     ,839.25
 Observed DSS Filename=USGS_Gages.dss
 Observed DSS Pathname=/MISSISSIPPI RIVER/ST. PAUL, MN/FLOW/01OCT2013/15MIN/USGS/
 Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,811.27  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/PRESCOTT, WI/FLOW/01FEB2009/15MIN/USGS/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=Mississippi     ,BelowStCroix    ,811.27  
+Observed DSS Filename=USGS_Gages.dss
+Observed DSS Pathname=/MISSISSIPPI RIVER/PRESCOTT, WI/STAGE/01SEP2008/15MIN/USGS-NAVD88/
+Observed DSS Dn Dist=

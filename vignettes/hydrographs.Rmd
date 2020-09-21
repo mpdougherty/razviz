@@ -58,10 +58,10 @@ library(razviz)
 ```
 
 
-#DSS-Vue
+##DSS-Vue
 dssrip needs to know where DSS is stored on your computer. If you are using DSSVue which was installed from ACE-IT, it will likely be in your programs folder under HEC. If you get errors that your path could not be found, make sure that two back slashes (e.g. \\ ) are included in the path name.  For some, DSS is downloaded into a new location in order to use a more recent version. 
 
-#R profile 
+###R profile 
 Save a text file called .Rprofile in you documents folder
 
 if(R.Version()$arch=="x86_64"){
@@ -70,13 +70,14 @@ if(R.Version()$arch=="x86_64"){
   #options(dss_jre_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212")
   #Sys.setenv(JAVA_HOME=options("dss_jre_location"))  # I think this should be: Sys.setenv(JAVA_HOME=""), but works anyway because not set for 64-bit.
 }
+https://www.hec.usace.army.mil/software/hec-dssvue/downloads/dev/HEC-DSSVue-v3.0.00.212.7z
 
 ```{r DSS Location}
-#options(dss_location="C:\\Program Files (x86)\\HEC\\DSSVue")
+#options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
 options("dss_location")
 ```
 
-#Java
+###Java
 rJava is a hard package to get working. The only way I could get it load was from the default settings. 
 ```{r}
 #install.packages("rJava")
@@ -84,35 +85,35 @@ library(rJava)
 packageVersion("rJava")
 ```
 
-#dssrip
+###dssrip
 Now with all the previous files installed, install dssrip using the code provided in the read me file.  If that does not work, you can download the tar.gz file on to a local drive and install it from there. Often the tar.gz file will be saved in a temporary location and you can copy to a new location from there.
 
 Source: https://github.com/eheisman/dssrip/
 Helpful Blog Post (cannot access while on VPN)
 http://eaheisman.blogspot.com/2013/04/hec-dss-files-and-r-and-python.html
-```{r dssrip install, warning=FALSE}
+```{r dssrip install}
 #devtools::install_github("eheisman/dssrip", INSTALL_opts = "--no-multiarch", ref="r36_rJava0.9-12_fixes",force = TRUE)
 library(dssrip)
 ```
 
-#Troubleshooting
+### Troubleshooting
 Run these codes to ensure that rJava and DSS are woring through dssrip properly
 ```{r}
 .jinit() #temporary fix
 .jclassPath() #should include DSS locations
 ```
 
-#dssrip 
+### dssrip 
 List the functions which dssrip has available. In July 2020, the developer of dssrip, made changes to the code. Please refer to the github account for updates.
 ```{r dssrip functions, eval=FALSE}
 #List the functions that dssrip has available to use.
 lsf.str("package:dssrip")
 ```
 
-#Read the Unsteady Flow Files
+## Read the Unsteady Flow Files
 In this step, we need to tell R which paths to take from observed DSS database. HEC-RAS creates an unsteady flow file that lists the observed data which is input in the data for each plan.  
 
-Copy and paste those into a new text file and save it in the working directory folder under the name "UnsteadyFlowObservedDateFile_EVENT.txt" Substitute event for the event year used in each plan. 
+Save as a new text file and save it in the working directory folder under the name "UnsteadyFlowObservedDateFile_EVENT.txt" Substitute event for the event year used in each plan. 
 
 NOTE: Option #2 allows you to individually import unsteady flow files. If you are changing more than plan_events in the naming structure, it may be easier to just import the files individually. 
 ```{r HEC-RAS Unsteady Flow File}
@@ -149,8 +150,64 @@ example <- Formatted_UnsteadyFlowFileList[[1]]
 
 
 
-## Import Hydraulic Model Output
-In this step we'll import the RAS exports from several RAS model calibration runs. 
+## Import Data from DSS (Option #1)
+### Observed Data
+In this step we'll import the observed data that was used in the HEC-RAS model. Most often this data comes from USGS, but USACE has gages at individual lock and dams that may also be used in the model.  All observed data should be combined into one dss file. Update the file path and name to identify the observed dss file for your particular model. 
+```{r}
+#to remove scientific notation
+options(scipen=999)
+
+path <- system.file("extdata/hydrographs", package = "razviz")
+dss_observed_filename <- "razviz_ex_observed.dss"
+
+observed_dss_file <- dssrip::opendss(paste0(path,"/", dss_observed_filename), stopIfNew = TRUE)
+
+#TIME IN DSS IS DIFFERENT THAN TIME STORAGE IN R
+test <-as.data.frame(dssrip::getTSC(observed_dss_file, "/MISSISSIPPI RIVER/HWY 610 IN BROOKLYN PARK, MN/FLOW//15MIN/USGS/"))
+head(test)
+
+
+observed_dataframes_list <- razviz::import_observed_data(observed_dss_file = observed_dss_file,
+                                                         Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList,
+                                                         plan_events = plan_events)
+```
+
+### Model Data
+```{r import 1D model data}
+path <- system.file("extdata/hydrographs", package = "razviz")
+dss_observed_filename <- "razviz_ex_model.dss"
+
+model_dss_file <- dssrip::opendss(paste0(path,"/", dss_observed_filename), stopIfNew = TRUE)
+
+time_interval <- "6HOUR"
+plan_names <- c("UMR_PHASEIV_2001MOD-EVENT","UMR_PHASEIV_2014-EVENT","UMR_PHASEIV_2019MOD-EVENT")
+plan_events <- c(2001, 2014, 2019)
+
+List_1Dmodel_data <- import_hecras_1Dmodel_data(model_dss_file = model_dss_file,
+                                                  plan_names = plan_names,
+                                                  plan_events = plan_events,
+                                                  time_interval = time_interval,
+                                                  Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList)
+```
+
+
+```{r import 2D model data}
+#Option #1 - automatic import from dss file
+#import .csv file shows SA connection flows to import and which CX to associate it to
+SA2D_CONNECTIONS <- read.csv(paste0(path,"/UMR_2DFLOWAREAS.csv"))
+
+#Clean up data frame so that only 2D areas that have cross sections associated are kept.
+SA2D_CONNECTIONS <- SA2D_CONNECTIONS[!(is.na(SA2D_CONNECTIONS$CX_RM) | SA2D_CONNECTIONS$CX_RM==""), ]
+
+
+List_2Dmodel_data <- import_hecras_2Dmodel_data(model_dss_file = model_dss_file,
+                                                  plan_names = plan_names,
+                                                  plan_events = plan_events,
+                                                  time_interval = time_interval,
+                                                  Formatted_UnsteadyFlowFileList = Formatted_UnsteadyFlowFileList,
+                                                  SA2D_CONNECTIONS = SA2D_CONNECTIONS)
+```
+
 
 ```{r}
 
@@ -161,22 +218,65 @@ In this step we'll import the RAS exports from several RAS model calibration run
 
 
 
+#Manually Add 2D Flows - if drew a profile line across the 2D area and copy and pasted it out of the HEC-RAS GUI
+```{r}
+#read in csv files
+
+#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
+path <- "C:/Users/b6echla0/Documents/04_Projects/05_UMR PHASE IV/UMR Phase II/RScript_Plots_9.11.2020"
+#Identify the pattern in the file name for each profile that needs to be imported. 
+pattern <- "2DArea"
 
 
+files <- dir(path, pattern = pattern, full.names = TRUE)
+tables <- lapply(X = files, FUN = readr::read_csv)
+for(i in 1:4){
+  table <- tables[[i]]
+  table$Date <- parse_datetime(table$Date,format = "%m/%d/%Y %H:%M")
+  assign(paste0("Profile_Line_",plans[i]),table)
+  }
+  
+  
+#Cross sections where the flow needs to be added
+CX_2D <- c(437.08, 437.18)
+CX_2DAREA_FLOWS_HW <- mget(ls(pattern="Final_DF_437.08"))
+CX_2DAREA_FLOWS_TW <- mget(ls(pattern="Final_DF_437.18"))
+ADD_2DAREA_FLOWS <- mget(ls(pattern="Profile_Line"))
+names(ADD_2DAREA_FLOWS)
 
-* Use the `razviz::import_ras_hydrographs` function to import the example RAS model results included in the package for each modeled event. 
-* Specify the hydrologic event name, the model run number, and the model type. 
+for (y in CX_2D){
+  if(y == 437.08){CX_2DAREA_FLOWS <- CX_2DAREA_FLOWS_HW  
+  }else {CX_2DAREA_FLOWS <- CX_2DAREA_FLOWS_TW}
+ for(p in 1:length(plan_year)){ #start with a specific plan
+    Plan_Event <- plan_year[p]
+ #loop through all the CX
+  #add 2D flows if needed at the particular river mile location
+  #start by looking at river mile locations that have 2D areas associated with them
+  
+  Flow_2DArea <- ADD_2DAREA_FLOWS[[p]]
+  CX_FLOWS <- CX_2DAREA_FLOWS[[p]]
+#Merge to ADD to the model flow the 2D area flow from that plan (should be at the same timestep)
+  Add_SA_Connection <- merge(CX_FLOWS, Flow_2DArea, by.x="date", by.y = "Date") #merge the two dataframes
+#add the flow columns together and create a new column called sum
+  Add_SA_Connection$Sum <- Add_SA_Connection$Model_Q + Add_SA_Connection$`FLOW` 
+    
+#rename the columns to match razviz and save as 
+  setnames(Add_SA_Connection, old = c('Model_Q','Sum'), new = c('Model_Q_CXonly','Model_Q'))
+
+#rename Gage to show added flow  
+  Add_SA_Connection$Gage_Location <- paste0(CX_FLOWS$Gage_Location[1] , " + 2D Connection Lake Odessa") 
+#save the new totals
+assign(paste("Final_DF",y, Plan_Event, sep="_"), Add_SA_Connection)
+
+ } #start a new plan
+} #start at a new cross section
+  
+```
+
+##Import Observed Data from csv files (Option #2)
+* Use the `razviz::import_csv_manualrasoutput` function to import the example RAS model results included in the package for each modeled event. * Specify the hydrologic event name, the model run number, and the model type. 
 * Repeat for each model scenario to be examined. 
-
-
-
-
-
-
-
-
-### Event 2008, Calibration #9
-```{r cal_2008}
+```{r import_csv_manualrasoutput, eval=FALSE}
 # Set event parameters
 folder <- system.file("extdata/hydrographs/2008_calibration_9",
                       package = "razviz")
@@ -184,14 +284,11 @@ event <- "2008"
 run_number <- 9
 run_type <- "Calibration"
 # Import event model results
-cal_2008 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2008 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
-```
 
-### Event 2013, Calibration #9
-```{r cal_2013}
 # Set event parameters
 folder <- system.file("extdata/hydrographs/2013_calibration_9",
                       package = "razviz")
@@ -199,41 +296,15 @@ event <- "2013"
 run_number <- 9
 run_type <- "Calibration"
 # Import event model results
-cal_2013 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2013 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
+
+hydrograph_list <- list(cal_2008, cal_2013)
 ```
 
-### Event 2014, Calibration #9
-```{r cal_2014}
-# Set event parameters
-folder <- system.file("extdata/hydrographs/2014_calibration_9",
-                      package = "razviz")
-event <- "2014"
-run_number <- 9
-run_type <- "Calibration"
-# Import event model results
-cal_2014 <- razviz::import_ras_hydrographs(folder = folder,
-                                           event = event,
-                                           run_number = run_number,
-                                           run_type = run_type)
-```
 
-### Event 2017, Calibration #9
-```{r cal_2017}
-# Set event parameters
-folder <- system.file("extdata/hydrographs/2017_calibration_9",
-                      package = "razviz")
-event <- "2017"
-run_number <- 9
-run_type <- "Calibration"
-# Import event model results
-cal_2017 <- razviz::import_ras_hydrographs(folder = folder,
-                                           event = event,
-                                           run_number = run_number,
-                                           run_type = run_type)
-```
 
 ## Combine all model runs and events and recode
 In this step we'll get the model results ready for graphing.
@@ -244,7 +315,7 @@ In this step we'll get the model results ready for graphing.
 
 ```{r combine_events}
 # Combine hydrograph events 
-hydrograph_list <- list(cal_2008, cal_2013, cal_2014, cal_2017)
+
 cal_wide <- razviz::combine_hydrographs(hydrograph_list)
 
 # Convert to long format suitable for plotting
