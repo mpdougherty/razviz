@@ -2,6 +2,7 @@
 #'
 #' @description Imports 'FLOW-TOTAL'  timeseries from SA Connections in dss file created from HEC-RAS model
 #'
+#' @export
 #' @param model_dss_file   jobjRef; open dss file where observed data is stored hydrograph using dssrip.
 #'
 #' @param plan_names       list; list of the plan names as they are written in Part F of dss path.

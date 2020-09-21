@@ -103,6 +103,7 @@ import_observed_data <- function(observed_dss_file,
         #identifies which unsteady flow file used this observed data
         DSS_OBSERVED <- add_column(DSS_OBSERVED, UnsteadyFlowFile = event_year)
         assign(name, DSS_OBSERVED)
+        print(name)
       }
     } #start with a new pathname within the same event_year
 

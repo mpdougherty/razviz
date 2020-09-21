@@ -2,6 +2,7 @@
 #'
 #' @description Imports data from dss file created from HEC-RAS model
 #'
+#' @export
 #' @param model_dss_file   jobjRef; open dss file where observed data is stored hydrograph using dssrip.
 #'
 #' @param plan_names       list; list of the plan names as they are written in Part F of dss path.
@@ -88,6 +89,7 @@ import_hecras_1Dmodel_data <- function(model_dss_file, plan_names, plan_events, 
       #Saves the time series data that was taken out of DSS as a new dataframe in R
       #this data frame only has one of the models plans
       assign(dfname, DSS_MODEL)
+      print(dfname)
 
       #creates a dataframe with all of the HEC-RAS plans/events for a particular location
       DSS_MODEL_AllFlowPlans <- rbind(DSS_MODEL_AllFlowPlans, DSS_MODEL)
