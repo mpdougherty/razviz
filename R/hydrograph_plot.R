@@ -67,23 +67,32 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
     scale_y_continuous(minor_breaks = seq(500 , 900, 1), breaks = seq(500 , 900,2))
 
   # Discharge hydrograph
-  q_plot <- ggplot(data = q,
-                   aes(x = date, y = value/1000, color = Type),
-                   na.rm = TRUE) +
-    geom_line(aes(linetype = Type), size = 1) +
-    scale_linetype_manual(values = Discharge_line, labels = Discharge_labels) +
-    facet_grid(. ~ Event, scales = "free") +
+  q_plot <- ggplot(data = q, aes(x = date, y = value/1000, color = Type)) +
+    geom_line(aes(linetype=Type) ,size = 1) +
+    facet_grid(. ~ Event, scales = "free_x") +
     theme_bw() +
+    theme(panel.grid.minor.x = element_blank())+
     scale_color_manual(values = Discharge_cols, labels = Discharge_labels) +
+    scale_linetype_manual(values = Discharge_line, labels = Discharge_labels) +
     theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          axis.title.x = element_blank(),
-          axis.text.x  = element_text(angle = 50, hjust = 1)) +
-    scale_x_datetime(date_labels = "%e %b",
-                     date_breaks = "14 days",
-                     date_minor_breaks = "1 day") +
-    labs(y = "Discharge (1000 cubic feet per second)")+
+      legend.title = element_blank(),
+      axis.title.x = element_blank(), axis.text.x = element_text(angle = 50,hjust = 1)) +
+    scale_x_datetime(date_labels = "%e %b", date_breaks = "14 days", date_minor_breaks = "1 day") +
+    labs(y = "Discharge (1000 cubic feet per second)") +
     scale_y_continuous(minor_breaks = seq(0 , 1000, 5), breaks = seq(0 , 1000, 10))
+
+
+  # Discharge hydrograph (for small flow ranges)
+  if((max(q$value)-min(q$value))/1000 <= 20 ){
+    #Define new y limits
+    plot_min_y <- min(q$value)/1000
+    plot_max_y <- max(q$value)/1000 + 5
+
+    q_plot <- q_plot +
+               coord_cartesian(ylim = c(plot_min_y,plot_max_y))
+      }else{
+      q_plot <- q_plot
+    }
 
   # Create title for plot group
   title <- textGrob(label = paste(trimws(ws$River), " River, ",
