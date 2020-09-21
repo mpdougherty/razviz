@@ -38,7 +38,7 @@ for(i in 1:length(plan_events)){
 
 unsteadyflowfile_list <- mget(ls(pattern="UnsteadyFlowFile_"))
 
-Formatted_UnsteadyFlowFileList <- razviz::import_unsteadyflowfile(
+Formatted_UnsteadyFlowFileList <- razviz::import_hecras_unsteadyflowfiles(
                                               unsteadyflowfile_list = unsteadyflowfile_list,
                                               plan_events = plan_events)
 

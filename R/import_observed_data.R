@@ -7,17 +7,13 @@
 #' HEC-DSSVue may change how the Part E (typically time interval: MIN, HOUR) is written.
 #'
 #' @export
-#' @param folder      character; Path to a folder of `.csv` files of RAS model
-#'                    hydrograph `.csv` files.
-#' @param event       character; The name of the model event.
-#' @param run_number  numeric; The model run number. Used to label plot title.
-#' @param run_type    character; The type of model run. Label used to in plot
-#'                    title.
-#' @param col_spec    readr::cols object; A column specification used to define
-#'                    the columns of the input model results. Optional. Defaults
-#'                    to the current RAS column names.
+#' @param observed_dss_file                 jobjRef; open dss file where observed data is stored hydrograph using dssrip.
+#' @param Formatted_UnsteadyFlowFileList    list; list containing the unsteady flow data for each plan;
+#'                                          output from import_hecras_unsteadyflowfiles function.
+#' @param plan_events                       list; The list of years in which the different events occurred
+
 #'
-#' @return A data frame of RAS model results.
+#' @return A list of data frames Each data frames contains the observed flow (Q) and water surface (WS) elevation for each cross-section.
 #'
 #' @importFrom readr cols col_character col_double
 #' @importFrom tibble add_column
