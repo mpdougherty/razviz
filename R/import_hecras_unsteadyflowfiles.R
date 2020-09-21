@@ -15,7 +15,7 @@
 #' @importFrom tibble add_column
 #'
 
-import_unsteadyflowfile <- function(unsteadyflowfile_list, plan_events){
+import_hecras_unsteadyflowfiles <- function(unsteadyflowfile_list, plan_events){
     for(p in 1:length(plan_events)){ #need to loop through the unsteady flow file for each plan
         event_year <- plan_events[p] #selects a single event year
         text <- as.data.frame(unsteadyflowfile_list[p]) #selects a single unsteady flow file
