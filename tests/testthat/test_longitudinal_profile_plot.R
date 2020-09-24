@@ -18,6 +18,8 @@ hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
+#set the variable to plot
+hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 
 # high_water
 high_water_csv <- system.file("extdata/longitudinal_profiles",

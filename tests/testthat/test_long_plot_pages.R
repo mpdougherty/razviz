@@ -7,6 +7,10 @@ path <- system.file("extdata/longitudinal_profiles",
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 
+#set the variable to plot
+hydro_model$hydro_parameter <- hydro_model$WS_Elev
+
+
 # high_water
 high_water_csv <- system.file("extdata/longitudinal_profiles",
                               "high_water_marks.csv",

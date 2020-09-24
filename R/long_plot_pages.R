@@ -62,11 +62,11 @@ long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
                       high_water$river_mile >= end_mile, ]
 
     # Set plot_pages$max_y
-    aa <- c(max0(hm$WS_Elev), max0(hw$elevation_NAVD88))
+    aa <- c(max0(hm$hydro_parameter), max0(hw$elevation_NAVD88))
     plot_pages[plot_pages$plot == k, ]$max_y <- max0(aa[aa > 0])
 
     # Set plot_pages$min_y
-    bb <- c( min0(hm$WS_Elev), min0(hw$elevation_NAVD88) )
+    bb <- c( min0(hm$hydro_parameter), min0(hw$elevation_NAVD88) )
     plot_pages[plot_pages$plot == k, ]$min_y <- min0(bb[bb > 0])
 
     # Calculate y range

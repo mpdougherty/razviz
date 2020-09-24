@@ -1,7 +1,7 @@
 #' @title Longitudinal Profile Plot
 #'
-#' @description Creates a longitudinal profile graph for the input RAS
-#' hydro model.
+#' @description Creates a longitudinal profile graph for the hydraulic
+#' parameter named 'hydro_parameter'.
 #'
 #' @export
 #' @param plot_number    numeric; The plot number to graph.
@@ -80,7 +80,7 @@ longitudinal_profile_plot <- function(plot_number, hydro_model, long_plot_pgs,
 
   # Create the basic plot with only water surface profile or parameter of interest
   p <- ggplot2::ggplot(data = hm,
-                       aes(x = River_Sta, y = WS_Elev, color = Event)) +
+                       aes(x = River_Sta, y = hydro_parameter, color = Event)) +
     geom_line(size = 2) +
     scale_color_manual(values = graph_colors, labels = legend_labels) +
     theme_bw() +

@@ -37,7 +37,7 @@ library(devtools)
 
 Next, we'll install the `razviz` package. 
 ```{r install, eval=FALSE}
-devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = TRUE)
+devtools::install_github(repo = "mpdougherty/razviz", build_vignettes = FALSE)
 ```
 
 Finally, we'll load the `razviz` package. 
@@ -46,15 +46,18 @@ library(razviz)
 ```
 
 
-## Hydraulic Model Output
-In this step we'll prepare the hydro model results. 
+## Hydraulic Parameters
+In this step we will import the hydraulic parameter that needs to be plotted as a longitudinal profile.  Commonly the parameter of interest will be water surface or stage profiles. However, as noted in these instructions other hydraulic parameters such as water velocity or lateral hydraulic connectivity can also be plotted longitudinally. 
 
-* Import the example RAS model results in `.csv` format included in the package. This folder contains a set of 
-* Create the `Event` field to specify the model scenarios that will be plotted as different series in the longitudinal profile graph. 
-* Filter the model scenarios down to only the ones we want to visualize. 
+###Importing Water Surface Elevations - Option #1
+* Import the example RAS model results in `.csv` format included in the package. 
+* This folder contains a set of .csv files which have been copy and pasted from HEC-RAS and 
+* Data is cleaned so that there is lateral structures and bridges have been removed. 
+* In excel, create the `Event` field to identify each event as different series and plot separately in the longitudinal profile graph. 
+* (Optional) Filter the model scenarios down to only the ones we want to visualize. 
+* Create a new column that contains that data series which should be plotted longitudinally
 
-###Option #1
-```{r hydro_model, message=FALSE}
+```{r hydro_model option 1, message=FALSE}
 #If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
 path <- system.file("extdata/longitudinal_profiles", 
                     package = "razviz")
@@ -63,22 +66,31 @@ path <- system.file("extdata/longitudinal_profiles",
 pattern <- "Freq"
 
 #Combines all the files that have been identified. 
+#All columns must have the same column name to be combined 
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 
-## Create `Event` field for labeling - in this example the frequency column is being renamed. 
+#Re-name `Event` field for labeling 
+#in the example .csv files the  column with the return periods was labelled 'Freq'. 
 hydro_model$Event <- hydro_model$Freq
 
-## Filter the Events
+#Filter the Events (optional)
+#In the external data provided, there are 23 different water surface profiles related to return periods
+#Filtering allows us to only plot a select few of them
 model_events <- c("2 Year", "100 Year", "500 Year", "100000 Year")
 hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
 
-## Set Event as an ordered factor
+#Set Event as an ordered factor
+#Ordered factors are categorical variables that the data is grouped by. 
+#Factors are used to specify how to plot the data later in the code
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
+
+#set the variable to plot
+hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ```
 
-### Option #2
+### Importing Water Surface Elevations - Option #2
 If the water surface profiles are still in HEC-RAS 5.0.7, the following steps will help you create the necessary .csv files
 
 *Load the HEC-RAS Profile Output Summary table (selecting all reaches of the river of interest). 
@@ -90,8 +102,8 @@ If the water surface profiles are still in HEC-RAS 5.0.7, the following steps wi
 
 When the data is taken from HEC-RAS without reformatting in excel, the river mile column sometimes contains descriptions of the physical structures located at those river miles (e.g. bridge, lateral structure).  In order for to plot river mile as a number on the x-axis, those text descriptions need to be removed and the river mile column needs to be a 'numeric' variable in r.  Also, the total flow (Q_Total) will also have text for structures.
 
-```{r}
-#Need to add a column with the Event year before combining. 
+```{r hydro_model option 2, message=FALSE, eval=FALSE}
+#Add a column with the Event year BEOFRE importing and combining in R. 
 #If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
 path <- system.file("extdata/longitudinal_profiles", 
                     package = "razviz")
@@ -99,8 +111,11 @@ path <- system.file("extdata/longitudinal_profiles",
 #Identify the pattern in the file name for each profile that needs to be imported. 
 pattern <- "Profile_"
 
+#Combines all the files that have been identified. 
+#All columns must have the same column name to be combined
 Profile_Summary <- razviz::combine_files(path = path, pattern = pattern)
 
+#Rename the columns coming our of HEC-RAS to avoid special characters
 data.table::setnames(Profile_Summary, old = c("River","Reach","River Sta",
                      "Profile", "Q Total",
                      "Min Ch El","W.S. Elev",
@@ -117,6 +132,7 @@ data.table::setnames(Profile_Summary, old = c("River","Reach","River Sta",
                     "Froude_Chl","Event"), skip_absent = TRUE)
 
 #remove rows that do not have a number in the Q_Total column
+#will create a "NAs introduced by coecion warning" because characters which are not numbers are converted in NA.
 profile_data <- Profile_Summary[!is.na(as.numeric(as.character(Profile_Summary$Q_Total))),]
 
 #Reformat river mile column to contain only numbers by splitting the column into numbers and text using a space (' ') as the delimiter
@@ -128,15 +144,64 @@ profile_data$River_Sta <- as.numeric(as.character(profile_data$River_Sta))
 
 #add ordered factor - this will be used during plotting
 model_events<- c(2001, 2014, 2019)
-profile_data_ordered <- dplyr::filter(profile_data, Event %in% model_events)
+
+#optional filtering not needed for this example
+#profile_data_ordered <- dplyr::filter(profile_data, Event %in% model_events)
 
 ## Set Event as an ordered factor
-profile_data_ordered$Event <- factor(profile_data_ordered$Event,
+profile_data$Event <- factor(profile_data$Event,
                               levels = model_events,
                               labels = model_events)
 
-hydro_model_1 <- profile_data_ordered
+hydro_model_1 <- profile_data
+
+#set the variable to plot
+hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ```
+
+
+###Importing alternative hydraulic parameters
+If you would like to important another parameter, at a minimum your '.csv' file must have the following columns 
+
+1. River_Sta
+2. Event (even if there is only one event that you are plotting identify it.)
+3. Your parameter
+
+**CURRENTLY NO EXAMPLE DATA HAS BEEN UPLOADED INTO RAZVIZ AS AN EXAMPLE**
+
+```{r hydro_parameter import, eval=FALSE}
+#Add a column with the Event year BEOFRE importing and combining in R. 
+#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.
+path <- system.file("extdata/longitudinal_profiles", 
+                    package = "razviz")
+
+#Identify the pattern in the file name for each profile that needs to be imported. 
+pattern <- "Hydro_Parameter"
+
+#Combines all the files that have been identified. 
+#All columns must have the same column name to be combined
+hydro_parameter_summary <- razviz::combine_files(path = path, pattern = pattern)
+
+#save the river mile column as a number
+hydro_parameter_summary$River_Sta <- as.numeric(as.character(profile_data$River_Sta))
+
+#add ordered factor - this will be used during plotting
+model_events<- c(2001, 2014, 2019)
+
+#optional filtering not needed for this example
+#profile_data_ordered <- dplyr::filter(profile_data, Event %in% model_events)
+
+## Set Event as an ordered factor
+hydro_parameter_summary$Event <- factor(hydro_parameter_summar$Event,
+                              levels = model_events,
+                              labels = model_events)
+
+hydro_model_1 <- hydro_parameter_summary 
+
+#set the variable to plot
+hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
+```
+
 
 
 ## High Water Marks
@@ -162,17 +227,6 @@ high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 #high_water_events <- c("25% Duration")
 #high_water_events_df <- add_column(high_water, event = high_water_events)
 ```
-
-## Longitudinal Plot Pages
-In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. 
-
-```{r long_plot_pages}
-miles_per_plot <- 60
-long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
-                                              high_water_events_df,
-                                              miles_per_plot)
-```
-
 ## Gage locations
 In this step we'll prepare the gage dataset. 
 
@@ -242,6 +296,17 @@ bridges_csv <- system.file("extdata/longitudinal_profiles",
 bridges <- readr::read_csv(bridges_csv)
 ```
 
+
+## Longitudinal Plot Pages
+In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. 
+
+```{r long_plot_pages}
+miles_per_plot <- 60
+long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
+                                              high_water_events_df,
+                                              miles_per_plot)
+```
+
 ## Graph Colors
 In this step we'll assign the colors to each of the series in the graph. 
 
@@ -309,4 +374,49 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     plot_labels = plot_labels,
                                     output_dir = output_dir,
                                     filename = filename)
+```
+
+
+#Filter Longitudinal Profile to Shorter Reach
+
+##Plot Saint Anthony Falls to LD 1
+Due to the large elevation drop at Saint Anthony Falls, we will create two sets of plots, split at RM 843.3 (halfway between LD1 tailwater and St. Paul, MN)
+```{r LSFtoLD1 Filter, eval=FALSE}
+LSFtoLD1 <- dplyr::filter(profile_data_ordered, River_Sta >= 843.3)
+high_water_events_df_LSFtoLD1  <- dplyr::filter(high_water_events_df, river_mile >= 843.3)
+gages_LSFtoLD1  <- dplyr::filter(gages, river_mile >= 843.3)
+gage_labels_df_LSFtoLD1  <- dplyr::filter(gage_labels_df, river_mile >= 843.3)
+gage_boxes_df_LSFtoLD1  <- dplyr::filter(gage_boxes_df, river_mile >= 843.3)
+bridges_LSFtoLD1 <-  dplyr::filter(bridges, river_mile >= 843.3)
+features_LSFtoLD1 <-  dplyr::filter(features, river_mile >= 843.3)
+levees_LSFtoLD1 <-  dplyr::filter(levees, river_mile >= 843.3)
+```
+
+```{r LSFtoLD1 Plot, eval=FALSE}
+filename <- "Longitudinal_Profile_Report_Coon Rapids_LD1.pdf"
+
+#Plot Labels
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Coon Rapids, MN to Lock and Dam No. 10",
+                    "x_axis" = "Miles Above the Ohio River",
+                    "y_axis" = "Elevation (NAVD88 feet)")
+
+#longitudinal plot pages
+max(LSFtoLD1$River_Sta)-min(LSFtoLD1$River_Sta)
+miles_per_plot <- 22.84
+
+long_plot_pages_df_LSFtoLD1 <- razviz::long_plot_pages(LSFtoLD1, high_water_events_df_LSFtoLD1, miles_per_plot)
+
+report(hydro_model = LSFtoLD1,
+       long_plot_pgs = long_plot_pages_df_LSFtoLD1,
+        gages = gages_LSFtoLD1,
+        gage_labels_df = gage_labels_df_LSFtoLD1,
+        gage_boxes_df = gage_boxes_df_LSFtoLD1,
+        high_water = high_water_events_df_LSFtoLD1,
+        levees = levees_LSFtoLD1,
+        features = features_LSFtoLD1,
+        bridges = bridges_LSFtoLD1,
+        graph_colors = graph_cols,
+        legend_labels = legend_labels,
+        plot_labels = plot_labels,
+        output_dir = output_dir)
 ```

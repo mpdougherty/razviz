@@ -15,6 +15,9 @@ hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
+#set the variable to plot
+hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
+
 
 # high_water
 high_water_csv <- system.file("extdata/longitudinal_profiles",
@@ -98,6 +101,7 @@ filename <- "Longitudinal_Profile_Report.pdf"
 
 # longitudinal_profile_report
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
+                                    hydro_para = hydro_para,
                                     long_plot_pgs = long_plot_pgs,
                                     gages = gages,
                                     gage_labels_df = gage_labels_df,
