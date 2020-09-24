@@ -44,10 +44,12 @@ long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
   plot_pages[1, ]$end_mile   <- max(hydro_model$River_Sta) - miles_per_plot
 
   # Iterate through the remaining pages setting their start and end river miles
-  for (j in 2:num_plots) {
-    plot_pages[j, ]$start_mile <- plot_pages[j-1, ]$end_mile
-    plot_pages[j, ]$end_mile   <- plot_pages[j, ]$start_mile - miles_per_plot
-  }
+  if(num_plots > 1){
+      for (j in 2:num_plots) {
+      plot_pages[j, ]$start_mile <- plot_pages[j-1, ]$end_mile
+      plot_pages[j, ]$end_mile   <- plot_pages[j, ]$start_mile - miles_per_plot
+    }
+   }
 
   # Determine the min and max y-axis values for each data series
   for (k in 1:num_plots) {

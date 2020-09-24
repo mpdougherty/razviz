@@ -70,7 +70,7 @@ pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
 
 #Re-name `Event` field for labeling 
-#in the example .csv files the  column with the return periods was labelled 'Freq'. 
+#in the example .csv files the  column with the return periods was labeled 'Freq'. 
 hydro_model$Event <- hydro_model$Freq
 
 #Filter the Events (optional)
@@ -117,19 +117,19 @@ Profile_Summary <- razviz::combine_files(path = path, pattern = pattern)
 
 #Rename the columns coming our of HEC-RAS to avoid special characters
 data.table::setnames(Profile_Summary, old = c("River","Reach","River Sta",
-                     "Profile", "Q Total",
-                     "Min Ch El","W.S. Elev",
-                     "Crit W.S.","E.G. Elev",
-                     "E.G. Slope","Vel Chnl",
-                     "Flow Area","Top Width",
-                     "Froude # Chl","Event") , 
-                     new = c("River","Reach","River_Sta",
-                      "Profile", "Q_Total",
-                      "Min_Ch_El","WS_Elev",
-                      "Crit_WS","EG_Elev", 
-                      "EG_Slope","Vel_Chnl",
-                      "Flow_Area","Top_Width", 
-                    "Froude_Chl","Event"), skip_absent = TRUE)
+                                            "Profile", "Q Total",
+                                            "Min Ch El","W.S. Elev",
+                                            "Crit W.S.","E.G. Elev",
+                                            "E.G. Slope","Vel Chnl",
+                                            "Flow Area","Top Width",
+                                            "Froude # Chl","Event") , 
+                                    new = c("River","Reach","River_Sta",
+                                            "Profile", "Q_Total",
+                                            "Min_Ch_El","WS_Elev",
+                                            "Crit_WS","EG_Elev", 
+                                            "EG_Slope","Vel_Chnl",
+                                            "Flow_Area","Top_Width", 
+                                            "Froude_Chl","Event"), skip_absent = TRUE)
 
 #remove rows that do not have a number in the Q_Total column
 #will create a "NAs introduced by coecion warning" because characters which are not numbers are converted in NA.
@@ -353,13 +353,14 @@ if (!dir.exists(output_dir)) {dir.create(output_dir)}
 filename <- "Longitudinal_Profile_Report.pdf"
 ```
 
-## Longitudinal Profile Report
-In this step we'll call the longitudinal profile graph report. 
+## Longitudinal Profile Report (Entire Reach)
+In this step we'll call the longitudinal profile graph report for the entire reach of the river that is in the data that was orginally uploaded.
 
 * Run the report. 
-* Check the results in the file: [Longitudinal_Profile_Report.pdf](https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
+* Check the results in the file: [Longitudinal_Profile_Report.pdf]
+  (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
 
-```{r run_report, echo=FALSE}
+```{r run_report, echo=FALSE, results=FALSE}
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     long_plot_pgs = long_plot_pages_df,
                                     gages = gages,
@@ -377,46 +378,54 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
 ```
 
 
-#Filter Longitudinal Profile to Shorter Reach
+#### Longitudinal Profile Report (Entire Reach)
+In this step we'll call the longitudinal profile graph report, just like the previous section; however, prior to plotting we will specify the section of the river that we'd like plotted. This can be useful if there is a particular section of the river where there is considerable more elevation change than the remainder of the river. 
+
+* Specify a maximum and minimum river mile to filter the data. 
+* Check the results in the file: [Longitudinal_Profile_Report_Filtered.pdf]
+  (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_Filtered.pdf)
 
 ##Plot Saint Anthony Falls to LD 1
 Due to the large elevation drop at Saint Anthony Falls, we will create two sets of plots, split at RM 843.3 (halfway between LD1 tailwater and St. Paul, MN)
-```{r LSFtoLD1 Filter, eval=FALSE}
-LSFtoLD1 <- dplyr::filter(profile_data_ordered, River_Sta >= 843.3)
-high_water_events_df_LSFtoLD1  <- dplyr::filter(high_water_events_df, river_mile >= 843.3)
-gages_LSFtoLD1  <- dplyr::filter(gages, river_mile >= 843.3)
-gage_labels_df_LSFtoLD1  <- dplyr::filter(gage_labels_df, river_mile >= 843.3)
-gage_boxes_df_LSFtoLD1  <- dplyr::filter(gage_boxes_df, river_mile >= 843.3)
-bridges_LSFtoLD1 <-  dplyr::filter(bridges, river_mile >= 843.3)
-features_LSFtoLD1 <-  dplyr::filter(features, river_mile >= 843.3)
-levees_LSFtoLD1 <-  dplyr::filter(levees, river_mile >= 843.3)
-```
+```{r Filtered Longitudinal Profile, echo=FALSE, results=FALSE}
+filename <- "Longitudinal_Profile_Report_Filtered.pdf"
 
-```{r LSFtoLD1 Plot, eval=FALSE}
-filename <- "Longitudinal_Profile_Report_Coon Rapids_LD1.pdf"
+min_river_mile <- 260.17
+max_river_mile <- 320.62
+
+hydro_model_filtered        <- dplyr::filter(hydro_model_1 , River_Sta >= min_river_mile & River_Sta <= max_river_mile)
+high_water_events_filtered  <- dplyr::filter(high_water_events_df, river_mile >= min_river_mile & river_mile <= max_river_mile)
+gages_filtered              <- dplyr::filter(gages, river_mile >= min_river_mile & river_mile <= max_river_mile)
+gage_labels_filtered       <- dplyr::filter(gage_labels_df, river_mile >= min_river_mile & river_mile <= max_river_mile)
+gage_boxes_filtered         <- dplyr::filter(gage_boxes_df, river_mile >= min_river_mile & river_mile <= max_river_mile)
+bridges_filtered            <-  dplyr::filter(bridges, river_mile >= min_river_mile & river_mile <= max_river_mile)
+features_filtered           <-  dplyr::filter(features, river_mile >= min_river_mile & river_mile <= max_river_mile)
+levees_filtered             <-  dplyr::filter(levees, river_mile >= min_river_mile & river_mile <= max_river_mile)
 
 #Plot Labels
-plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Coon Rapids, MN to Lock and Dam No. 10",
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - RM 260.17-320.62",
                     "x_axis" = "Miles Above the Ohio River",
                     "y_axis" = "Elevation (NAVD88 feet)")
 
 #longitudinal plot pages
-max(LSFtoLD1$River_Sta)-min(LSFtoLD1$River_Sta)
-miles_per_plot <- 22.84
+max_river_mile-min_river_mile
 
-long_plot_pages_df_LSFtoLD1 <- razviz::long_plot_pages(LSFtoLD1, high_water_events_df_LSFtoLD1, miles_per_plot)
+miles_per_plot_filtered <- 60.45
 
-report(hydro_model = LSFtoLD1,
-       long_plot_pgs = long_plot_pages_df_LSFtoLD1,
-        gages = gages_LSFtoLD1,
-        gage_labels_df = gage_labels_df_LSFtoLD1,
-        gage_boxes_df = gage_boxes_df_LSFtoLD1,
-        high_water = high_water_events_df_LSFtoLD1,
-        levees = levees_LSFtoLD1,
-        features = features_LSFtoLD1,
-        bridges = bridges_LSFtoLD1,
+long_plot_pages_filtered <- razviz::long_plot_pages(hydro_model_filtered, high_water_events_filtered, miles_per_plot_filtered)
+
+razviz::longitudinal_profile_report(hydro_model = hydro_model_filtered,
+       long_plot_pgs = long_plot_pages_filtered,
+        gages = gages_filtered,
+        gage_labels_df = gage_labels_filtered,
+        gage_boxes_df = gage_boxes_filtered,
+        high_water = high_water_events_filtered,
+        levees = levees_filtered,
+        features = features_filtered,
+        bridges = bridges_filtered,
         graph_colors = graph_cols,
         legend_labels = legend_labels,
         plot_labels = plot_labels,
-        output_dir = output_dir)
+        output_dir = output_dir, 
+        filename = filename)
 ```
