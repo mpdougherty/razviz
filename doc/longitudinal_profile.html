@@ -14,22 +14,6 @@
 
 <title>Creating a Longitudinal Profile Report Using razviz</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -319,8 +303,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>The purpose of this vignette is to demonstrate how to use the <a href="https://mpdougherty.github.io/razviz/"><code>razviz</code></a> package to produce a <code>pdf</code> report of longitudinal profile graphs for a set of <a href="https://www.hec.usace.army.mil/software/hec-ras/">HEC-RAS</a> hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal river position (aka “river miles”) on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The <code>razviz::longitudinal_profile_plot</code> function is tailored to evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers to evaluate model results during calibration and floodplain managers to evaluate the impact of model scenarios on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:</p>
 <ul>
 <li>Gages - Gage locations are symbolized at their river position by their name and stage (units: feet).</li>
@@ -331,218 +315,433 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul>
 <p>Symbolization of these ancillary graph elements requires a dataset for each. The <code>razviz</code> user is required to develop these datasets first, following the structure of the package datasets provided.</p>
 <p>HEC-RAS models are often used to model long river reaches. Effective longitudinal profile graphs must have sufficient x and y-axis resolution to see the differences between model scenarios and relationship to ancillary data (i.e., gage stage, high water marks, levees, bridges). This requires that long model reaches must be graphed using multiple graphs. However, each graph should not be too “zoomed-in” or medium and large scale trends are obscured. The purpose of the <code>razviz:long_plot_pages</code> function is to define the graph dimensions for multiple page longitudinal profile graph reports. Users will need to adjust the <code>miles_per_plot</code> parameter to find the right “scale” for your reach.</p>
-</div>
 <div id="install" class="section level2">
 <h2>Install</h2>
 <p>Begin by loading the needed packages.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(devtools)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; -- Attaching packages ----------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; v ggplot2 3.3.1     v purrr   0.3.4</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; v tibble  3.0.1     v dplyr   1.0.0</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; v tidyr   1.1.0     v stringr 1.4.0</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; -- Conflicts -------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">library</span>(devtools)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; Loading required package: usethis</span></span></code></pre></div>
 <p>Next, we’ll install the <code>razviz</code> package.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="dt">repo =</span> <span class="st">&quot;mpdougherty/razviz&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="dt">repo =</span> <span class="st">&quot;mpdougherty/razviz&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p>Finally, we’ll load the <code>razviz</code> package.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(razviz)</span></code></pre></div>
 </div>
-<div id="hydraulic-model-output" class="section level2">
-<h2>Hydraulic Model Output</h2>
-<p>In this step we’ll prepare the hydro model results.</p>
-<ul>
-<li>Import the example RAS model results in <code>.csv</code> format included in the package. This folder contains a set of</li>
-<li>Create the <code>Event</code> field to specify the model scenarios that will be plotted as different series in the longitudinal profile graph.</li>
-<li>Filter the model scenarios down to only the ones we want to visualize.</li>
-</ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
-<span id="cb4-2"><a href="#cb4-2"></a>                    <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3"></a>pattern &lt;-<span class="st"> &quot;Freq&quot;</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>hydro_model &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">combine_files</span>(<span class="dt">path =</span> path, <span class="dt">pattern =</span> pattern)</span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">## Create `Event` field for labeling</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>hydro_model<span class="op">$</span>Event &lt;-<span class="st"> </span>hydro_model<span class="op">$</span>Freq</span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">## Filter the Events</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>model_events &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>, <span class="st">&quot;100 Year&quot;</span>, <span class="st">&quot;500 Year&quot;</span>, <span class="st">&quot;100000 Year&quot;</span>)</span>
-<span id="cb4-9"><a href="#cb4-9"></a>hydro_model_<span class="dv">1</span> &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(hydro_model, Event <span class="op">%in%</span><span class="st"> </span>model_events)</span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">## Set Event as an ordered factor</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a>hydro_model_<span class="dv">1</span><span class="op">$</span>Event &lt;-<span class="st"> </span><span class="kw">factor</span>(hydro_model_<span class="dv">1</span><span class="op">$</span>Event,</span>
-<span id="cb4-12"><a href="#cb4-12"></a>                              <span class="dt">levels =</span> model_events,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>                              <span class="dt">labels =</span> model_events)</span></code></pre></div>
+<div id="output-folder" class="section level2">
+<h2>Output Folder</h2>
+<p>In this step we’ll define the output folder.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>output_dir &lt;-<span class="st"> &quot;C:/temp&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">dir.exists</span>(output_dir)) {<span class="kw">dir.create</span>(output_dir)}</span></code></pre></div>
 </div>
-<div id="high-water-marks" class="section level2">
-<h2>High Water Marks</h2>
+<div id="hydraulic-parameters" class="section level2">
+<h2>Hydraulic Parameters</h2>
+<p>In this step we will import the hydraulic parameter that needs to be plotted as a longitudinal profile. Commonly the parameter of interest will be water surface or stage profiles. However, as noted in these instructions other hydraulic parameters such as water velocity or lateral hydraulic connectivity can also be plotted longitudinally.</p>
+<div id="importing-water-surface-elevations---option-1" class="section level3">
+<h3>Importing Water Surface Elevations - Option #1</h3>
+<ul>
+<li>Import the example RAS model results in <code>.csv</code> format included in the package.</li>
+<li>This folder contains a set of .csv files which have been copy and pasted from HEC-RAS and</li>
+<li>Data is cleaned so that there is lateral structures and bridges have been removed.</li>
+<li>In excel, create the <code>Event</code> field to identify each event as different series and plot separately in the longitudinal profile graph.</li>
+<li>(Optional) Filter the model scenarios down to only the ones we want to visualize.</li>
+<li>Create a new column that contains that data series which should be plotted longitudinally</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                    <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#Identify the pattern in the file name for each profile that needs to be imported. </span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>pattern &lt;-<span class="st"> &quot;Freq&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#Combines all the files that have been identified. </span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#All columns must have the same column name to be combined </span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>hydro_model &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">combine_files</span>(<span class="dt">path =</span> path, <span class="dt">pattern =</span> pattern)</span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#Re-name `Event` field for labeling </span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#in the example .csv files the  column with the return periods was labeled &#39;Freq&#39;. </span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>hydro_model<span class="op">$</span>Event &lt;-<span class="st"> </span>hydro_model<span class="op">$</span>Freq</span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#Filter the Events (optional)</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#In the external data provided, there are 23 different water surface profiles related to return periods</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#Filtering allows us to only plot a select few of them</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a>model_events &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>, <span class="st">&quot;100 Year&quot;</span>, <span class="st">&quot;500 Year&quot;</span>, <span class="st">&quot;100000 Year&quot;</span>)</span>
+<span id="cb5-20"><a href="#cb5-20"></a>hydro_model_<span class="dv">1</span> &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(hydro_model, Event <span class="op">%in%</span><span class="st"> </span>model_events)</span>
+<span id="cb5-21"><a href="#cb5-21"></a></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#Set Event as an ordered factor</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#Ordered factors are categorical variables that the data is grouped by. </span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#Factors are used to specify how to plot the data later in the code</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a>hydro_model_<span class="dv">1</span><span class="op">$</span>Event &lt;-<span class="st"> </span><span class="kw">factor</span>(hydro_model_<span class="dv">1</span><span class="op">$</span>Event,</span>
+<span id="cb5-26"><a href="#cb5-26"></a>                              <span class="dt">levels =</span> model_events,</span>
+<span id="cb5-27"><a href="#cb5-27"></a>                              <span class="dt">labels =</span> model_events)</span>
+<span id="cb5-28"><a href="#cb5-28"></a></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#set the variable to plot</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a>hydro_model_<span class="dv">1</span><span class="op">$</span>hydro_parameter &lt;-<span class="st"> </span>hydro_model_<span class="dv">1</span><span class="op">$</span>WS_Elev</span></code></pre></div>
+</div>
+<div id="importing-water-surface-elevations---option-2" class="section level3">
+<h3>Importing Water Surface Elevations - Option #2</h3>
+<p>If the water surface profiles are still in HEC-RAS 5.0.7, the following steps will help you create the necessary .csv files</p>
+<ul>
+<li>Load the HEC-RAS Profile Output Summary table (selecting all reaches of the river of interest).</li>
+<li>Use file &gt;&gt; copy to clipboard (headings and data) to move the data to excel.<br />
+</li>
+<li>Delete the second row that is pasted. It should have the units.<br />
+</li>
+<li>Save the excel file as a .csv(comma delimited) in the working directory.</li>
+<li>Add column named “Event” - fill in with event name or year.</li>
+<li>Repeat for each plan that was run.</li>
+</ul>
+<p>When the data is taken from HEC-RAS without reformatting in excel, the river mile column sometimes contains descriptions of the physical structures located at those river miles (e.g. bridge, lateral structure). In order for to plot river mile as a number on the x-axis, those text descriptions need to be removed and the river mile column needs to be a ‘numeric’ variable in r. Also, the total flow (Q_Total) will also have text for structures.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">#Add a column with the Event year BEOFRE importing and combining in R. </span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
+<span id="cb6-4"><a href="#cb6-4"></a>                    <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#Identify the pattern in the file name for each profile that needs to be imported. </span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>pattern &lt;-<span class="st"> &quot;Profile_&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#Combines all the files that have been identified. </span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#All columns must have the same column name to be combined</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>Profile_Summary &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">combine_files</span>(<span class="dt">path =</span> path, <span class="dt">pattern =</span> pattern)</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#Rename the columns coming our of HEC-RAS to avoid special characters</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>data.table<span class="op">::</span><span class="kw">setnames</span>(Profile_Summary, <span class="dt">old =</span> <span class="kw">c</span>(<span class="st">&quot;River&quot;</span>,<span class="st">&quot;Reach&quot;</span>,<span class="st">&quot;River Sta&quot;</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>                                            <span class="st">&quot;Profile&quot;</span>, <span class="st">&quot;Q Total&quot;</span>,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>                                            <span class="st">&quot;Min Ch El&quot;</span>,<span class="st">&quot;W.S. Elev&quot;</span>,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>                                            <span class="st">&quot;Crit W.S.&quot;</span>,<span class="st">&quot;E.G. Elev&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18"></a>                                            <span class="st">&quot;E.G. Slope&quot;</span>,<span class="st">&quot;Vel Chnl&quot;</span>,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>                                            <span class="st">&quot;Flow Area&quot;</span>,<span class="st">&quot;Top Width&quot;</span>,</span>
+<span id="cb6-20"><a href="#cb6-20"></a>                                            <span class="st">&quot;Froude # Chl&quot;</span>,<span class="st">&quot;Event&quot;</span>) , </span>
+<span id="cb6-21"><a href="#cb6-21"></a>                                    <span class="dt">new =</span> <span class="kw">c</span>(<span class="st">&quot;River&quot;</span>,<span class="st">&quot;Reach&quot;</span>,<span class="st">&quot;River_Sta&quot;</span>,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>                                            <span class="st">&quot;Profile&quot;</span>, <span class="st">&quot;Q_Total&quot;</span>,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>                                            <span class="st">&quot;Min_Ch_El&quot;</span>,<span class="st">&quot;WS_Elev&quot;</span>,</span>
+<span id="cb6-24"><a href="#cb6-24"></a>                                            <span class="st">&quot;Crit_WS&quot;</span>,<span class="st">&quot;EG_Elev&quot;</span>, </span>
+<span id="cb6-25"><a href="#cb6-25"></a>                                            <span class="st">&quot;EG_Slope&quot;</span>,<span class="st">&quot;Vel_Chnl&quot;</span>,</span>
+<span id="cb6-26"><a href="#cb6-26"></a>                                            <span class="st">&quot;Flow_Area&quot;</span>,<span class="st">&quot;Top_Width&quot;</span>, </span>
+<span id="cb6-27"><a href="#cb6-27"></a>                                            <span class="st">&quot;Froude_Chl&quot;</span>,<span class="st">&quot;Event&quot;</span>), <span class="dt">skip_absent =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-28"><a href="#cb6-28"></a></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#remove rows that do not have a number in the Q_Total column</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#will create a &quot;NAs introduced by coecion warning&quot; because characters which are not numbers are converted in NA.</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a>profile_data &lt;-<span class="st"> </span>Profile_Summary[<span class="op">!</span><span class="kw">is.na</span>(<span class="kw">as.numeric</span>(<span class="kw">as.character</span>(Profile_Summary<span class="op">$</span>Q_Total))),]</span>
+<span id="cb6-32"><a href="#cb6-32"></a></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="co">#Reformat river mile column to contain only numbers by splitting the column into numbers and text using a space (&#39; &#39;) as the delimiter</span></span>
+<span id="cb6-34"><a href="#cb6-34"></a>rm &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">str_split_fixed</span>(profile_data<span class="op">$</span>River_Sta, <span class="kw">c</span>(<span class="st">&quot; &quot;</span>),<span class="dv">2</span>))</span>
+<span id="cb6-35"><a href="#cb6-35"></a>profile_data<span class="op">$</span>River_Sta &lt;-<span class="st"> </span>rm<span class="op">$</span>V1</span>
+<span id="cb6-36"><a href="#cb6-36"></a></span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="co">#save the river mile column as a number</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a>profile_data<span class="op">$</span>River_Sta &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.character</span>(profile_data<span class="op">$</span>River_Sta))</span>
+<span id="cb6-39"><a href="#cb6-39"></a></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co">#add ordered factor - this will be used during plotting</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a>model_events&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2001</span>, <span class="dv">2014</span>, <span class="dv">2019</span>)</span>
+<span id="cb6-42"><a href="#cb6-42"></a></span>
+<span id="cb6-43"><a href="#cb6-43"></a><span class="co">#optional filtering not needed for this example</span></span>
+<span id="cb6-44"><a href="#cb6-44"></a><span class="co">#profile_data_ordered &lt;- dplyr::filter(profile_data, Event %in% model_events)</span></span>
+<span id="cb6-45"><a href="#cb6-45"></a></span>
+<span id="cb6-46"><a href="#cb6-46"></a><span class="co">## Set Event as an ordered factor</span></span>
+<span id="cb6-47"><a href="#cb6-47"></a>profile_data<span class="op">$</span>Event &lt;-<span class="st"> </span><span class="kw">factor</span>(profile_data<span class="op">$</span>Event,</span>
+<span id="cb6-48"><a href="#cb6-48"></a>                              <span class="dt">levels =</span> model_events,</span>
+<span id="cb6-49"><a href="#cb6-49"></a>                              <span class="dt">labels =</span> model_events)</span>
+<span id="cb6-50"><a href="#cb6-50"></a></span>
+<span id="cb6-51"><a href="#cb6-51"></a>hydro_model_<span class="dv">1</span> &lt;-<span class="st"> </span>profile_data</span>
+<span id="cb6-52"><a href="#cb6-52"></a></span>
+<span id="cb6-53"><a href="#cb6-53"></a><span class="co">#set the variable to plot</span></span>
+<span id="cb6-54"><a href="#cb6-54"></a>hydro_model_<span class="dv">1</span><span class="op">$</span>hydro_parameter &lt;-<span class="st"> </span>hydro_model_<span class="dv">1</span><span class="op">$</span>WS_Elev</span></code></pre></div>
+</div>
+<div id="importing-alternative-hydraulic-parameters" class="section level3">
+<h3>Importing alternative hydraulic parameters</h3>
+<p>If you would like to important another parameter, at a minimum your ‘.csv’ file must have the following columns</p>
+<ol style="list-style-type: decimal">
+<li>River_Sta</li>
+<li>Event (even if there is only one event that you are plotting identify it.)</li>
+<li>Your parameter</li>
+</ol>
+<p><strong>CURRENTLY NO EXAMPLE DATA HAS BEEN UPLOADED INTO RAZVIZ AS AN EXAMPLE</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">#Add a column with the Event year BEOFRE importing and combining in R. </span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#If importing multiple water surface profiles files, set the file path where all the profile data is being stored.</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
+<span id="cb7-4"><a href="#cb7-4"></a>                    <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#Identify the pattern in the file name for each profile that needs to be imported. </span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>pattern &lt;-<span class="st"> &quot;Hydro_Parameter&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#Combines all the files that have been identified. </span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#All columns must have the same column name to be combined</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>hydro_parameter_summary &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">combine_files</span>(<span class="dt">path =</span> path, <span class="dt">pattern =</span> pattern)</span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#save the river mile column as a number</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>hydro_parameter_summary<span class="op">$</span>River_Sta &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.character</span>(profile_data<span class="op">$</span>River_Sta))</span>
+<span id="cb7-15"><a href="#cb7-15"></a></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#add ordered factor - this will be used during plotting</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>model_events&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2001</span>, <span class="dv">2014</span>, <span class="dv">2019</span>)</span>
+<span id="cb7-18"><a href="#cb7-18"></a></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#optional filtering not needed for this example</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#profile_data_ordered &lt;- dplyr::filter(profile_data, Event %in% model_events)</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">## Set Event as an ordered factor</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a>hydro_parameter_summary<span class="op">$</span>Event &lt;-<span class="st"> </span><span class="kw">factor</span>(hydro_parameter_summar<span class="op">$</span>Event,</span>
+<span id="cb7-24"><a href="#cb7-24"></a>                              <span class="dt">levels =</span> model_events,</span>
+<span id="cb7-25"><a href="#cb7-25"></a>                              <span class="dt">labels =</span> model_events)</span>
+<span id="cb7-26"><a href="#cb7-26"></a></span>
+<span id="cb7-27"><a href="#cb7-27"></a>hydro_model_<span class="dv">1</span> &lt;-<span class="st"> </span>hydro_parameter_summary </span>
+<span id="cb7-28"><a href="#cb7-28"></a></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#set the variable to plot</span></span>
+<span id="cb7-30"><a href="#cb7-30"></a>hydro_model_<span class="dv">1</span><span class="op">$</span>hydro_parameter &lt;-<span class="st"> </span>hydro_model_<span class="dv">1</span><span class="op">$</span>WS_Elev</span></code></pre></div>
+</div>
+</div>
+<div id="longitudinal-profile-hydraulic-parameter-only" class="section level2">
+<h2>Longitudinal Profile (Hydraulic Parameter ONLY)</h2>
+<p>In this section, we’ll setup how the longitudinal profile will look and then run a report</p>
+<ul>
+<li>Set up the plotting pages</li>
+<li>Set graph colors (colors that lines will be displayed as)</li>
+<li>Set legend labels (defines which each color means)</li>
+<li>Set plot axis labels and title</li>
+<li>Run report to create longitudinal profile</li>
+<li>Check the results in the file: [Longitudinal_Profile_Report_No_Background.pdf] (<a href="https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf" class="uri">https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf</a>)</li>
+</ul>
+<div id="longitudinal-plot-pages" class="section level3">
+<h3>Longitudinal Plot Pages</h3>
+<p>In this step we’ll define the number of longitudinal profile pages needed for the report. The <code>razviz::long_plot_pages</code> function determines the x and y-axis extents of each graph. This is a required data set.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>miles_per_plot &lt;-<span class="st"> </span><span class="dv">60</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>long_plot_pgs &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">long_plot_pages</span>(<span class="dt">hydro_model =</span> hydro_model_<span class="dv">1</span>, <span class="dt">miles_per_plot =</span> miles_per_plot)</span></code></pre></div>
+</div>
+<div id="graph-colors" class="section level3">
+<h3>Graph Colors</h3>
+<p>In this step we’ll assign the colors to each of the series in the graph. This is a required data set.</p>
+<ul>
+<li>Assignment of colors in <code>razviz</code> to particular data series depends on the use of R’s “named vector”.</li>
+<li>For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from <code>grDevices::colors()</code>).</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>graph_cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>      =<span class="st"> &quot;darkslategray4&quot;</span>,</span>
+<span id="cb9-2"><a href="#cb9-2"></a>                <span class="st">&quot;100 Year&quot;</span>    =<span class="st"> &quot;cadetblue3&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3"></a>                <span class="st">&quot;500 Year&quot;</span>    =<span class="st"> &quot;coral3&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>                <span class="st">&quot;100000 Year&quot;</span> =<span class="st"> &quot;burlywood3&quot;</span>)</span></code></pre></div>
+</div>
+<div id="legend-labels" class="section level3">
+<h3>Legend Labels</h3>
+<p>In this step we’ll assign the legend labels. This is a required data set.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>legend_labels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>, <span class="st">&quot;100 Year&quot;</span>, <span class="st">&quot;500 Year&quot;</span>, <span class="st">&quot;100000 Year&quot;</span>)</span></code></pre></div>
+</div>
+<div id="plot-labels" class="section level3">
+<h3>Plot Labels</h3>
+<p>In this step we’ll assign the plot labels. This is a required data set.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>plot_labels &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;title&quot;</span> =<span class="st"> &quot;Upper Mississippi River Hydraulic Model - Keokuk to Thebes&quot;</span>,</span>
+<span id="cb11-2"><a href="#cb11-2"></a>                    <span class="st">&quot;x_axis&quot;</span> =<span class="st"> &quot;Miles Above the Ohio River&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>                    <span class="st">&quot;y_axis&quot;</span> =<span class="st"> &quot;Elevation (NAVD88 feet)&quot;</span>)</span></code></pre></div>
+</div>
+<div id="report-longitudinal-profile-of-hydraulic-parameter-only" class="section level3">
+<h3>Report (Longitudinal Profile of Hydraulic Parameter ONLY)</h3>
+<p>In this step we’ll call the longitudinal profile graph report for the entire reach of the river. This report will plot only the hydraulic parameter of interest.</p>
+<ul>
+<li>Run the report.</li>
+<li>Check the results in the file: [Longitudinal_Profile_Report.pdf] (<a href="https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf" class="uri">https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf</a>)</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>filename &lt;-<span class="st"> &quot;Longitudinal_Profile_Report_No_Background.pdf&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>razviz<span class="op">::</span><span class="kw">longitudinal_profile_report</span>(<span class="dt">hydro_model =</span> hydro_model_<span class="dv">1</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>                                    <span class="dt">long_plot_pgs =</span> long_plot_pgs,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>                                    <span class="dt">graph_colors =</span> graph_cols,</span>
+<span id="cb12-6"><a href="#cb12-6"></a>                                    <span class="dt">legend_labels =</span> legend_labels,</span>
+<span id="cb12-7"><a href="#cb12-7"></a>                                    <span class="dt">plot_labels =</span> plot_labels,        </span>
+<span id="cb12-8"><a href="#cb12-8"></a>                                    <span class="dt">output_dir =</span> output_dir, </span>
+<span id="cb12-9"><a href="#cb12-9"></a>                                    <span class="dt">filename =</span> filename)</span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="co">#&gt; \newpage</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#&gt; png </span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#&gt;   2</span></span></code></pre></div>
+<p>##Additional Data We will now import a series of optional dataframes that can be added to your longitundinal profile plot.</p>
+</div>
+<div id="high-water-marks" class="section level3">
+<h3>High Water Marks</h3>
 <p>In this step we’ll prepare the high water marks dataset.</p>
 <ul>
 <li>Import the high water marks table in <code>.csv</code> format included in the package.</li>
 <li>Define the high water events to be symbolized in the longitudinal profile graphs.</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>high_water_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
-<span id="cb5-2"><a href="#cb5-2"></a>                              <span class="st">&quot;high_water_marks.csv&quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>                              <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4"></a>high_water &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(high_water_csv)</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; cols(</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;   highwater_mark_name = col_character(),</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt;   gage_zero = col_double(),</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt;   gage_datum = col_character(),</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt;   conversion_factor_2_NAVD88 = col_double(),</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt;   stage = col_logical(),</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt;   elevation_original = col_double(),</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt;   elevation_NAVD88 = col_double(),</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt;   peak_date = col_character(),</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt;   hw = col_character()</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; )</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co">## Define high water events</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a>high_water_years &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2008&quot;</span>, <span class="st">&quot;2013&quot;</span>, <span class="st">&quot;2014&quot;</span>)</span>
-<span id="cb5-20"><a href="#cb5-20"></a>high_water_events_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">high_water_events</span>(high_water, high_water_years)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>high_water_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
+<span id="cb13-2"><a href="#cb13-2"></a>                              <span class="st">&quot;high_water_marks.csv&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3"></a>                              <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4"></a>high_water &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(high_water_csv)</span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">#&gt; cols(</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="co">#&gt;   highwater_mark_name = col_character(),</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt;   gage_zero = col_double(),</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">#&gt;   gage_datum = col_character(),</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt;   conversion_factor_2_NAVD88 = col_double(),</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt;   stage = col_logical(),</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt;   elevation_original = col_double(),</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt;   elevation_NAVD88 = col_double(),</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt;   peak_date = col_character(),</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt;   hw = col_character()</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt; )</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="co">## Define high water events in YEARS and add event year column to high water marks dataframe.</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="co">## </span><span class="al">NOTE</span><span class="co">: Your high water years do not have to match your model_events, but high_water_events must be a list of years. If the model_event and high_water_year event are different, there will be additional items in the legend. </span></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="co">## The high_water_events function searches the date column for the year of the event and adds a column with the matching event year.</span></span>
+<span id="cb13-22"><a href="#cb13-22"></a>high_water_years &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2008&quot;</span>, <span class="st">&quot;2013&quot;</span>, <span class="st">&quot;2014&quot;</span>)</span>
+<span id="cb13-23"><a href="#cb13-23"></a>high_water_events_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">high_water_events</span>(high_water, high_water_years)</span>
+<span id="cb13-24"><a href="#cb13-24"></a></span>
+<span id="cb13-25"><a href="#cb13-25"></a><span class="co">##If you are working with a single profile or events that are not classified by years (e.g.25% duration flows or similar), and INSTEAD want to add a column which specifies the event, use the following code.</span></span>
+<span id="cb13-26"><a href="#cb13-26"></a></span>
+<span id="cb13-27"><a href="#cb13-27"></a><span class="co">#high_water_events &lt;- c(&quot;25% Duration&quot;)</span></span>
+<span id="cb13-28"><a href="#cb13-28"></a><span class="co">#high_water_events_df &lt;- add_column(high_water, event = high_water_events)</span></span></code></pre></div>
 </div>
-<div id="longitudinal-plot-pages" class="section level2">
-<h2>Longitudinal Plot Pages</h2>
-<p>In this step we’ll define the number of longitudinal profile pages needed for the report. The <code>razviz::long_plot_pages</code> function determines the x and y-axis extents of each graph.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>miles_per_plot &lt;-<span class="st"> </span><span class="dv">60</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>long_plot_pages_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">long_plot_pages</span>(hydro_model,</span>
-<span id="cb6-3"><a href="#cb6-3"></a>                                              high_water_events_df,</span>
-<span id="cb6-4"><a href="#cb6-4"></a>                                              miles_per_plot)</span></code></pre></div>
+<div id="gage-locations" class="section level3">
+<h3>Gage locations</h3>
+<p>In this step we’ll prepare the gage dataset. * Import the gage locations table in <code>.csv</code> format included in the package. * Min &amp; Max stage are used to draw gage boxes and should be iteratively adjusted to match the profile * Remove the double backslashes introduced by R during the import.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">##NOTE: If you&#39;d like to have the gage identified without gage boxes, please add the gage as a river feature.)</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a>gage_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
+<span id="cb14-4"><a href="#cb14-4"></a>                        <span class="st">&quot;gage_locations.csv&quot;</span>, </span>
+<span id="cb14-5"><a href="#cb14-5"></a>                        <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb14-6"><a href="#cb14-6"></a>gages &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(gage_csv)</span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="co">#&gt; Parsed with column specification:</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; cols(</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt;   name = col_character(),</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt;   elevation = col_double(),</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;   stage = col_double(),</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt;   min_stage = col_double(),</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt;   max_stage = col_double(),</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt;   datum = col_character()</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt; )</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">## Remove double backslashes introduced by R import</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a>gages<span class="op">$</span>name &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">n&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, gages<span class="op">$</span>name, <span class="dt">fixed=</span><span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
-<div id="gage-locations" class="section level2">
-<h2>Gage locations</h2>
-<p>In this step we’ll prepare the gage dataset.</p>
-<ul>
-<li>Import the gage locations table in <code>.csv</code> format included in the package.</li>
-<li>Remove the double backslashes introduced by R during the import.</li>
-</ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>gage_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>, </span>
-<span id="cb7-2"><a href="#cb7-2"></a>                        <span class="st">&quot;gage_locations.csv&quot;</span>, </span>
-<span id="cb7-3"><a href="#cb7-3"></a>                        <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb7-4"><a href="#cb7-4"></a>gages &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(gage_csv)</span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; cols(</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt;   name = col_character(),</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;   elevation = col_double(),</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;   stage = col_double(),</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt;   min_stage = col_double(),</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;   max_stage = col_double(),</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt;   datum = col_character()</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; )</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a></span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="co">## Remove double backslashes introduced by R import</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>gages<span class="op">$</span>name &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">n&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, gages<span class="op">$</span>name, <span class="dt">fixed=</span><span class="ot">TRUE</span>)</span></code></pre></div>
-</div>
-<div id="gage-labels" class="section level2">
-<h2>Gage Labels</h2>
+<div id="gage-labels" class="section level3">
+<h3>Gage Labels</h3>
 <p>In this step we’ll define the stage text labels that appear next to the gage boxes. These labels represent the stage in units feet for each gage.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>stage_interval_label &lt;-<span class="st"> </span><span class="dv">5</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>gage_labels_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">gage_labels</span>(gages, stage_interval_label)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>stage_interval_label &lt;-<span class="st"> </span><span class="dv">5</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>gage_labels_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">gage_labels</span>(gages, stage_interval_label)</span></code></pre></div>
 </div>
-<div id="gage-boxes" class="section level2">
-<h2>Gage Boxes</h2>
+<div id="gage-boxes" class="section level3">
+<h3>Gage Boxes</h3>
 <p>In this step we’ll define the dimensions of the boxes used to draw the gage stage levels for all gages.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>stage_interval_boxes &lt;-<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>box_width &lt;-<span class="st"> </span><span class="fl">0.1</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>gage_boxes_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">gage_boxes</span>(gages, stage_interval_boxes, box_width)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>stage_interval_boxes &lt;-<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>box_width &lt;-<span class="st"> </span><span class="fl">0.1</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>gage_boxes_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">gage_boxes</span>(gages, stage_interval_boxes, box_width)</span></code></pre></div>
 </div>
-<div id="levees" class="section level2">
-<h2>Levees</h2>
+<div id="levees" class="section level3">
+<h3>Levees</h3>
 <p>In this step we’ll prepare the levee dataset.</p>
 <ul>
 <li>Import the levees table in <code>.csv</code> format included in the package.</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>levees_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
-<span id="cb10-2"><a href="#cb10-2"></a>                          <span class="st">&quot;levees_authorized_existing.csv&quot;</span>,</span>
-<span id="cb10-3"><a href="#cb10-3"></a>                          <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb10-4"><a href="#cb10-4"></a>levees &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(levees_csv)</span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; cols(</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt;   levee = col_character(),</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt;   elevation_NAVD88 = col_double(),</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;   descending_bank = col_character(),</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt;   elevation_type = col_character()</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; )</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>levees_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
+<span id="cb17-2"><a href="#cb17-2"></a>                          <span class="st">&quot;levees_authorized_existing.csv&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3"></a>                          <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>levees &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(levees_csv)</span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co">#&gt; cols(</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="co">#&gt;   levee = col_character(),</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="co">#&gt;   elevation_NAVD88 = col_double(),</span></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="co">#&gt;   descending_bank = col_character(),</span></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="co">#&gt;   elevation_type = col_character()</span></span>
+<span id="cb17-12"><a href="#cb17-12"></a><span class="co">#&gt; )</span></span></code></pre></div>
 </div>
-<div id="features" class="section level2">
-<h2>Features</h2>
+<div id="features" class="section level3">
+<h3>Features</h3>
 <p>In this step we’ll prepare the river features dataset.</p>
 <ul>
 <li>Import the river features table in <code>.csv</code> format included in the package.</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>features_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
-<span id="cb11-2"><a href="#cb11-2"></a>                            <span class="st">&quot;river_features.csv&quot;</span>,</span>
-<span id="cb11-3"><a href="#cb11-3"></a>                            <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb11-4"><a href="#cb11-4"></a>features &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(features_csv)</span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
-<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#&gt; cols(</span></span>
-<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#&gt;   name = col_character(),</span></span>
-<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#&gt;   river_mile = col_double()</span></span>
-<span id="cb11-9"><a href="#cb11-9"></a><span class="co">#&gt; )</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>features_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
+<span id="cb18-2"><a href="#cb18-2"></a>                            <span class="st">&quot;river_features.csv&quot;</span>,</span>
+<span id="cb18-3"><a href="#cb18-3"></a>                            <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a>features &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(features_csv)</span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co">#&gt; cols(</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="co">#&gt;   name = col_character(),</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="co">#&gt;   river_mile = col_double()</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co">#&gt; )</span></span></code></pre></div>
 </div>
-<div id="bridges" class="section level2">
-<h2>Bridges</h2>
-<p>In this step we’ll prepare the bridges dataset.</p>
+<div id="bridges" class="section level3">
+<h3>Bridges</h3>
+<p>In this step we’ll prepare the bridges dataset. This dataset must include elevations both lowest_elevation and highest_elevation for all bridges listed.</p>
 <ul>
 <li>Import the bridge table in <code>.csv</code> format included in the package.</li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>bridges_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
-<span id="cb12-2"><a href="#cb12-2"></a>                           <span class="st">&quot;bridge_elevations.csv&quot;</span>,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>                           <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
-<span id="cb12-4"><a href="#cb12-4"></a>bridges &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(bridges_csv)</span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt; cols(</span></span>
-<span id="cb12-7"><a href="#cb12-7"></a><span class="co">#&gt;   name = col_character(),</span></span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
-<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt;   lowest_elevation = col_double(),</span></span>
-<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt;   highest_elevation = col_double()</span></span>
-<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt; )</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>bridges_csv &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/longitudinal_profiles&quot;</span>,</span>
+<span id="cb19-2"><a href="#cb19-2"></a>                           <span class="st">&quot;bridge_elevations.csv&quot;</span>,</span>
+<span id="cb19-3"><a href="#cb19-3"></a>                           <span class="dt">package =</span> <span class="st">&quot;razviz&quot;</span>)</span>
+<span id="cb19-4"><a href="#cb19-4"></a>bridges &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(bridges_csv)</span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co">#&gt; Parsed with column specification:</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co">#&gt; cols(</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#&gt;   name = col_character(),</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">#&gt;   river_mile = col_double(),</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co">#&gt;   lowest_elevation = col_double(),</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co">#&gt;   highest_elevation = col_double()</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co">#&gt; )</span></span></code></pre></div>
 </div>
-<div id="graph-colors" class="section level2">
-<h2>Graph Colors</h2>
-<p>In this step we’ll assign the colors to each of the series in the graph.</p>
+<div id="longitudinal-plot-pages-1" class="section level3">
+<h3>Longitudinal Plot Pages</h3>
+<p>In this step we’ll define the number of longitudinal profile pages needed for the report. The <code>razviz::long_plot_pages</code> function determines the x and y-axis extents of each graph. This is a required data set.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>miles_per_plot &lt;-<span class="st"> </span><span class="dv">60</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>long_plot_pages_df &lt;-<span class="st"> </span>razviz<span class="op">::</span><span class="kw">long_plot_pages</span>(<span class="dt">hydro_model=</span>hydro_model_<span class="dv">1</span>,</span>
+<span id="cb20-3"><a href="#cb20-3"></a>                                              <span class="dt">high_water =</span> high_water_events_df,</span>
+<span id="cb20-4"><a href="#cb20-4"></a>                                              <span class="dt">miles_per_plot =</span> miles_per_plot)</span></code></pre></div>
+</div>
+<div id="graph-colors-1" class="section level3">
+<h3>Graph Colors</h3>
+<p>In this step we’ll assign the colors to each of the series in the graph. This is a required data set.</p>
 <ul>
 <li>Assignment of colors in <code>razviz</code> to particular data series depends on the use of R’s “named vector”.</li>
 <li>For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from <code>grDevices::colors()</code>).</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>graph_cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>      =<span class="st"> &quot;darkslategray4&quot;</span>,</span>
-<span id="cb13-2"><a href="#cb13-2"></a>                <span class="st">&quot;100 Year&quot;</span>    =<span class="st"> &quot;cadetblue3&quot;</span>,</span>
-<span id="cb13-3"><a href="#cb13-3"></a>                <span class="st">&quot;500 Year&quot;</span>    =<span class="st"> &quot;coral3&quot;</span>,</span>
-<span id="cb13-4"><a href="#cb13-4"></a>                <span class="st">&quot;100000 Year&quot;</span> =<span class="st"> &quot;burlywood3&quot;</span>,</span>
-<span id="cb13-5"><a href="#cb13-5"></a>                <span class="st">&quot;2008&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
-<span id="cb13-6"><a href="#cb13-6"></a>                <span class="st">&quot;2013&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
-<span id="cb13-7"><a href="#cb13-7"></a>                <span class="st">&quot;2014&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
-<span id="cb13-8"><a href="#cb13-8"></a>                <span class="st">&quot;LEFT&quot;</span>        =<span class="st"> &quot;palevioletred2&quot;</span>,</span>
-<span id="cb13-9"><a href="#cb13-9"></a>                <span class="st">&quot;RIGHT&quot;</span>       =<span class="st"> &quot;palevioletred4&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>graph_cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>      =<span class="st"> &quot;darkslategray4&quot;</span>,</span>
+<span id="cb21-2"><a href="#cb21-2"></a>                <span class="st">&quot;100 Year&quot;</span>    =<span class="st"> &quot;cadetblue3&quot;</span>,</span>
+<span id="cb21-3"><a href="#cb21-3"></a>                <span class="st">&quot;500 Year&quot;</span>    =<span class="st"> &quot;coral3&quot;</span>,</span>
+<span id="cb21-4"><a href="#cb21-4"></a>                <span class="st">&quot;100000 Year&quot;</span> =<span class="st"> &quot;burlywood3&quot;</span>,</span>
+<span id="cb21-5"><a href="#cb21-5"></a>                <span class="st">&quot;2008&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
+<span id="cb21-6"><a href="#cb21-6"></a>                <span class="st">&quot;2013&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
+<span id="cb21-7"><a href="#cb21-7"></a>                <span class="st">&quot;2014&quot;</span>        =<span class="st"> &quot;red&quot;</span>,</span>
+<span id="cb21-8"><a href="#cb21-8"></a>                <span class="st">&quot;LEFT&quot;</span>        =<span class="st"> &quot;palevioletred2&quot;</span>,</span>
+<span id="cb21-9"><a href="#cb21-9"></a>                <span class="st">&quot;RIGHT&quot;</span>       =<span class="st"> &quot;palevioletred4&quot;</span>)</span></code></pre></div>
 </div>
-<div id="legend-labels" class="section level2">
-<h2>Legend Labels</h2>
-<p>In this step we’ll assign the legend labels.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>legend_labels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>, <span class="st">&quot;100 Year&quot;</span>, <span class="st">&quot;500 Year&quot;</span>, <span class="st">&quot;100000 Year&quot;</span>,</span>
-<span id="cb14-2"><a href="#cb14-2"></a>                   <span class="st">&quot;2008&quot;</span>, <span class="st">&quot;2013&quot;</span>, <span class="st">&quot;2014&quot;</span>,</span>
-<span id="cb14-3"><a href="#cb14-3"></a>                   <span class="st">&quot;Left Bank&quot;</span>, <span class="st">&quot;Right Bank&quot;</span>)</span></code></pre></div>
+<div id="legend-labels-1" class="section level3">
+<h3>Legend Labels</h3>
+<p>In this step we’ll assign the legend labels. This is a required data set.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>legend_labels &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;2 Year&quot;</span>, <span class="st">&quot;100 Year&quot;</span>, <span class="st">&quot;500 Year&quot;</span>, <span class="st">&quot;100000 Year&quot;</span>,</span>
+<span id="cb22-2"><a href="#cb22-2"></a>                   <span class="st">&quot;2008&quot;</span>, <span class="st">&quot;2013&quot;</span>, <span class="st">&quot;2014&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3"></a>                   <span class="st">&quot;Left Bank&quot;</span>, <span class="st">&quot;Right Bank&quot;</span>)</span></code></pre></div>
 </div>
-<div id="plot-labels" class="section level2">
-<h2>Plot Labels</h2>
-<p>In this step we’ll assign the plot labels.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>plot_labels &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;title&quot;</span> =<span class="st"> &quot;Upper Mississippi River Hydraulic Model - Keokuk to Thebes&quot;</span>,</span>
-<span id="cb15-2"><a href="#cb15-2"></a>                    <span class="st">&quot;x_axis&quot;</span> =<span class="st"> &quot;Miles Above the Ohio River&quot;</span>,</span>
-<span id="cb15-3"><a href="#cb15-3"></a>                    <span class="st">&quot;y_axis&quot;</span> =<span class="st"> &quot;Elevation (NAVD88 feet)&quot;</span>)</span></code></pre></div>
+<div id="plot-labels-1" class="section level3">
+<h3>Plot Labels</h3>
+<p>In this step we’ll assign the plot labels. This is a required data set.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>plot_labels &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;title&quot;</span> =<span class="st"> &quot;Upper Mississippi River Hydraulic Model - Keokuk to Thebes&quot;</span>,</span>
+<span id="cb23-2"><a href="#cb23-2"></a>                    <span class="st">&quot;x_axis&quot;</span> =<span class="st"> &quot;Miles Above the Ohio River&quot;</span>,</span>
+<span id="cb23-3"><a href="#cb23-3"></a>                    <span class="st">&quot;y_axis&quot;</span> =<span class="st"> &quot;Elevation (NAVD88 feet)&quot;</span>)</span></code></pre></div>
 </div>
-<div id="output-folder" class="section level2">
-<h2>Output Folder</h2>
-<p>In this step we’ll define the output folder.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>output_dir &lt;-<span class="st"> &quot;C:/temp&quot;</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">dir.exists</span>(output_dir)) {<span class="kw">dir.create</span>(output_dir)}</span></code></pre></div>
-</div>
-<div id="longitudinal-profile-report" class="section level2">
-<h2>Longitudinal Profile Report</h2>
-<p>In this step we’ll call the longitudinal profile graph report.</p>
+<div id="report-longitudinal-profile-of-entire-reach" class="section level3">
+<h3>Report (Longitudinal Profile of Entire Reach)</h3>
+<p>In this step we’ll call the longitudinal profile graph report for the entire reach of the river that is in the data that was originally uploaded.</p>
 <ul>
 <li>Run the report.</li>
-<li>Check the results in the file: <a href="https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf">Longitudinal_Profile_Report.pdf</a></li>
+<li>Check the results in the file: [Longitudinal_Profile_Report.pdf] (<a href="https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf" class="uri">https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf</a>)</li>
 </ul>
-<pre><code>#&gt; \newpage
-#&gt; \newpage
-#&gt; \newpage
-#&gt; \newpage
-#&gt; \newpage
-#&gt; \newpage
-#&gt; png 
-#&gt;   2</code></pre>
+</div>
+<div id="report-longitudinal-profile-of-filtered-reach" class="section level3">
+<h3>Report (Longitudinal Profile of Filtered Reach)</h3>
+<p>In this step we’ll call the longitudinal profile graph report, just like the previous section; however, prior to plotting we will specify the section of the river that we’d like plotted. This can be useful if there is a particular section of the river where there is considerable more elevation change than the remainder of the river.</p>
+<ul>
+<li>Specify a maximum and minimum river mile to filter the data.</li>
+<li>Check the results in the file: [Longitudinal_Profile_Report_Filtered.pdf] (<a href="https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_Filtered.pdf" class="uri">https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_Filtered.pdf</a>)</li>
+</ul>
+</div>
+</div>
 </div>
 
 

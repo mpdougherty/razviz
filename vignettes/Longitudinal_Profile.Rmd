@@ -100,12 +100,12 @@ hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ### Importing Water Surface Elevations - Option #2
 If the water surface profiles are still in HEC-RAS 5.0.7, the following steps will help you create the necessary .csv files
 
-*Load the HEC-RAS Profile Output Summary table (selecting all reaches of the river of interest). 
-*use file >> copy to clipboard (headings and data) to move the data to excel.  
-*Delete the second row that is pasted. It should have the units.  
-*Save the excel file as a .csv(comma delimited) in the working directory. 
-*Add column named "Event" - fill in with event name or year.
-*Repeat for each plan that was run.  
+* Load the HEC-RAS Profile Output Summary table (selecting all reaches of the river of interest). 
+* Use file >> copy to clipboard (headings and data) to move the data to excel.  
+* Delete the second row that is pasted. It should have the units.  
+* Save the excel file as a .csv(comma delimited) in the working directory. 
+* Add column named "Event" - fill in with event name or year.
+* Repeat for each plan that was run.  
 
 When the data is taken from HEC-RAS without reformatting in excel, the river mile column sometimes contains descriptions of the physical structures located at those river miles (e.g. bridge, lateral structure).  In order for to plot river mile as a number on the x-axis, those text descriptions need to be removed and the river mile column needs to be a 'numeric' variable in r.  Also, the total flow (Q_Total) will also have text for structures.
 
@@ -210,7 +210,7 @@ hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ```
 
 
-## Longitudinal Profile (Hydrualic Parameter ONLY)
+## Longitudinal Profile (Hydraulic Parameter ONLY)
 In this section, we'll setup how the longitudinal profile will look and then run a report
 
 * Set up the plotting pages
@@ -257,7 +257,7 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk 
                     "y_axis" = "Elevation (NAVD88 feet)")
 ```
 
-### Longitudinal Profile Report (Hydrualic Parameter ONLY)
+### Report (Longitudinal Profile of Hydraulic Parameter ONLY)
 In this step we'll call the longitudinal profile graph report for the entire reach of the river.  This report will plot only the hydraulic parameter of interest.
 
 * Run the report. 
@@ -304,13 +304,14 @@ high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 #high_water_events_df <- add_column(high_water, event = high_water_events)
 ```
 ### Gage locations
-In this step we'll prepare the gage dataset. (NOTE: If you'd like to have the gage identified without gage boxes, please add the gage as a river feature.)
-
+In this step we'll prepare the gage dataset. 
 * Import the gage locations table in `.csv` format included in the package. 
 * Min & Max stage are used to draw gage boxes and should be iteratively adjusted to match the profile 
 * Remove the double backslashes introduced by R during the import. 
 
 ```{r gages}
+## NOTE: If you'd like to have the gage identified without gage boxes, please add the gage as a river feature.)
+
 gage_csv <- system.file("extdata/longitudinal_profiles", 
                         "gage_locations.csv", 
                         package = "razviz")
@@ -422,7 +423,7 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk 
 
 
 
-### Longitudinal Profile Report (Entire Reach)
+### Report (Longitudinal Profile of Entire Reach)
 In this step we'll call the longitudinal profile graph report for the entire reach of the river that is in the data that was originally uploaded.
 
 * Run the report. 
@@ -449,7 +450,7 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
 ```
 
 
-## Longitudinal Profile Report (Filtered Reach)
+### Report (Longitudinal Profile of Filtered Reach)
 In this step we'll call the longitudinal profile graph report, just like the previous section; however, prior to plotting we will specify the section of the river that we'd like plotted. This can be useful if there is a particular section of the river where there is considerable more elevation change than the remainder of the river. 
 
 * Specify a maximum and minimum river mile to filter the data. 
@@ -481,7 +482,9 @@ max_river_mile-min_river_mile
 
 miles_per_plot_filtered <- 60.45
 
-long_plot_pages_filtered <- razviz::long_plot_pages(hydro_model_filtered, high_water_events_filtered, miles_per_plot_filtered)
+long_plot_pages_filtered <- razviz::long_plot_pages(hydro_model = hydro_model_filtered, 
+                                                    high_water = high_water_events_filtered, 
+                                                    miles_per_plot = miles_per_plot_filtered)
 
 razviz::longitudinal_profile_report(hydro_model = hydro_model_filtered,
        long_plot_pgs = long_plot_pages_filtered,
