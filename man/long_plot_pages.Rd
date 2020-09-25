@@ -4,16 +4,16 @@
 \alias{long_plot_pages}
 \title{Longitudinal Plot Pages}
 \usage{
-long_plot_pages(hydro_model, high_water, miles_per_plot)
+long_plot_pages(hydro_model, miles_per_plot, ..., high_water)
 }
 \arguments{
 \item{hydro_model}{data frame; A data frame of RAS model output.}
 
-\item{high_water}{data frame; A data frame of high water marks. See
-package dataset `high_water_marks.csv` for format.}
-
 \item{miles_per_plot}{numeric; The number of river miles per longitudinal
 profile plot.}
+
+\item{high_water}{data frame; Optional data frame of high water marks. See
+package dataset `high_water_marks.csv` for format.}
 }
 \value{
 A data frame of plot dimensions for a given set of RAS model results.

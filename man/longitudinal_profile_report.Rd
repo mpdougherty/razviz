@@ -17,7 +17,8 @@ longitudinal_profile_report(
   graph_colors,
   legend_labels,
   plot_labels,
-  output_dir
+  output_dir,
+  filename
 )
 }
 \arguments{
@@ -60,6 +61,8 @@ three named elements "title", "x_axis", and "y_axis".}
 
 \item{output_dir}{character; The path to the folder where the output
 report will be written.}
+
+\item{filename}{character; the pdf filename (must end in .pdf)}
 }
 \value{
 A Longitudinal Profile Report in `pdf` document format.

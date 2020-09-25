@@ -25,7 +25,7 @@ combine_hydrographs <- function(hydrograph_list) {
     hg <- dplyr::rename(hg, River_Sta = "ModelCrossSection",
                             River     = "ModelRiver",
                             Reach     = "ModelReach",
-                            Gage      = "Gague",
+                            Gage_Location      = "Gague",
                             WS_Elev   = "W.S. Elev",
                             Obs_WS    = "Obs WS",
                             Model_Q   = "Modeled Q",

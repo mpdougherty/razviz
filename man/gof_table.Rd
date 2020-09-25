@@ -4,7 +4,7 @@
 \alias{gof_table}
 \title{Goodness of Fit Table}
 \usage{
-gof_table(gof_stats_df, run_num, metric)
+gof_table(gof_stats_df, run_num, metric, output_format)
 }
 \arguments{
 \item{gof_stats_df}{data frame: A data frame of goodness of fit
@@ -13,7 +13,11 @@ statistics produced by the `gof_stats` function.}
 \item{run_num}{numeric; The model run number.}
 
 \item{metric}{character; The metric to display. One of either
-"WSE" (water surface elevation), or "discharge".}
+"WSE" (water surface elevation), or "Q" (discharge).}
+
+\item{output_format}{character; The output format of the report. One
+of "html_document", "word_document",
+"pdf_document".}
 }
 \value{
 a `kable` table object.

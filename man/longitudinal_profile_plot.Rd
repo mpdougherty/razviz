@@ -8,17 +8,18 @@ longitudinal_profile_plot(
   plot_number,
   hydro_model,
   long_plot_pgs,
+  levee_smooth = FALSE,
+  graph_colors,
+  legend_labels,
+  plot_labels,
+  ...,
+  levees,
   gages,
   gage_labels_df,
   gage_boxes_df,
   high_water,
-  levees,
   features,
-  bridges,
-  graph_colors,
-  legend_labels,
-  plot_labels,
-  levee_smooth = FALSE
+  bridges
 )
 }
 \arguments{
@@ -30,27 +31,7 @@ See the package dataset for required fields.}
 \item{long_plot_pgs}{data frame; A data frame of longitudinal plot pages
 produced by the `razviz::long_plot_pages` function.}
 
-\item{gages}{data frame. A data frame of gages. See package dataset
-for required fields.}
-
-\item{gage_labels_df}{data frame; A data frame of gage labels produced by the
-`razviz::gage_labels` function.}
-
-\item{gage_boxes_df}{data frame; A data frame of gage boxes produced by the
-`razviz::gage_boxes` function.}
-
-\item{high_water}{data frame; A data frame of high water marks. See the
-package dataset for required fields.}
-
-\item{levees}{data frame; A data frame of levee elevations. See the
-package dataset for required fields.}
-
-\item{features}{data frame; A data frame of salient river features
-(e.g., tributary confluences, cities, bridges, dams,
-etc.). See package dataset for required fields.}
-
-\item{bridges}{data frame; A data frame of bridge opening elevations.
-See package dataset for required fields.}
+\item{levee_smooth}{logical; Draw a smoothed levee line? (Default FALSE)}
 
 \item{graph_colors}{character vector; A named character vector of colors to
 use for each series.}
@@ -61,12 +42,32 @@ used in the legend.}
 \item{plot_labels}{list; A list of plot labeling elements. Must contain
 three named elements "title", "x_axis", and "y_axis".}
 
-\item{levee_smooth}{logical; Draw a smoothed levee line?}
+\item{levees}{See the data frame; Optional data frame of levee elevations.
+package dataset for required fields.}
+
+\item{gages}{data frame. Optional data frame of gages. See package
+dataset for required fields.}
+
+\item{high_water}{data frame; Optional data frame of high water marks.
+See the package dataset for required fields.}
+
+\item{features}{data frame; Optional data frame of salient river features
+(e.g., tributary confluences, cities, bridges, dams,
+etc.). See package dataset for required fields.}
+
+\item{bridges}{data frame; Optional data frame of bridge opening elevations.
+See package dataset for required fields.}
+
+\item{gage_labels}{data frame; Optional data frame of gage labels produced
+by the `razviz::gage_labels` function.}
+
+\item{gage_boxes}{data frame; Optional data frame of gage boxes produced
+by the `razviz::gage_boxes` function.}
 }
 \value{
 A `ggplot2` object depicting the river longitudinal profile graph.
 }
 \description{
-Creates a longitudinal profile graph for the input RAS
-hydro model.
+Creates a longitudinal profile graph for the hydraulic
+parameter named 'hydro_parameter'.
 }

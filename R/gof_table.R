@@ -37,7 +37,16 @@ gof_table <- function(gof_stats_df, run_num, metric, output_format) {
   run_type <- cal_gof[cal_gof$Run_num == run_num,]$Run_type
 
   # Build a table for the given metric
-  metric_stats <- # select the fields for the specified metric #
+  metric_stats_WS <- gof_stats_df[,c(1:8)]
+  metric_stats_Q <-  gof_stats_df[,c(1:5,9:11)]
+  if(metric == "WSE"){
+    metric_stats <- metric_stats_WS
+  }else{
+    metric_stats <- metric_stats_Q
+    }
+
+
+    # select the fields for the specified metric #
 
   # Set table characteristics
   digits <- c(2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3)
@@ -64,17 +73,32 @@ gof_table <- function(gof_stats_df, run_num, metric, output_format) {
   column_names <- c("" , event_names)
   header <- setNames(column_headers, column_names)
 
-  gof_table <- knitr::kable(metric_stats,
+  long_statistics <- tidyr::pivot_longer(metric_stats,
+    cols = c(WS_R2, WS_RMSE, WS_MAE),
+    names_to = "Type",
+    values_to = "value")
+
+
+  #INSTEAD OF GOING TO LONG - JUST MAKE SEPARATE TABLE PER EVENT AND THEN COLUMN BIND THEM TOGETHER.
+   for(i in p){
+     metrir
+   }
+
+
+
+  gof_table <- knitr::kable(x = long_statistics,
                             digits = digits,
                             align = align,
                             col.names = col_names,
                             caption = paste(run_type, run_num),
                             row.names = FALSE,
-                            format = format)
+                            format = output_format)
+
   gof_table <- kableExtra::kable_styling(gof_table,
                                          full_width = F,
                                          position = "left",
                                          font_size = 10)
+
   gof_table <- kableExtra::add_header_above(gof_table,
                                             header = header)
   return(gof_table)

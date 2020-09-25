@@ -4,7 +4,7 @@
 \alias{hydrograph_report}
 \title{Hydrograph Report}
 \usage{
-hydrograph_report(hydrograph_df, hg_plot_pages, output_dir)
+hydrograph_report(hydrograph_df, hg_plot_pages, output_dir, filename)
 }
 \arguments{
 \item{hydrograph_df}{data frame; A data frame produced by the
@@ -15,6 +15,8 @@ hydrograph_report(hydrograph_df, hg_plot_pages, output_dir)
 
 \item{output_dir}{character; The path to the folder where the output
 report will be written.}
+
+\item{filename}{character; The filename of the report}
 }
 \value{
 Creates a Hydrograph Report in the output directory.

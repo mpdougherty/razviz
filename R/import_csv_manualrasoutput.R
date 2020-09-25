@@ -19,7 +19,7 @@
 #' @importFrom readr cols col_character col_double
 #' @importFrom tibble add_column
 #'
-import_ras_hydrographs <- function(folder, event, run_number,
+import_csv_manualrasoutput <- function(folder, event, run_number,
                                    run_type = "Calibration",
                                    col_spec = NULL) {
   # Set default col_spec if not specified
