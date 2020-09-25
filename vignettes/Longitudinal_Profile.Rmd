@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
-## Introduction
+# Introduction
 The purpose of this vignette is to demonstrate how to use the [`razviz`](https://mpdougherty.github.io/razviz/) package to produce a `pdf` report of longitudinal profile graphs for a set of [HEC-RAS](https://www.hec.usace.army.mil/software/hec-ras/) hydraulic model scenarios. A longitudinal Profile Graph displays water surface elevations on the y-axis by longitudinal river position (aka "river miles") on the x-axis. For this example we will use a RAS model of the Upper Mississippi River. The `razviz::longitudinal_profile_plot` function is tailored to evaluating RAS model results on a large river system. A comprehensive longitudinal profile graph for a large river system must include a wide range of ancillary information to allow hydraulic engineers to evaluate model results during calibration and floodplain managers to evaluate the impact of model scenarios on built infrastructure. This longitudinal profile plot incorporates the following ancillary data:
 
 * Gages - Gage locations are symbolized at their river position by their name and stage (units: feet). 
@@ -45,11 +45,18 @@ Finally, we'll load the `razviz` package.
 library(razviz)
 ```
 
+## Output Folder
+In this step we'll define the output folder. 
+
+```{r output_dir}
+output_dir <- "C:/temp"
+if (!dir.exists(output_dir)) {dir.create(output_dir)}
+```
 
 ## Hydraulic Parameters
 In this step we will import the hydraulic parameter that needs to be plotted as a longitudinal profile.  Commonly the parameter of interest will be water surface or stage profiles. However, as noted in these instructions other hydraulic parameters such as water velocity or lateral hydraulic connectivity can also be plotted longitudinally. 
 
-###Importing Water Surface Elevations - Option #1
+### Importing Water Surface Elevations - Option #1
 * Import the example RAS model results in `.csv` format included in the package. 
 * This folder contains a set of .csv files which have been copy and pasted from HEC-RAS and 
 * Data is cleaned so that there is lateral structures and bridges have been removed. 
@@ -160,7 +167,7 @@ hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ```
 
 
-###Importing alternative hydraulic parameters
+### Importing alternative hydraulic parameters
 If you would like to important another parameter, at a minimum your '.csv' file must have the following columns 
 
 1. River_Sta
@@ -203,8 +210,77 @@ hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 ```
 
 
+## Longitudinal Profile (Hydrualic Parameter ONLY)
+In this section, we'll setup how the longitudinal profile will look and then run a report
 
-## High Water Marks
+* Set up the plotting pages
+* Set graph colors (colors that lines will be displayed as)
+* Set legend labels (defines which each color means)
+* Set plot axis labels and title
+* Run report to create longitudinal profile
+* Check the results in the file: [Longitudinal_Profile_Report_No_Background.pdf]
+  (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf)
+
+### Longitudinal Plot Pages
+In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. This is a required data set.
+
+```{r long_plot_pages only hydro_parameter}
+miles_per_plot <- 60
+long_plot_pgs <- razviz::long_plot_pages(hydro_model = hydro_model_1, miles_per_plot = miles_per_plot)
+```
+
+### Graph Colors
+In this step we'll assign the colors to each of the series in the graph. This is a required data set.
+
+* Assignment of colors in `razviz` to particular data series depends on the use of R's "named vector". 
+* For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from `grDevices::colors()`). 
+```{r colors only hydro_parameter}
+graph_cols <- c("2 Year"      = "darkslategray4",
+                "100 Year"    = "cadetblue3",
+                "500 Year"    = "coral3",
+                "100000 Year" = "burlywood3")
+```
+
+### Legend Labels
+In this step we'll assign the legend labels. This is a required data set.
+
+```{r legend_labels only hydro_parameter}
+legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year")
+```
+
+### Plot Labels
+In this step we'll assign the plot labels. This is a required data set.
+
+```{r plot_labels only hydro_parameter}
+plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk to Thebes",
+                    "x_axis" = "Miles Above the Ohio River",
+                    "y_axis" = "Elevation (NAVD88 feet)")
+```
+
+### Longitudinal Profile Report (Hydrualic Parameter ONLY)
+In this step we'll call the longitudinal profile graph report for the entire reach of the river.  This report will plot only the hydraulic parameter of interest.
+
+* Run the report. 
+* Check the results in the file: [Longitudinal_Profile_Report.pdf]
+  (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_No_Background.pdf)
+
+```{r report for only hydro_parameter}
+filename <- "Longitudinal_Profile_Report_No_Background.pdf"
+
+razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
+                                    long_plot_pgs = long_plot_pgs,
+                                    graph_colors = graph_cols,
+                                    legend_labels = legend_labels,
+                                    plot_labels = plot_labels,        
+                                    output_dir = output_dir, 
+                                    filename = filename)
+```
+
+
+##Additional Data
+We will now import a series of optional dataframes that can be added to your longitundinal profile plot.
+
+### High Water Marks
 In this step we'll prepare the high water marks dataset. 
 
 * Import the high water marks table in `.csv` format included in the package. 
@@ -227,10 +303,11 @@ high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 #high_water_events <- c("25% Duration")
 #high_water_events_df <- add_column(high_water, event = high_water_events)
 ```
-## Gage locations
-In this step we'll prepare the gage dataset. 
+### Gage locations
+In this step we'll prepare the gage dataset. (NOTE: If you'd like to have the gage identified without gage boxes, please add the gage as a river feature.)
 
 * Import the gage locations table in `.csv` format included in the package. 
+* Min & Max stage are used to draw gage boxes and should be iteratively adjusted to match the profile 
 * Remove the double backslashes introduced by R during the import. 
 
 ```{r gages}
@@ -243,7 +320,7 @@ gages <- readr::read_csv(gage_csv)
 gages$name <- gsub("\\n", "\n", gages$name, fixed=TRUE)
 ```
 
-## Gage Labels
+### Gage Labels
 In this step we'll define the stage text labels that appear next to the gage boxes. These labels represent the stage in units feet for each gage.
 
 ```{r gage_labels}
@@ -251,7 +328,7 @@ stage_interval_label <- 5
 gage_labels_df <- razviz::gage_labels(gages, stage_interval_label)
 ```
 
-## Gage Boxes
+### Gage Boxes
 In this step we'll define the dimensions of the boxes used to draw the gage stage levels for all gages. 
 
 ```{r gage_boxes}
@@ -260,7 +337,7 @@ box_width <- 0.1
 gage_boxes_df <- razviz::gage_boxes(gages, stage_interval_boxes, box_width)
 ```
 
-## Levees
+### Levees
 In this step we'll prepare the levee dataset. 
 
 * Import the levees table in `.csv` format included in the package. 
@@ -272,7 +349,7 @@ levees_csv <- system.file("extdata/longitudinal_profiles",
 levees <- readr::read_csv(levees_csv)
 ```
 
-## Features
+### Features
 In this step we'll prepare the river features dataset. 
 
 * Import the river features table in `.csv` format included in the package. 
@@ -284,7 +361,7 @@ features_csv <- system.file("extdata/longitudinal_profiles",
 features <- readr::read_csv(features_csv)
 ```
 
-## Bridges
+### Bridges
 In this step we'll prepare the bridges dataset. This dataset must include elevations both lowest_elevation and highest_elevation for all bridges listed.
 
 * Import the bridge table in `.csv` format included in the package. 
@@ -297,18 +374,18 @@ bridges <- readr::read_csv(bridges_csv)
 ```
 
 
-## Longitudinal Plot Pages
-In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. 
+### Longitudinal Plot Pages
+In this step we'll define the number of longitudinal profile pages needed for the report. The `razviz::long_plot_pages` function determines the x and y-axis extents of each graph. This is a required data set.
 
 ```{r long_plot_pages}
 miles_per_plot <- 60
-long_plot_pages_df <- razviz::long_plot_pages(hydro_model,
-                                              high_water_events_df,
-                                              miles_per_plot)
+long_plot_pages_df <- razviz::long_plot_pages(hydro_model=hydro_model_1,
+                                              high_water = high_water_events_df,
+                                              miles_per_plot = miles_per_plot)
 ```
 
-## Graph Colors
-In this step we'll assign the colors to each of the series in the graph. 
+### Graph Colors
+In this step we'll assign the colors to each of the series in the graph. This is a required data set.
 
 * Assignment of colors in `razviz` to particular data series depends on the use of R's "named vector". 
 * For each data series the name is specified on the left side of the key-value pair and the right side defines the color (using names from `grDevices::colors()`). 
@@ -325,8 +402,8 @@ graph_cols <- c("2 Year"      = "darkslategray4",
                 "RIGHT"       = "palevioletred4")
 ```
 
-## Legend Labels
-In this step we'll assign the legend labels. 
+### Legend Labels
+In this step we'll assign the legend labels. This is a required data set.
 
 ```{r legend_labels}
 legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
@@ -334,8 +411,8 @@ legend_labels <- c("2 Year", "100 Year", "500 Year", "100000 Year",
                    "Left Bank", "Right Bank")
 ```
 
-## Plot Labels
-In this step we'll assign the plot labels. 
+### Plot Labels
+In this step we'll assign the plot labels. This is a required data set.
 
 ```{r plot_labels}
 plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk to Thebes",
@@ -343,24 +420,18 @@ plot_labels <- list("title" = "Upper Mississippi River Hydraulic Model - Keokuk 
                     "y_axis" = "Elevation (NAVD88 feet)")
 ```
 
-## Output Folder
-In this step we'll define the output folder. 
 
-```{r output_dir}
-output_dir <- "C:/temp"
-if (!dir.exists(output_dir)) {dir.create(output_dir)}
 
-filename <- "Longitudinal_Profile_Report.pdf"
-```
-
-## Longitudinal Profile Report (Entire Reach)
-In this step we'll call the longitudinal profile graph report for the entire reach of the river that is in the data that was orginally uploaded.
+### Longitudinal Profile Report (Entire Reach)
+In this step we'll call the longitudinal profile graph report for the entire reach of the river that is in the data that was originally uploaded.
 
 * Run the report. 
 * Check the results in the file: [Longitudinal_Profile_Report.pdf]
   (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report.pdf)
 
 ```{r run_report, echo=FALSE, results=FALSE}
+filename <- "Longitudinal_Profile_Report.pdf"
+
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
                                     long_plot_pgs = long_plot_pages_df,
                                     gages = gages,
@@ -378,15 +449,13 @@ razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
 ```
 
 
-#### Longitudinal Profile Report (Entire Reach)
+## Longitudinal Profile Report (Filtered Reach)
 In this step we'll call the longitudinal profile graph report, just like the previous section; however, prior to plotting we will specify the section of the river that we'd like plotted. This can be useful if there is a particular section of the river where there is considerable more elevation change than the remainder of the river. 
 
 * Specify a maximum and minimum river mile to filter the data. 
 * Check the results in the file: [Longitudinal_Profile_Report_Filtered.pdf]
   (https://mpdougherty.github.io/razviz/doc/Longitudinal_Profile_Report_Filtered.pdf)
 
-##Plot Saint Anthony Falls to LD 1
-Due to the large elevation drop at Saint Anthony Falls, we will create two sets of plots, split at RM 843.3 (halfway between LD1 tailwater and St. Paul, MN)
 ```{r Filtered Longitudinal Profile, echo=FALSE, results=FALSE}
 filename <- "Longitudinal_Profile_Report_Filtered.pdf"
 

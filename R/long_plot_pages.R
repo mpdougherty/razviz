@@ -8,7 +8,7 @@
 #'
 #' @export
 #' @param hydro_model      data frame; A data frame of RAS model output.
-#' @param high_water       data frame; A data frame of high water marks. See
+#' @param high_water       data frame; Optional data frame of high water marks. See
 #'                         package dataset `high_water_marks.csv` for format.
 #' @param miles_per_plot   numeric; The number of river miles per longitudinal
 #' profile plot.
@@ -17,7 +17,7 @@
 #'
 #' @importFrom tibble tibble
 #'
-long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
+long_plot_pages <- function(hydro_model, miles_per_plot, ..., high_water) {
   # Min and Max functions to return zero if vector contains all NAs
   max0 <- function (x) ifelse(!all(is.na(x)), max(x, na.rm = TRUE), 0)
   min0 <- function (x) ifelse(!all(is.na(x)), min(x, na.rm = TRUE), 0)
@@ -58,9 +58,11 @@ long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
     end_mile   <- plot_pages[plot_pages$plot == k, ]$end_mile
 
     # Subset relevant data frames for the current plot
-    hm <-  hydro_model[hydro_model$River_Sta <= start_mile &
+      hm <-  hydro_model[hydro_model$River_Sta <= start_mile &
                        hydro_model$River_Sta >= end_mile, ]
-    hw <-  high_water[high_water$river_mile <= start_mile &
+
+    if(!missing(high_water)){
+      hw <-  high_water[high_water$river_mile <= start_mile &
                       high_water$river_mile >= end_mile, ]
 
     # Set plot_pages$max_y
@@ -71,13 +73,27 @@ long_plot_pages <- function(hydro_model, high_water, miles_per_plot) {
     bb <- c( min0(hm$hydro_parameter), min0(hw$elevation_NAVD88) )
     plot_pages[plot_pages$plot == k, ]$min_y <- min0(bb[bb > 0])
 
-    # Calculate y range
+
+    } else{
+
+    #Set plot_pages$max_y
+      aa <- max0(hm$hydro_parameter)
+      plot_pages[plot_pages$plot == k, ]$max_y <- max0(aa[aa > 0])
+
+      # Set plot_pages$min_y
+      bb <- min0(hm$hydro_parameter)
+      plot_pages[plot_pages$plot == k, ]$min_y <- min0(bb[bb > 0])
+
+    }
+     # Calculate y range
     plot_pages[plot_pages$plot == k, ]$y_range <- plot_pages[plot_pages$plot == k, ]$max_y -
                                                   plot_pages[plot_pages$plot == k, ]$min_y
 
     # Calculate mid y
     plot_pages[plot_pages$plot == k,]$mid_y <- plot_pages[plot_pages$plot == k, ]$max_y -
                                                (plot_pages[plot_pages$plot == k, ]$y_range / 2)
+
+
   }
 
   # Determine the max y range for all of the plots

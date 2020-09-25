@@ -14,12 +14,14 @@ hydro_model$Event <- hydro_model$Freq
 ## Filter the Events
 model_events <- c("2 Year", "100 Year", "500 Year", "100000 Year")
 hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
+
 ## Set Event as an ordered factor
 hydro_model_1$Event <- factor(hydro_model_1$Event,
                               levels = model_events,
                               labels = model_events)
 #set the variable to plot
 hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
+
 
 # high_water
 high_water_csv <- system.file("extdata/longitudinal_profiles",
@@ -36,7 +38,7 @@ high_water_events_df$event <- factor(high_water_events_df$event,
 
 # long_plot_pages
 miles_per_plot <- 30
-long_plot_pgs <- razviz::long_plot_pages(hydro_model,
+long_plot_pgs <- razviz::long_plot_pages(hydro_model_1,
                                          high_water_events_df,
                                          miles_per_plot)
 
@@ -111,7 +113,7 @@ plot1 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                            graph_colors = graph_colors,
                                            legend_labels = legend_labels,
                                            plot_labels = plot_labels,
-                                           levee_smooth = FALSE, hw_pts = TRUE)
+                                           levee_smooth = FALSE)
 
 # longitudinal_profile_plot (with smoothed levees)
 plot2 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
@@ -127,9 +129,31 @@ plot2 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
                                            graph_colors = graph_colors,
                                            legend_labels = legend_labels,
                                            plot_labels = plot_labels,
-                                           levee_smooth = TRUE, hw_pts = FALSE)
+                                           levee_smooth = TRUE)
+
+# longitudinal_profile_plot (without  any background data)
+plot3 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                            hydro_model = hydro_model_1,
+                                            long_plot_pgs = long_plot_pgs,
+                                            graph_colors = graph_colors,
+                                            legend_labels = legend_labels,
+                                            plot_labels = plot_labels)
+
+# longitudinal_profile_plot (with only gages)
+plot4 <- razviz::longitudinal_profile_plot(plot_number = plot_number,
+                                           hydro_model = hydro_model_1,
+                                           long_plot_pgs = long_plot_pgs,
+                                           graph_colors = graph_colors,
+                                           legend_labels = legend_labels,
+                                           plot_labels = plot_labels,
+                                           gages = gages,
+                                           gage_labels_df = gage_labels_df,
+                                           gage_boxes_df = gage_boxes_df,)
+
 
 test_that("longitudinal profile plot", {
   expect_true(class(plot1)[[2]] == "ggplot")
   expect_true(class(plot2)[[2]] == "ggplot")
+  expect_true(class(plot3)[[2]] == "ggplot")
+  expect_true(class(plot4)[[2]] == "ggplot")
 })
