@@ -190,7 +190,7 @@ pattern <- "Hydro_Parameter"
 hydro_parameter_summary <- razviz::combine_files(path = path, pattern = pattern)
 
 #save the river mile column as a number
-hydro_parameter_summary$River_Sta <- as.numeric(as.character(profile_data$River_Sta))
+hydro_parameter_summary$River_Sta <- as.numeric(as.character(hydro_parameter_summary$River_Sta))
 
 #add ordered factor - this will be used during plotting
 model_events<- c(2001, 2014, 2019)
@@ -199,7 +199,7 @@ model_events<- c(2001, 2014, 2019)
 #profile_data_ordered <- dplyr::filter(profile_data, Event %in% model_events)
 
 ## Set Event as an ordered factor
-hydro_parameter_summary$Event <- factor(hydro_parameter_summar$Event,
+hydro_parameter_summary$Event <- factor(hydro_parameter_summary$Event,
                               levels = model_events,
                               labels = model_events)
 
