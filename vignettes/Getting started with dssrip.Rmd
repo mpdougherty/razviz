@@ -1,0 +1,89 @@
+---
+title: "Getting Started with dssrip"
+author: "Leigh Allison, MVP"
+date: "9/29/2020"
+output: html_document
+---
+
+
+##DSS-Vue
+dssrip needs to know where DSS is stored on your computer. If you are using DSSVue which was installed from ACE-IT, it will likely be in your programs folder under HEC. If you get errors that your path could not be found, make sure that two back slashes (e.g. \\ ) are included in the path name.  For some, DSS is downloaded into a new location in order to use a more recent version. 
+
+###R profile 
+1. Create a text file called .Rprofile in your documents folder (or where ever you have your R program files saved)
+2. Paste the following text in the text file and updated the path name to where HEC-DSSVue is stored on your computer. 
+
+if(R.Version()$arch=="x86_64"){
+  # use 64-bit .jar and .dll
+  options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
+}
+```{r}
+if(R.Version()$arch=="x86_64"){
+  # use 64-bit .jar and .dll
+  options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
+}
+```
+
+
+###Options
+Check to see where R is looking for your HEC-DSSVue software
+```{r DSS Location}
+#options(dss_location="C:\\Users\\b6echla0\\Desktop\\HEC-DSSVue-v3.0.00.212\\")
+options("dss_location")
+```
+
+###Java
+rJava is a hard package to get working. The only way I could get it load was from the default settings.  Ideally you install version 0.9.12 - which requires R version 3.6.3
+```{r}
+#install.packages("rJava")
+library(rJava)
+packageVersion("rJava")
+```
+
+###dssrip
+Now with all the previous files installed, install dssrip using the code provided in the read me file.  If that does not work, you can download the tar.gz file on to a local drive and install it from there. Often the tar.gz file will be saved in a temporary location and you can copy to a new location from there.
+
+Source: https://github.com/eheisman/dssrip/
+Helpful Blog Post (cannot access while on VPN)
+http://eaheisman.blogspot.com/2013/04/hec-dss-files-and-r-and-python.html
+```{r dssrip install}
+devtools::install_github("eheisman/dssrip", INSTALL_opts = "--no-multiarch", ref="r36_rJava0.9-12_fixes",force = TRUE)
+
+library(dssrip)
+```
+
+### Troubleshooting
+Run these codes to ensure that rJava and DSS are woring through dssrip properly
+```{r}
+.jinit() 
+.jclassPath() #should include DSS locations
+```
+
+### dssrip 
+List the functions which dssrip has available. In July 2020, the developer of dssrip, made changes to the code. Please refer to the github account for updates.
+```{r dssrip functions, eval=FALSE}
+#List the functions that dssrip has available to use.
+lsf.str("package:dssrip")
+```
+
+
+#EXAMPLE: Loading DSS Data into R
+Now that dssrip is loaded, we need to import the observed and modelled DSS files from HEC RAS. The file names should be in quotes and are case sensitive. They have to be exactly the same including the .dss extension.
+
+NOTE: dssrip will create a blank .dss file with that name if you ask it to find a .dss file that is not in the directory.
+```{r Load DSS Files Example, eval=FALSE}
+test <- opendss("OBSERVED_DATA_FINAL.dss", stopIfNew = TRUE)
+
+#QUERY A PATH TO BRING IN DATA
+#TIME IN DSS IS DIFFERENT THAN TIME STORAGE IN R 
+test1 <-as.data.frame(getTSC(test, "//AMAW3/ELEV/01DEC1999/15MIN/MERGED-NAVD88/"))
+test1
+
+test_FULL <-as.data.frame(getFullTSC(test, "//AMAW3/ELEV//15MIN/MERGED-NAVD88/"))
+
+#be patient this may take a minute to load, it's making a Java call to the .dss file. 
+
+#DSS Paths - need to be listed in a .dsc file which is a text file created from the catalog in HEC-DSSVue
+Paths_Observed <- as.data.frame(getAllPaths(test)) #just to see the path names
+
+```
