@@ -79,7 +79,7 @@ options("dss_location")
 ```
 
 ###Java
-rJava is a hard package to get working. The only way I could get it load was from the default settings. 
+rJava is a hard package to get working. The only way I could get it load was from the default settings. Ideally you install version 0.9.12 - which requires R version 3.6.3
 ```{r}
 #install.packages("rJava")
 library(rJava)
