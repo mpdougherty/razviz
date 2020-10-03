@@ -7,7 +7,7 @@ folder <- system.file("extdata/hydrographs/2008_calibration_9",
 event <- "2008"
 run_number <- 9
 run_type <- "Calibration"
-cal_2008 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2008 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -18,7 +18,7 @@ folder <- system.file("extdata/hydrographs/2013_calibration_9",
 event <- "2013"
 run_number <- 9
 run_type <- "Calibration"
-cal_2013 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2013 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -29,7 +29,7 @@ folder <- system.file("extdata/hydrographs/2014_calibration_9",
 event <- "2014"
 run_number <- 9
 run_type <- "Calibration"
-cal_2014 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2014 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -40,7 +40,7 @@ folder <- system.file("extdata/hydrographs/2017_calibration_9",
 event <- "2017"
 run_number <- 9
 run_type <- "Calibration"
-cal_2017 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2017 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)

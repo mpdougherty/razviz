@@ -34,7 +34,7 @@ high_water_years <- c("2008", "2013", "2014")
 high_water_events_df <- razviz::high_water_events(high_water, high_water_years)
 
 # long_plot_pages
-miles_per_plot <- 60
+miles_per_plot <- 10
 long_plot_pages_df <- razviz:: long_plot_pages(hydro_model = hydro_model_1,
                                                high_water = high_water_events_df,
                                                miles_per_plot = miles_per_plot)

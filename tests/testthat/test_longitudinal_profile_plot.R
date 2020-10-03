@@ -9,8 +9,10 @@ path <- system.file("extdata/longitudinal_profiles",
                     package = "razviz")
 pattern <- "Freq"
 hydro_model <- razviz::combine_files(path = path, pattern = pattern)
+
 ## Create `Event` field for labeling
 hydro_model$Event <- hydro_model$Freq
+
 ## Filter the Events
 model_events <- c("2 Year", "100 Year", "500 Year", "100000 Year")
 hydro_model_1 <- dplyr::filter(hydro_model, Event %in% model_events)
@@ -27,6 +29,7 @@ hydro_model_1$hydro_parameter <- hydro_model_1$WS_Elev
 high_water_csv <- system.file("extdata/longitudinal_profiles",
                               "high_water_marks.csv",
                               package = "razviz")
+
 high_water <- readr::read_csv(high_water_csv)
 high_water_years <- c("2008", "2013", "2014")
 
@@ -37,10 +40,10 @@ high_water_events_df$event <- factor(high_water_events_df$event,
                                      labels = high_water_years)
 
 # long_plot_pages
-miles_per_plot <- 30
-long_plot_pgs <- razviz::long_plot_pages(hydro_model_1,
-                                         high_water_events_df,
-                                         miles_per_plot)
+miles_per_plot <- 10
+long_plot_pgs <- razviz::long_plot_pages(hydro_model = hydro_model_1,
+                                          high_water = high_water_events_df,
+                                          miles_per_plot = miles_per_plot)
 
 # gages
 gage_csv <- system.file("extdata/longitudinal_profiles",

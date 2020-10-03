@@ -83,7 +83,7 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
 
 
   # Discharge hydrograph (for small flow ranges)
-  if((max(q$value)-min(q$value))/1000 <= 20 ){
+  if((max(q$value, na.rm = TRUE)-min(q$value, na.rm = TRUE))/1000 <= 20 ){
     #Define new y limits
     plot_min_y <- min(q$value)/1000
     plot_max_y <- max(q$value)/1000 + 5

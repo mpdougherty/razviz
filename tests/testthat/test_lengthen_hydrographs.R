@@ -7,7 +7,7 @@ folder <- system.file("extdata/hydrographs/2008_calibration_9",
 event <- "2008"
 run_number <- 9
 run_type <- "Calibration"
-cal_2008 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2008 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -18,7 +18,7 @@ folder <- system.file("extdata/hydrographs/2013_calibration_9",
 event <- "2013"
 run_number <- 9
 run_type <- "Calibration"
-cal_2013 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2013 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -29,7 +29,7 @@ folder <- system.file("extdata/hydrographs/2014_calibration_9",
 event <- "2014"
 run_number <- 9
 run_type <- "Calibration"
-cal_2014 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2014 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -40,7 +40,7 @@ folder <- system.file("extdata/hydrographs/2017_calibration_9",
 event <- "2017"
 run_number <- 9
 run_type <- "Calibration"
-cal_2017 <- razviz::import_ras_hydrographs(folder = folder,
+cal_2017 <- razviz::import_csv_manualrasoutput(folder = folder,
                                            event = event,
                                            run_number = run_number,
                                            run_type = run_type)
@@ -52,11 +52,11 @@ cal_wide <- razviz::combine_hydrographs(hydrograph_list)
 # Convert to long format suitable for plotting
 cal <- razviz::lengthen_hydrographs(cal_wide)
 
-hydrograph_variables <- c("WS_Elev","Obs_WS", "Model_Q", "Obs_Q")
+hydrograph_variables <- c("WS_Elev", "Model_Q","Obs_WS", "Obs_Q")
 
 
 test_that("lengthen hydrographs", {
   expect_true(is.data.frame(cal))
-  expect_true(all(levels(cal$Type) == hydrograph_variables))
+  expect_true(length(unique(cal$Type)) == length(hydrograph_variables))
 })
 

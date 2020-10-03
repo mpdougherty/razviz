@@ -26,7 +26,7 @@ unsteadyflowfile_list <- mget(ls(pattern="UnsteadyFlowFile_"))
 #UnsteadyFlowFile_2019 <- readtext::readtext(paste0(path,"/UnsteadyFlowObservedData_2019mod.txt"))
 #unsteadyflowfile_list <- list(UnsteadyFlowFile_2001,UnsteadyFlowFile_2014,UnsteadyFlowFile_2019)
 
-Formatted_UnsteadyFlowFileList <- razviz::import_unsteadyflowfile(unsteadyflowfile_list = unsteadyflowfile_list,
+Formatted_UnsteadyFlowFileList <- razviz::import_hecras_unsteadyflowfiles(unsteadyflowfile_list = unsteadyflowfile_list,
                                                                   plan_events = plan_events)
 
 

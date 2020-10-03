@@ -32,10 +32,10 @@ high_water_events_df$event <- factor(high_water_events_df$event,
                                      labels = high_water_years)
 
 # long_plot_pages
-miles_per_plot <- 60
-long_plot_pgs <- razviz::long_plot_pages(hydro_model,
-                                         high_water_events_df,
-                                         miles_per_plot)
+miles_per_plot <- 10
+long_plot_pgs <- razviz::long_plot_pages(hydro_model = hydro_model_1,
+                                         high_water = high_water_events_df,
+                                         miles_per_plot = miles_per_plot)
 
 # gages
 gage_csv <- system.file("extdata/longitudinal_profiles",
@@ -101,7 +101,6 @@ filename <- "Longitudinal_Profile_Report.pdf"
 
 # longitudinal_profile_report
 razviz::longitudinal_profile_report(hydro_model = hydro_model_1,
-                                    hydro_para = hydro_para,
                                     long_plot_pgs = long_plot_pgs,
                                     gages = gages,
                                     gage_labels_df = gage_labels_df,

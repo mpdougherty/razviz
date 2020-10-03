@@ -79,13 +79,6 @@ gof_table <- function(gof_stats_df, run_num, metric, output_format) {
     values_to = "value")
 
 
-  #INSTEAD OF GOING TO LONG - JUST MAKE SEPARATE TABLE PER EVENT AND THEN COLUMN BIND THEM TOGETHER.
-   for(i in p){
-     metrir
-   }
-
-
-
   gof_table <- knitr::kable(x = long_statistics,
                             digits = digits,
                             align = align,
