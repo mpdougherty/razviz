@@ -64,7 +64,7 @@ import_observed_data <- function(observed_dss_file,
       DSS_OBSERVED[DSS_OBSERVED <= -100000] <- NA
 
 
-      if(Formatted_UnsteadyFlowFile$Observed_C[z] == "FLOW"){
+      if(Formatted_UnsteadyFlowFile$Observed_C[z] == "FLOW"|Formatted_UnsteadyFlowFile$Observed_C[z] == "FLOW- MERGE"){
         colnames(DSS_OBSERVED) <- "Obs_Q"
       } else {
         colnames(DSS_OBSERVED) <- "Obs_WS"

@@ -20,8 +20,8 @@
 #' @importFrom dplyr filter
 
 #'
-hydrograph_datatables <- function(list_observed_data, list_1Dmodel_data, list_2Dmodel_data,
-                                  locations, plan_events, run_type, run_number) {
+hydrograph_datatables <- function(list_observed_data, list_1Dmodel_data,
+                                  locations, plan_events, run_type, run_number,...,list_2Dmodel_data) {
 
 
   for(p in 1:length(plan_events)){ #loop through each plan
@@ -44,7 +44,7 @@ hydrograph_datatables <- function(list_observed_data, list_1Dmodel_data, list_2D
 
       #add column for event
 
-      Event <- readr::parse_number(as.character(model_DF$Model_F)) #this breaks the F section of DSS
+      Event <- as.numeric(regmatches(model_DF$Model_F, gregexpr("[[:digit:]]+", model_DF$Model_F))) #this breaks the F section of DSS
       model_DF$Event <- Event
 
       model_DF_plans <- split(model_DF,model_DF$Event)

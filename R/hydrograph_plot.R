@@ -98,7 +98,7 @@ hydrograph_plot <- function(plot_number, hydrograph_df, hg_plot_pages) {
   title <- textGrob(label = paste(trimws(ws$River), " River, ",
                                   trimws(ws$Reach), " Reach, ",
                                   "River Mile ", ws$River_Sta,
-                                  "\n", "Gage", ws$Gage,
+                                  "\n", "Gage ", ws$Gage,
                                   sep = ""),
                     x = unit(0, "lines"), y = unit(0, "lines"),
                     hjust = 0, vjust = 0,

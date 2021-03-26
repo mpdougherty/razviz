@@ -51,7 +51,7 @@ import_hecras_2Dmodel_data <- function(model_dss_file, plan_names, plan_events, 
       DSS_2D_MODEL <- DSS_2D_MODEL[,c(4,5,6,8,9,1,2)] #reorganizes the dataframe to keep the columns of the pathnames
 
        #add column for event
-       Event <- readr::parse_number(as.character(DSS_2D_MODEL[,5]))
+       Event <- regmatches(DSS_2D_MODEL[1,  5], gregexpr("[[:digit:]]+", DSS_2D_MODEL[1,  5]))
        DSS_2D_MODEL$Event <- Event
 
   #Need to add the cross section information from SA2D_Connections, match by column B in csv and pathname
